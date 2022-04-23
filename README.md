@@ -50,7 +50,7 @@ https://www.nuget.org/profiles/ozgurtek.mobile.app
 Ozgurtek framework samples is available:
 
 ```
-https://github.com/OzgurtekCodeBank/ozgurtek.framework.netstandart/tree/main/Test/ozgurtek.framework.test.winforms/UnitTest
+https://github.com/OzgurtekCodeBank/ozgurtek.framework.net/tree/main/Test/ozgurtek.framework.test.winforms/UnitTest/Driver
 ```
 
 

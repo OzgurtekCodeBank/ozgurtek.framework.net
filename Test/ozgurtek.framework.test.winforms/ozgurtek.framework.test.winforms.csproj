@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3417E183-30EA-4A39-8A30-FF9DBA571155}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>ozgurtek.framework.test.winforms</RootNamespace>
+    <AssemblyName>ozgurtek.framework.test.winforms</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlServerTypes\Loader.cs" />
+    <Compile Include="TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UnitTest\Driver\AbstractDbTableTest.cs" />
+    <Compile Include="UnitTest\Driver\AbstractTableTest.cs" />
+    <Compile Include="UnitTest\Driver\DbMemTableTest.cs" />
+    <Compile Include="UnitTest\Driver\MemTableTest.cs" />
+    <Compile Include="UnitTest\Driver\OleDbTest.cs" />
+    <Compile Include="UnitTest\Driver\ServerDataSourceTest.cs" />
+    <Compile Include="UnitTest\Driver\GmlTest.cs" />
+    <Compile Include="UnitTest\Driver\MsSqlServerTest.cs" />
+    <Compile Include="UnitTest\Driver\OracleTest.cs" />
+    <Compile Include="UnitTest\Driver\PostgresTest.cs" />
+    <Compile Include="UnitTest\Driver\SqlLiteTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdAreaTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdBearingTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdDegreeTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdDistanceTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdLonLatTest.cs" />
+    <Compile Include="UnitTest\Geodesy\GdVectorTest.cs" />
+    <Compile Include="UnitTest\GdPgFtsBuilder.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="TestForm.resx">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Data\unit_test.rar" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.common\ozgurtek.framework.common.csproj">
+      <Project>{699085c2-0668-4888-9912-59351211d0e6}</Project>
+      <Name>ozgurtek.framework.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.core\ozgurtek.framework.core.csproj">
+      <Project>{063D5D2F-1491-4DCB-8ED6-C0DCCBD75605}</Project>
+      <Name>ozgurtek.framework.core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.oledb\ozgurtek.framework.driver.oledb.csproj">
+      <Project>{47FC1C01-B417-40FB-9B11-FB6CE9C2D349}</Project>
+      <Name>ozgurtek.framework.driver.oledb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.oracle\ozgurtek.framework.driver.oracle.csproj">
+      <Project>{7873A6C1-B48B-446E-AD58-A641FEEA1981}</Project>
+      <Name>ozgurtek.framework.driver.oracle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.postgres\ozgurtek.framework.driver.postgres.csproj">
+      <Project>{4e298cd1-7ad2-4898-a412-925aefcc0524}</Project>
+      <Name>ozgurtek.framework.driver.postgres</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.sqlite\ozgurtek.framework.driver.sqlite.csproj">
+      <Project>{13f6b002-ce88-4852-9e0a-39d92e77e1ce}</Project>
+      <Name>ozgurtek.framework.driver.sqlite</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.sqlserver\ozgurtek.framework.driver.sqlserver.csproj">
+      <Project>{20DFC0C0-20FC-4352-9FB3-13C8545AA65B}</Project>
+      <Name>ozgurtek.framework.driver.sqlserver</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.dotMemoryUnit">
+      <Version>3.1.20200127.214830</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SqlServer.Types">
+      <Version>14.0.1016.290</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite">
+      <Version>2.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite.Features">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite.IO.GeoJSON">
+      <Version>2.0.4</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite.IO.PostGis">
+      <Version>2.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Npgsql.NetTopologySuite">
+      <Version>6.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NUnit">
+      <Version>3.13.3</Version>
+    </PackageReference>
+    <PackageReference Include="ProjNET4GeoAPI">
+      <Version>1.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.8.116</Version>
+    </PackageReference>
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3">
+      <Version>2.0.7</Version>
+    </PackageReference>
+    <PackageReference Include="SQLitePCLRaw.bundle_green">
+      <Version>2.0.7</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>6.0.2</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Image1.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

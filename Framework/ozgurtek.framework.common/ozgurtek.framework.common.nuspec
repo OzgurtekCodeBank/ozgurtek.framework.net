@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>ozgurtek.framework.common</id>
+    <version>2.0.48</version>
+    <authors>http://www.otekyazilim.com/</authors>
+    <projectUrl>http://www.otekyazilim.com/</projectUrl>
+    <description>common implementations</description>
+    <copyright>http://www.otekyazilim.com/</copyright>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="ozgurtek.framework.core" version="2.0.48" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Caching.Memory" version="6.0.1" exclude="Build,Analyzers" />
+        <dependency id="NetTopologySuite.IO.GeoJSON" version="2.0.4" exclude="Build,Analyzers" />
+        <!--<dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />-->
+        <dependency id="ProjNET4GeoAPI" version="1.4.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\eniso\source\repos\ozgurtek\ozgurtek.framework.netstandart\Framework\ozgurtek.framework.common\bin\Debug\netstandard2.0\ozgurtek.framework.common.dll" target="lib\netstandard2.0\ozgurtek.framework.common.dll" />
+  </files>
+</package>

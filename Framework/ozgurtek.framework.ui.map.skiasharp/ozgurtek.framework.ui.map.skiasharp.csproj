@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>http://www.otekyazilim.com/</Authors>
+    <Company>http://www.otekyazilim.com/</Company>
+    <Copyright>http://www.otekyazilim.com/</Copyright>
+    <AssemblyVersion>2.0.48.0</AssemblyVersion>
+    <FileVersion>2.0.48.0</FileVersion>
+    <Version>2.0.48</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
+    <Description>cross platform map(windows, ios, android, macos)</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ozgurtek.framework.common\ozgurtek.framework.common.csproj" />
+    <ProjectReference Include="..\ozgurtek.framework.core\ozgurtek.framework.core.csproj" />
+  </ItemGroup>
+</Project>

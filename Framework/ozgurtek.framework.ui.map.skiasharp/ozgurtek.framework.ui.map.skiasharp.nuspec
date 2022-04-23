@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>ozgurtek.framework.ui.map.skiasharp</id>
+    <version>2.0.48</version>
+    <authors>http://www.otekyazilim.com/</authors>
+    <projectUrl>http://www.otekyazilim.com/</projectUrl>
+    <description>cross platform map(windows, ios, android, macos)</description>
+    <copyright>http://www.otekyazilim.com/</copyright>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="ozgurtek.framework.common" version="2.0.48" exclude="Build,Analyzers" />
+        <!--<dependency id="ozgurtek.framework.core" version="2.0.46" exclude="Build,Analyzers" />-->
+        <dependency id="SkiaSharp.Views.Forms" version="2.80.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\eniso\source\repos\ozgurtek\ozgurtek.framework.netstandart\Framework\ozgurtek.framework.ui.map.skiasharp\bin\Debug\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" target="lib\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" />
+  </files>
+</package>

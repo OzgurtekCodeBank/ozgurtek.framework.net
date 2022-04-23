@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>http://www.otekyazilim.com/</Authors>
+    <Copyright>http://www.otekyazilim.com/</Copyright>
+    <Version>2.0.48</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
+    <AssemblyVersion>2.0.48.0</AssemblyVersion>
+    <Description>common xamarin controls (select, button, dialog etc...)</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.12" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.1" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ozgurtek.framework.common\ozgurtek.framework.common.csproj" />
+    <ProjectReference Include="..\ozgurtek.framework.core\ozgurtek.framework.core.csproj" />
+  </ItemGroup>
+</Project>

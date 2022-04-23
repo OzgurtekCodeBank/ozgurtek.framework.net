@@ -27,7 +27,7 @@ available on the web to browse.
  - UI Components(Button, Checkbox, DatePicker, ListView etc.)
 
 # .Net Standart Data Connectors
- - Postgres/postgis
+ - Postgres/Postgis
  - Oracle
  - Oledb
  - Sqlite

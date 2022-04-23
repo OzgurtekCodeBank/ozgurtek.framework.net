@@ -3,7 +3,7 @@
 
 ozgurtek framework is a cross-platform API for .NET platforms
 
-ozgurtek provides cross-platform bindings for:
+framework provides cross-platform bindings for:
 
  - NET Standard
  - NET Core

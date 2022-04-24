@@ -53,7 +53,7 @@ https://github.com/OzgurtekCodeBank/ozgurtek.framework.net/tree/main/Test/ozgurt
 The API Documentation is available on the web to browse
 
 ```
-http://www.oteksoftware.com/framework/html/namespaces.html
+http://www.otekyazilim.com/framework/html/namespaces.html
 ```
 
 You can mail us

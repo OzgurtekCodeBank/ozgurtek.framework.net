@@ -22,6 +22,9 @@ Framework provides cross-platform bindings for:
 The [API Documentation](http://www.otekyazilim.com/framework/html/namespaces.html) is
 available on the web to browse.
 
+[For more information](http://www.otekyazilim.com/) is
+available on the web to browse.
+
 # Crossplatform Xamarine UI Components
  - Map
  - UI Components(Button, Checkbox, DatePicker, ListView etc.)

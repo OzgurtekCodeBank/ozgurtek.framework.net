@@ -19,7 +19,7 @@ Framework provides cross-platform bindings for:
  - Web Assembly (WASM)
  - Uno Platform (iOS / macOS / Android / WebAssembly / UWP)
 
-# Crossplatform Xamarine UI Components
+# Crossplatform Xamarin UI Components
  - Map
  - UI Components(Button, Checkbox, DatePicker, ListView etc.)
 

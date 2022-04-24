@@ -19,14 +19,6 @@ Framework provides cross-platform bindings for:
  - Web Assembly (WASM)
  - Uno Platform (iOS / macOS / Android / WebAssembly / UWP)
 
-
- - The [API Documentation](http://www.otekyazilim.com/framework/html/namespaces.html) is
-available on the web to browse.
- - Visit our web site http://www.otekyazilim.com/
-
-
-
-
 # Crossplatform Xamarine UI Components
  - Map
  - UI Components(Button, Checkbox, DatePicker, ListView etc.)
@@ -58,7 +50,8 @@ Ozgurtek framework samples(unittest) is available:
 https://github.com/OzgurtekCodeBank/ozgurtek.framework.net/tree/main/Test/ozgurtek.framework.test.winforms/UnitTest/Driver
 ```
 
+The API Documentation is available on the web to browse
 
-
-
-
+```
+http://www.otekyazilim.com/framework/html/namespaces.html
+```

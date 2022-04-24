@@ -22,8 +22,7 @@ Framework provides cross-platform bindings for:
 The [API Documentation](http://www.otekyazilim.com/framework/html/namespaces.html) is
 available on the web to browse.
 
-[For more information](http://www.otekyazilim.com/) is
-available on the web to browse.
+[Please look for more information](http://www.otekyazilim.com/) 
 
 # Crossplatform Xamarine UI Components
  - Map

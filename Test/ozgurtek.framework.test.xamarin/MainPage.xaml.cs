@@ -29,7 +29,7 @@ namespace ozgurtek.framework.test.xamarin
 
         private void MapSamplesGestureOnTapped(object sender, EventArgs e)
         {
-            GdMapMenuPage mapMenu = new GdMapMenuPage();
+            MapMenuPage mapMenu = new MapMenuPage();
             mapMenu.ShowPage(null);
         }
     }

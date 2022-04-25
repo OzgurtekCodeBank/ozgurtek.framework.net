@@ -32,7 +32,14 @@
             }
         }
 
-        //public Util Util { get; set; }
+        public Util Util
+        {
+            get
+            {
+                return new Util();
+            }
+        }
+
         //public LogManager LogManager { get; set; }
     }
 }

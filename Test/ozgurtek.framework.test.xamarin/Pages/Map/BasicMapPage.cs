@@ -6,11 +6,11 @@ using ozgurtek.framework.ui.map.skiasharp;
 
 namespace ozgurtek.framework.test.xamarin.Pages.Map
 {
-    public class BasicMapSamplePage : GdPage
+    public class BasicMapPage : GdPage
     {
         private readonly GdSkMap _map;
 
-        public BasicMapSamplePage()
+        public BasicMapPage()
         {
             _map = new GdSkMap();
             DialogContent.Content = _map;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Data.Format.OnlineMap.Google;

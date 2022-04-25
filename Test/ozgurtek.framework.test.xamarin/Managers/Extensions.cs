@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Timers;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common;
@@ -83,18 +82,6 @@ namespace ozgurtek.framework.test.xamarin.Managers
             page.TopBarLeftButton.HeightRequest = 40;
             page.TopBarLeftButton.Source = ImageSource.FromFile("double_left_blue.png");
             page.TopBarLeftButton.Gesture.Tapped += (o, args) => { PopupNavigation.Instance.PopAsync(); };
-        }
-
-        public static void Speech(string text)
-        {
-            var settings = new SpeechOptions
-            {
-                Volume = .75f,
-                Pitch = 1.0f,
-            };
-
-            TextToSpeech.SpeakAsync(text, settings)
-                .ContinueWith((t) => { }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public static void Toast(this View view)

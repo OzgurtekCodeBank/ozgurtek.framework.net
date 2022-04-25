@@ -6,11 +6,11 @@ using Xamarin.Forms;
 
 namespace ozgurtek.framework.test.xamarin.Pages.Map
 {
-    public class GdMapMenuPage : GdPage
+    public class MapMenuPage : GdPage
     {
         private readonly GdViewBox _viewBox;
 
-        public GdMapMenuPage()
+        public MapMenuPage()
         {
             StackLayout stackLayout = new StackLayout();
 
@@ -34,7 +34,7 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
         private void MapSamplesGestureOnTapped(object sender, EventArgs e)
         {
-            BasicMapSamplePage page = new BasicMapSamplePage();
+            BasicMapPage page = new BasicMapPage();
             page.ShowPage(null);
         }
     }

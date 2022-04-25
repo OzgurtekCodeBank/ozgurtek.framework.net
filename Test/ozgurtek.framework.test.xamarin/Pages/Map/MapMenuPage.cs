@@ -27,14 +27,14 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
         {
             //basic map
             GdLabel mapLabel = new GdLabel();
-            mapLabel.Text = "Click to see sample...";
-            _viewBox.AddItem("Basic Map", mapLabel);
+            mapLabel.Text = "Google, Bing, OpenStreet Map";
+            _viewBox.AddItem("OnlineMap", mapLabel);
             mapLabel.Gesture.Tapped += MapSamplesGestureOnTapped;
         }
 
         private void MapSamplesGestureOnTapped(object sender, EventArgs e)
         {
-            BasicMapPage page = new BasicMapPage();
+            OnlineMapPage page = new OnlineMapPage();
             page.ShowPage(null);
         }
     }

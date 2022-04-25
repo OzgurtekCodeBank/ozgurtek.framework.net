@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data.Format;
+using ozgurtek.framework.common.Data.Format.OnlineMap;
 using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
 using ozgurtek.framework.common.Data.Format.Wms;
 using ozgurtek.framework.common.Mapping;
@@ -13,7 +14,8 @@ namespace ozgurtek.framework.test.xamarin.Managers
     {
         private GdServerDataSource _serverDataSource;
 
-        private const string OverrideToken = "B%3dC%3d%3d%3bC%40%3e%3c%3a%3a%3b%3f%3cA%3d%40%c2%86%3a%3e%3b8%3d%3f8%3f8%3a%3b%c2%86%7co%7d%7fDons%7c%7co%c2%80y";
+        private const string OverrideToken =
+            "B%3dC%3d%3d%3bC%40%3e%3c%3a%3a%3b%3f%3cA%3d%40%c2%86%3a%3e%3b8%3d%3f8%3f8%3a%3b%c2%86%7co%7d%7fDons%7c%7co%c2%80y";
 
         public GdServerDataSource CreateNewServerDataSource(string loginCredential)
         {
@@ -73,43 +75,26 @@ namespace ozgurtek.framework.test.xamarin.Managers
             return result;
         }
 
-        public List<IGdLayer> BaseMaps()
+        public IEnumerable<IGdTileLayer> BaseMaps()
         {
-            List<IGdLayer> result = new List<IGdLayer>();
-
-            GdGoogleMap googleMap = new GdGoogleMap();
-            googleMap.Name = "Google Map";
-            googleMap.HttpDownloadInfo.UseDiskCache = true;
-            googleMap.HttpDownloadInfo.UseMemoryCache = true;
-            googleMap.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
-            GdTileLayer tile = new GdTileLayer(googleMap, "GdGoogleMap");
-            result.Add(tile);
-
-            GdGoogleSataliteMap googleSataliteMap = new GdGoogleSataliteMap();
-            googleSataliteMap.Name = "GdGoogleSataliteMap";
-            googleSataliteMap.HttpDownloadInfo.UseDiskCache = true;
-            googleSataliteMap.HttpDownloadInfo.UseMemoryCache = true;
-            googleSataliteMap.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
-            tile = new GdTileLayer(googleSataliteMap, "GdGoogleSataliteMap");
-            result.Add(tile);
-
-            return result;
+            IEnumerable<GdOnlineMap> availableMap = GdOnlineMap.GetAvailableMap();
+            foreach (GdOnlineMap onlineMap in availableMap)
+            {
+                onlineMap.HttpDownloadInfo.UseDiskCache = true;
+                onlineMap.HttpDownloadInfo.UseMemoryCache = true;
+                onlineMap.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
+                yield return new GdTileLayer(onlineMap, onlineMap.Name);
+            }
         }
 
         private static string WmsServiceUrl
         {
-            get
-            {
-                return "http://185.122.200.110:8080/geoserver/mersin_ibs/wms";
-            }
+            get { return "http://185.122.200.110:8080/geoserver/mersin_ibs/wms"; }
         }
 
         private string ServiceUrl
         {
-            get
-            {
-                return "http://212.175.105.122:94/GdSpatialService.svc";
-            }
+            get { return "http://212.175.105.122:94/GdSpatialService.svc"; }
         }
     }
 }

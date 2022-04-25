@@ -156,7 +156,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="Npgsql.NetTopologySuite">
-      <Version>6.0.3</Version>
+      <Version>6.0.4</Version>
     </PackageReference>
     <PackageReference Include="NUnit">
       <Version>3.13.3</Version>
@@ -174,7 +174,7 @@
       <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>6.0.2</Version>
+      <Version>6.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

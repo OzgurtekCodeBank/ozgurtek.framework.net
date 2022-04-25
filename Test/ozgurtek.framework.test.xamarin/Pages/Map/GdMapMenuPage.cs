@@ -1,4 +1,5 @@
-﻿using ozgurtek.framework.test.xamarin.Managers;
+﻿using System;
+using ozgurtek.framework.test.xamarin.Managers;
 using ozgurtek.framework.ui.controls.xamarin.Pages;
 using ozgurtek.framework.ui.controls.xamarin.Views;
 using Xamarin.Forms;
@@ -24,11 +25,17 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
         private void Init()
         {
+            //basic map
             GdLabel mapLabel = new GdLabel();
-            mapLabel.Text = "Click to see map samples...";
-            _viewBox.AddItem("Map Samples", mapLabel);
-            //mapLabel.Gesture.Tapped += MapSamplesGestureOnTapped;
+            mapLabel.Text = "Click to see sample...";
+            _viewBox.AddItem("Basic Map", mapLabel);
+            mapLabel.Gesture.Tapped += MapSamplesGestureOnTapped;
+        }
 
+        private void MapSamplesGestureOnTapped(object sender, EventArgs e)
+        {
+            BasicMapSamplePage page = new BasicMapSamplePage();
+            page.ShowPage(null);
         }
     }
 }

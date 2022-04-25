@@ -14,6 +14,9 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
         {
             _map = new GdSkMap();
             DialogContent.Content = _map;
+
+            this.ShowTopbar("Map");
+
             Initialize();
         }
 

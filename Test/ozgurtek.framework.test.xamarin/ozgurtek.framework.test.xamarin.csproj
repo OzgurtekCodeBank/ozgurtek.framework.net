@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\double_left_blue.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Resizetizer.NT" Version="0.2.0" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.2" />
@@ -19,5 +24,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\ozgurtek.framework.ui.controls.xamarin\ozgurtek.framework.ui.controls.xamarin.csproj" />
     <ProjectReference Include="..\..\Framework\ozgurtek.framework.ui.map.skiasharp\ozgurtek.framework.ui.map.skiasharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SharedImage Include="Images\double_left_blue.png" />
   </ItemGroup>
 </Project>

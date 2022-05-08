@@ -11,7 +11,47 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\add_event.png" />
+    <None Remove="Images\adp.png" />
+    <None Remove="Images\alarm.png" />
+    <None Remove="Images\alert.png" />
+    <None Remove="Images\arac.png" />
+    <None Remove="Images\bang.png" />
+    <None Remove="Images\bina.png" />
+    <None Remove="Images\cancel.png" />
+    <None Remove="Images\currentpos.png" />
+    <None Remove="Images\dart_blue.png" />
+    <None Remove="Images\denetleme.png" />
+    <None Remove="Images\direksiyon.png" />
     <None Remove="Images\double_left_blue.png" />
+    <None Remove="Images\filter.png" />
+    <None Remove="Images\genel.png" />
+    <None Remove="Images\geri.png" />
+    <None Remove="Images\harita.png" />
+    <None Remove="Images\harita_altlik.png" />
+    <None Remove="Images\havalimani_genel.png" />
+    <None Remove="Images\home.png" />
+    <None Remove="Images\iletisim_list.png" />
+    <None Remove="Images\info.png" />
+    <None Remove="Images\jet.png" />
+    <None Remove="Images\language.png" />
+    <None Remove="Images\malzeme.png" />
+    <None Remove="Images\menu.png" />
+    <None Remove="Images\navigation.png" />
+    <None Remove="Images\olay.png" />
+    <None Remove="Images\person.png" />
+    <None Remove="Images\personel.png" />
+    <None Remove="Images\person_photo.png" />
+    <None Remove="Images\plane.png" />
+    <None Remove="Images\refresh.png" />
+    <None Remove="Images\save.png" />
+    <None Remove="Images\send.png" />
+    <None Remove="Images\settings.png" />
+    <None Remove="Images\share.png" />
+    <None Remove="Images\task.png" />
+    <None Remove="Images\tool.png" />
+    <None Remove="Images\uc_nokta.png" />
+    <None Remove="Images\zoomin.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +70,46 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SharedImage Include="Images\add_event.png" />
+    <SharedImage Include="Images\adp.png" />
+    <SharedImage Include="Images\alarm.png" />
+    <SharedImage Include="Images\alert.png" />
+    <SharedImage Include="Images\arac.png" />
+    <SharedImage Include="Images\bang.png" />
+    <SharedImage Include="Images\bina.png" />
+    <SharedImage Include="Images\cancel.png" />
+    <SharedImage Include="Images\currentpos.png" />
+    <SharedImage Include="Images\dart_blue.png" />
+    <SharedImage Include="Images\denetleme.png" />
+    <SharedImage Include="Images\direksiyon.png" />
     <SharedImage Include="Images\double_left_blue.png" />
+    <SharedImage Include="Images\filter.png" />
+    <SharedImage Include="Images\genel.png" />
+    <SharedImage Include="Images\geri.png" />
+    <SharedImage Include="Images\harita.png" />
+    <SharedImage Include="Images\harita_altlik.png" />
+    <SharedImage Include="Images\havalimani_genel.png" />
+    <SharedImage Include="Images\home.png" />
+    <SharedImage Include="Images\iletisim_list.png" />
+    <SharedImage Include="Images\info.png" />
+    <SharedImage Include="Images\jet.png" />
+    <SharedImage Include="Images\language.png" />
+    <SharedImage Include="Images\malzeme.png" />
+    <SharedImage Include="Images\menu.png" />
+    <SharedImage Include="Images\navigation.png" />
+    <SharedImage Include="Images\olay.png" />
+    <SharedImage Include="Images\person.png" />
+    <SharedImage Include="Images\personel.png" />
+    <SharedImage Include="Images\person_photo.png" />
+    <SharedImage Include="Images\plane.png" />
+    <SharedImage Include="Images\refresh.png" />
+    <SharedImage Include="Images\save.png" />
+    <SharedImage Include="Images\send.png" />
+    <SharedImage Include="Images\settings.png" />
+    <SharedImage Include="Images\share.png" />
+    <SharedImage Include="Images\task.png" />
+    <SharedImage Include="Images\tool.png" />
+    <SharedImage Include="Images\uc_nokta.png" />
+    <SharedImage Include="Images\zoomin.png" />
   </ItemGroup>
 </Project>

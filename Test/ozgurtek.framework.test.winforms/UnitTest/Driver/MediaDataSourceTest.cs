@@ -19,7 +19,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             MemoryStream stream = new MemoryStream();
             Image img = new Bitmap(Properties.Resources.Image1);
             img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-            dataSource.PutMedia(stream, @"test/1/2/img.jpg", "jpg");
+            dataSource.PutMedia(stream, @"1/2/img.jpg", "jpg");
         }
 
         [Test]
@@ -29,14 +29,14 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             MemoryStream stream = new MemoryStream();
             Image img = new Bitmap(Properties.Resources.Image1);
             img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-            dataSource.PutMedia(stream, @"test/1/2", "jpg");
+            dataSource.PutMedia(stream, @"1/2", "jpg");
         }
 
         [Test]
         public void GetMediaNamesTest()
         {
             GdMediaDataSource dataSource = new GdMediaDataSource(new Uri(baseFolder));
-            List<string> mediaNames = dataSource.GetMediaNames(@"test/1/2");
+            List<string> mediaNames = dataSource.GetMediaNames(@"1/2");
             Assert.Greater(mediaNames.Count, 0);
         }
 
@@ -44,7 +44,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         public void GetMediaTest()
         {
             GdMediaDataSource dataSource = new GdMediaDataSource(new Uri(baseFolder));
-            List<string> mediaNames = dataSource.GetMediaNames(@"test/1/2");
+            List<string> mediaNames = dataSource.GetMediaNames(@"1/2");
             foreach (string mediaName in mediaNames)
             {
                 string combine = Path.Combine(baseFolder, mediaName);
@@ -60,7 +60,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         public void DeleteMediaTest()
         {
             GdMediaDataSource dataSource = new GdMediaDataSource(new Uri(baseFolder));
-            List<string> mediaNames = dataSource.GetMediaNames(@"test/1/2");
+            List<string> mediaNames = dataSource.GetMediaNames(@"1/2");
             foreach (string mediaName in mediaNames)
             {
                 dataSource.DeleteMedia(mediaName);

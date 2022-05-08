@@ -29,7 +29,6 @@ namespace ozgurtek.framework.common.Data.Format
             string fullFilePath = fullPath;
             if (string.IsNullOrEmpty(extension))//directory
             {
-                Directory.CreateDirectory(fullPath);
                 string ext = "." + mediaType.ToLowerInvariant();
                 string fileName = mediaPath.Replace("/", "_").Replace('\\', '_') + "-" + DateTime.Now.Ticks + ext;
                 fullFilePath = Path.Combine(fullPath, fileName);
@@ -37,10 +36,11 @@ namespace ozgurtek.framework.common.Data.Format
 
             string directoryName = Path.GetDirectoryName(fullFilePath);
             Directory.CreateDirectory(directoryName);
-            FileStream targetStream = new FileStream(fullFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None);
-            stream.CopyTo(targetStream);
-            targetStream.Close();
-            targetStream.Dispose();
+            using (FileStream targetStream = new FileStream(fullFilePath, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+            {
+                stream.CopyTo(targetStream);
+                targetStream.Close();
+            }
         }
 
         /// <summary>

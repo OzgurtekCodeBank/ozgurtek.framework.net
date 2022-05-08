@@ -18,6 +18,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\eniso\source\repos\ozgurtek\ozgurtek.framework.netstandart\Framework\ozgurtek.framework.driver.postgres\bin\Debug\netstandard2.0\ozgurtek.framework.driver.postgres.dll" target="lib\netstandard2.0\ozgurtek.framework.driver.postgres.dll" />
+    <file src="C:\repos\ozgurtek\ozgurtek.framework.net\Framework\ozgurtek.framework.driver.postgres\bin\Debug\netstandard2.0\ozgurtek.framework.driver.postgres.dll" target="lib\netstandard2.0\ozgurtek.framework.driver.postgres.dll" />
   </files>
 </package>

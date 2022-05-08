@@ -16,6 +16,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="C:\Users\eniso\source\repos\ozgurtek\ozgurtek.framework.netstandart\Framework\ozgurtek.framework.ui.map.skiasharp\bin\Debug\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" target="lib\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" />
+    <file src="C:\repos\ozgurtek\ozgurtek.framework.net\Framework\ozgurtek.framework.ui.map.skiasharp\bin\Debug\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" target="lib\netstandard2.0\ozgurtek.framework.ui.map.skiasharp.dll" />
   </files>
 </package>

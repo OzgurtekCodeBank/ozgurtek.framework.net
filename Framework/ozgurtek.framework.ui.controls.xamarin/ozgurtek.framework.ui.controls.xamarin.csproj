@@ -3,10 +3,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>http://www.otekyazilim.com/</Authors>
     <Copyright>http://www.otekyazilim.com/</Copyright>
-    <Version>2.0.48</Version>
+    <Version>2.0.49</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
-    <AssemblyVersion>2.0.48.0</AssemblyVersion>
+    <AssemblyVersion>2.0.49.0</AssemblyVersion>
     <Description>common xamarin controls (select, button, dialog etc...)</Description>
   </PropertyGroup>
   <ItemGroup>

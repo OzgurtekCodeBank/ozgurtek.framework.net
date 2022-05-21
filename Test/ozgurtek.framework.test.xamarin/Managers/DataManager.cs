@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Data.Format.OnlineMap;
-using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
 using ozgurtek.framework.common.Data.Format.Wms;
 using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.core.Mapping;
@@ -17,9 +16,9 @@ namespace ozgurtek.framework.test.xamarin.Managers
         private const string OverrideToken =
             "B%3dC%3d%3d%3bC%40%3e%3c%3a%3a%3b%3f%3cA%3d%40%c2%86%3a%3e%3b8%3d%3f8%3f8%3a%3b%c2%86%7co%7d%7fDons%7c%7co%c2%80y";
 
-        public GdServerDataSource CreateNewServerDataSource(string loginCredential)
+        public GdServerDataSource CreateNewServerDataSource()
         {
-            _serverDataSource = new GdServerDataSource(new Uri(ServiceUrl), loginCredential);
+            _serverDataSource = new GdServerDataSource(new Uri(ServiceUrl), OverrideToken);
             _serverDataSource.SetOverrideToken(OverrideToken);
             return _serverDataSource;
         }
@@ -85,6 +84,15 @@ namespace ozgurtek.framework.test.xamarin.Managers
                 onlineMap.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
                 yield return new GdTileLayer(onlineMap, onlineMap.Name);
             }
+        }
+
+        public IGdTileLayer GetBaseMap(string name)
+        {
+            GdOnlineMap map = GdOnlineMap.Open(name);
+            map.HttpDownloadInfo.UseDiskCache = true;
+            map.HttpDownloadInfo.UseMemoryCache = true;
+            map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
+            return new GdTileLayer(map, map.Name);
         }
 
         private static string WmsServiceUrl

@@ -5,6 +5,13 @@
         private static GdApp _instance;
         private static readonly object Padlock = new object();
 
+        private readonly DataManager _dataManager = new DataManager();
+        private readonly SettingsManager _settingsManager = new SettingsManager();
+        private readonly LogManager _logManager = new LogManager();
+        private readonly UtilityManager _utilityManager = new UtilityManager();
+        private readonly PermissionManager _permission = new PermissionManager();
+        private IGdPlatformManager _platformManager;
+
         public static GdApp Instance
         {
             get
@@ -20,7 +27,7 @@
         {
             get
             {
-                return new SettingsManager();
+                return _settingsManager;
             }
         }
         
@@ -28,18 +35,41 @@
         {
             get
             {
-                return new DataManager();
+                return _dataManager;
             }
         }
 
-        public Util Util
+        public UtilityManager Util
         {
             get
             {
-                return new Util();
+                return _utilityManager;
             }
         }
 
-        //public LogManager LogManager { get; set; }
+        public LogManager LogManager
+        {
+            get
+            {
+                return _logManager;
+            }
+        }
+
+        public PermissionManager PermissionManager
+        {
+            get { return _permission; }
+        }
+
+        public IGdPlatformManager PlatformManager
+        {
+            get { return _platformManager; }
+        }
+    }
+
+    public interface IGdPlatformManager
+    {
+        void CloseApp();
+
+        void OpenBrowser(string link);
     }
 }

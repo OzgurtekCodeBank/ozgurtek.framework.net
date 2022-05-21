@@ -30,6 +30,18 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             mapLabel.Text = "Google, Bing, OpenStreet Map";
             _viewBox.AddItem("OnlineMap", mapLabel);
             mapLabel.Gesture.Tapped += MapSamplesGestureOnTapped;
+
+            //marker map
+            GdLabel markerLabel = new GdLabel();
+            markerLabel.Text = "Marker Rendering";
+            _viewBox.AddItem("Markers", markerLabel);
+            markerLabel.Gesture.Tapped += AtsGestureOnTapped;
+        }
+
+        private void AtsGestureOnTapped(object sender, EventArgs e)
+        {
+            MarkerMapPage page = new MarkerMapPage();
+            page.ShowPage(null);
         }
 
         private void MapSamplesGestureOnTapped(object sender, EventArgs e)

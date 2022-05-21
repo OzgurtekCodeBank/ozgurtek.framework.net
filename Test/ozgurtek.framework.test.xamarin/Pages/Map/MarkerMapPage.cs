@@ -70,10 +70,9 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
                 foreach (IGdRow row in table.Rows)
                 {
-
                     if (!row.IsNull("geometry"))
                     {
-                        string source = "hareketsiz.png";
+                        string source = row.GetAsInteger("hiz") > 5 ? "haraketli.png" : "hareketsiz.png";
                         Point point = (Point)row.GetAsGeometry("geometry");
                         ImageMarker _marker = new ImageMarker(point, source);
                         _map.Markers.Add(_marker);

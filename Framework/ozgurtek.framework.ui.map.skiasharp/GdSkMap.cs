@@ -52,9 +52,9 @@ namespace ozgurtek.framework.ui.map.skiasharp
             set { _map.LayerCollection = value; }
         }
 
-        public void Render(bool layer = true, bool marker = true)
+        public void Render()
         {
-            _map.Render(layer, marker);
+            _map.Render();
         }
 
         public GdColor BackColor

@@ -88,7 +88,7 @@
     <SharedImage Include="Images\filter.png" />
     <SharedImage Include="Images\genel.png" />
     <SharedImage Include="Images\geri.png" />
-    <SharedImage Include="Images\haraketli.png" />
+    <EmbeddedResource Include="Images\haraketli.png" />
     <EmbeddedResource Include="Images\hareketsiz.png" />
     <SharedImage Include="Images\harita.png" />
     <SharedImage Include="Images\harita_altlik.png" />

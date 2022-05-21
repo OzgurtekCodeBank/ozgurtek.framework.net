@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Mapping;
@@ -9,7 +10,8 @@ namespace ozgurtek.framework.ui.map.skiasharp
 {
     internal class GdSkMarkerRenderer : GdSkAbstractRenderer
     {
-        public GdSkMarkerRenderer(GdSkMapInternal map) : base(map)
+        public GdSkMarkerRenderer(GdSkMapInternal map) 
+            : base(map)
         {
             Dirty = true;
         }
@@ -44,7 +46,8 @@ namespace ozgurtek.framework.ui.map.skiasharp
         {
             try
             {
-                foreach (IGdMarker marker in Map.Markers)
+                List<IGdMarker> markers = new List<IGdMarker>(Map.Markers);
+                foreach (IGdMarker marker in markers)
                 {
                     marker.Render(context, track);
                 }

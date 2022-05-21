@@ -10,7 +10,7 @@ namespace ozgurtek.framework.core.Mapping
 
         IGdLayerCollection LayerCollection { get; set; }
 
-        void Render(bool layer = true, bool marker = true);
+        void Render();
 
         GdColor BackColor { set; get; }
 

@@ -151,13 +151,10 @@ namespace ozgurtek.framework.ui.map.skiasharp
             set { _layerCollection = value; }
         }
 
-        public void Render(bool layer = true, bool marker = true)
+        public void Render()
         {
             if (LayerRenderer != null)
-                LayerRenderer.Dirty = layer;
-
-            if (MarkerRenderer != null)
-                MarkerRenderer.Dirty = marker;
+                LayerRenderer.Dirty = true;
         }
 
         public GdColor BackColor

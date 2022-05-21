@@ -49,6 +49,12 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
         public void Render(IGdRenderContext context, IGdTrack track = null)
         {
+            SKPaint paint = new SKPaint
+            {
+                IsAntialias = true,
+                FilterQuality = SKFilterQuality.High
+            };
+
             if (_disposed)
                 return;
 
@@ -64,7 +70,7 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
                 if (_disposed)
                     return;
 
-                canvas.DrawBitmap(_bitmap, rect);
+                canvas.DrawBitmap(_bitmap, rect, paint);
             }
             catch
             {

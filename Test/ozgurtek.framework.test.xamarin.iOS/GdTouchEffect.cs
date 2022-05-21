@@ -1,106 +1,209 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
-using mersin.ibs.mobile.UWP;
+using CoreGraphics;
+using Foundation;
+using ozgurtek.framework.test.xamarin.iOS;
+using UIKit;
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.UWP;
-
+using Xamarin.Forms.Platform.iOS;
 
 [assembly: ResolutionGroupName("XamarinDocs")]
-[assembly: ExportEffect(typeof(TouchEffect), "TouchEffect")]
-namespace mersin.ibs.mobile.UWP
+[assembly: ExportEffect(typeof(GdTouchEffect), "TouchEffect")]
+namespace ozgurtek.framework.test.xamarin.iOS
 {
-    public class TouchEffect : PlatformEffect
+    public class GdTouchEffect : PlatformEffect
     {
-        FrameworkElement frameworkElement;
-        ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect effect;
-        Action<Element, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionEventArgs> onTouchAction;
+        UIView view;
+        GdTouchRecognizer touchRecognizer;
 
         protected override void OnAttached()
         {
-            // Get the Windows FrameworkElement corresponding to the Element that the effect is attached to
-            frameworkElement = Control == null ? Container : Control;
+            // Get the iOS UIView corresponding to the Element that the effect is attached to
+            view = Control == null ? Container : Control;
 
             // Get access to the TouchEffect class in the .NET Standard library
-            effect = (ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect)Element.Effects.
-                        FirstOrDefault(e => e is ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect);
+            ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect effect = (ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect)Element.Effects.FirstOrDefault(e => e is ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect);
 
-            if (effect != null && frameworkElement != null)
+            if (effect != null && view != null)
             {
-                // Save the method to call on touch events
-                onTouchAction = effect.OnTouchAction;
-
-                // Set event handlers on FrameworkElement
-                frameworkElement.PointerEntered += OnPointerEntered;
-                frameworkElement.PointerPressed += OnPointerPressed;
-                frameworkElement.PointerMoved += OnPointerMoved;
-                frameworkElement.PointerReleased += OnPointerReleased;
-                frameworkElement.PointerExited += OnPointerExited;
-                frameworkElement.PointerCanceled += OnPointerCancelled;
+                // Create a TouchRecognizer for this UIView
+                touchRecognizer = new GdTouchRecognizer(Element, view, effect);
+                view.AddGestureRecognizer(touchRecognizer);
             }
         }
 
         protected override void OnDetached()
         {
-            if (onTouchAction != null)
+            if (touchRecognizer != null)
             {
-                // Release event handlers on FrameworkElement
-                frameworkElement.PointerEntered -= OnPointerEntered;
-                frameworkElement.PointerPressed -= OnPointerPressed;
-                frameworkElement.PointerMoved -= OnPointerMoved;
-                frameworkElement.PointerReleased -= OnPointerReleased;
-                frameworkElement.PointerExited -= OnPointerEntered;
-                frameworkElement.PointerCanceled -= OnPointerCancelled;
+                // Clean up the TouchRecognizer object
+                touchRecognizer.Detach();
+
+                // Remove the TouchRecognizer from the UIView
+                view.RemoveGestureRecognizer(touchRecognizer);
+            }
+        }
+    }
+
+    class GdTouchRecognizer : UIGestureRecognizer
+    {
+        Element element;        // Forms element for firing events
+        UIView view;            // iOS UIView 
+        ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect touchEffect;
+        bool capture;
+
+        static Dictionary<UIView, GdTouchRecognizer> viewDictionary =
+            new Dictionary<UIView, GdTouchRecognizer>();
+
+        static Dictionary<long, GdTouchRecognizer> idToTouchDictionary =
+            new Dictionary<long, GdTouchRecognizer>();
+
+        public GdTouchRecognizer(Element element, UIView view, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchEffect touchEffect)
+        {
+            this.element = element;
+            this.view = view;
+            this.touchEffect = touchEffect;
+
+            viewDictionary.Add(view, this);
+        }
+
+        public void Detach()
+        {
+            viewDictionary.Remove(view);
+        }
+
+        // touches = touches of interest; evt = all touches of type UITouch
+        public override void TouchesBegan(NSSet touches, UIEvent evt)
+        {
+            base.TouchesBegan(touches, evt);
+
+            foreach (UITouch touch in touches.Cast<UITouch>())
+            {
+                long id = touch.Handle.ToInt64();
+                FireEvent(this, id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Pressed, touch, true);
+
+                if (!idToTouchDictionary.ContainsKey(id))
+                {
+                    idToTouchDictionary.Add(id, this);
+                }
+            }
+
+            // Save the setting of the Capture property
+            capture = touchEffect.Capture;
+        }
+
+        public override void TouchesMoved(NSSet touches, UIEvent evt)
+        {
+            base.TouchesMoved(touches, evt);
+
+            foreach (UITouch touch in touches.Cast<UITouch>())
+            {
+                long id = touch.Handle.ToInt64();
+
+                if (capture)
+                {
+                    FireEvent(this, id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Moved, touch, true);
+                }
+                else
+                {
+                    CheckForBoundaryHop(touch);
+
+                    if (idToTouchDictionary[id] != null)
+                    {
+                        FireEvent(idToTouchDictionary[id], id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Moved, touch, true);
+                    }
+                }
             }
         }
 
-        void OnPointerEntered(object sender, PointerRoutedEventArgs args)
+        public override void TouchesEnded(NSSet touches, UIEvent evt)
         {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Entered, args);
-        }
+            base.TouchesEnded(touches, evt);
 
-        void OnPointerPressed(object sender, PointerRoutedEventArgs args)
-        {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Pressed, args);
-
-            // Check setting of Capture property
-            if (effect.Capture)
+            foreach (UITouch touch in touches.Cast<UITouch>())
             {
-                (sender as FrameworkElement).CapturePointer(args.Pointer);
+                long id = touch.Handle.ToInt64();
+
+                if (capture)
+                {
+                    FireEvent(this, id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Released, touch, false);
+                }
+                else
+                {
+                    CheckForBoundaryHop(touch);
+
+                    if (idToTouchDictionary[id] != null)
+                    {
+                        FireEvent(idToTouchDictionary[id], id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Released, touch, false);
+                    }
+                }
+                idToTouchDictionary.Remove(id);
             }
         }
 
-        void OnPointerMoved(object sender, PointerRoutedEventArgs args)
+        public override void TouchesCancelled(NSSet touches, UIEvent evt)
         {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Moved, args);
+            base.TouchesCancelled(touches, evt);
+
+            foreach (UITouch touch in touches.Cast<UITouch>())
+            {
+                long id = touch.Handle.ToInt64();
+
+                if (capture)
+                {
+                    FireEvent(this, id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Cancelled, touch, false);
+                }
+                else if (idToTouchDictionary[id] != null)
+                {
+                    FireEvent(idToTouchDictionary[id], id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Cancelled, touch, false);
+                }
+                idToTouchDictionary.Remove(id);
+            }
         }
 
-        void OnPointerReleased(object sender, PointerRoutedEventArgs args)
+        void CheckForBoundaryHop(UITouch touch)
         {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Released, args);
+            long id = touch.Handle.ToInt64();
+
+            // TODO: Might require converting to a List for multiple hits
+            GdTouchRecognizer recognizerHit = null;
+
+            foreach (UIView view in viewDictionary.Keys)
+            {
+                CGPoint location = touch.LocationInView(view);
+
+                if (new CGRect(new CGPoint(), view.Frame.Size).Contains(location))
+                {
+                    recognizerHit = viewDictionary[view];
+                }
+            }
+            if (recognizerHit != idToTouchDictionary[id])
+            {
+                if (idToTouchDictionary[id] != null)
+                {
+                    FireEvent(idToTouchDictionary[id], id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Exited, touch, true);
+                }
+                if (recognizerHit != null)
+                {
+                    FireEvent(recognizerHit, id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Entered, touch, true);
+                }
+                idToTouchDictionary[id] = recognizerHit;
+            }
         }
 
-        void OnPointerExited(object sender, PointerRoutedEventArgs args)
+        void FireEvent(GdTouchRecognizer recognizer, long id, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType actionType, UITouch touch, bool isInContact)
         {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Exited, args);
-        }
+            // Convert touch location to Xamarin.Forms Point value
+            CGPoint cgPoint = touch.LocationInView(recognizer.View);
+            Point xfPoint = new Point(cgPoint.X, cgPoint.Y);
 
-        void OnPointerCancelled(object sender, PointerRoutedEventArgs args)
-        {
-            CommonHandler(sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType.Cancelled, args);
-        }
+            // Get the method to call for firing events
+            Action<Element, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionEventArgs> onTouchAction = recognizer.touchEffect.OnTouchAction;
 
-        void CommonHandler(object sender, ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionType touchActionType, PointerRoutedEventArgs args)
-        {
-            PointerPoint pointerPoint = args.GetCurrentPoint(sender as UIElement);
-            Windows.Foundation.Point windowsPoint = pointerPoint.Position;
-
-            onTouchAction(Element, new ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionEventArgs(args.Pointer.PointerId,
-                                                            touchActionType,
-                                                            new Point(windowsPoint.X, windowsPoint.Y),
-                                                            args.Pointer.IsInContact));
+            // Call that method
+            onTouchAction(recognizer.element,
+                new ozgurtek.framework.ui.map.skiasharp.Touch.GdTouchActionEventArgs(id, actionType, xfPoint, isInContact));
         }
     }
 

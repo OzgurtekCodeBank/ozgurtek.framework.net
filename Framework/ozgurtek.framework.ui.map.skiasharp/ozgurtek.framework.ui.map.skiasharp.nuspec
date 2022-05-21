@@ -11,7 +11,7 @@
       <group targetFramework=".NETStandard2.0">
         <dependency id="ozgurtek.framework.common" version="2.0.50" exclude="Build,Analyzers" />
         <!--<dependency id="ozgurtek.framework.core" version="2.0.46" exclude="Build,Analyzers" />-->
-        <dependency id="SkiaSharp.Views.Forms" version="2.80.3" exclude="Build,Analyzers" />
+        <dependency id="SkiaSharp.Views.Forms" version="2.80.4" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

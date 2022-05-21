@@ -11,6 +11,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 {
     public class GdPicker : Label
     {
+        private object _tag;
         private TapGestureRecognizer _gesture;
         private GdSelectPage _page;
         private GdListViewItem _selectedItem;
@@ -124,6 +125,12 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
         {
             if (SelectedItemChanged != null)
                 SelectedItemChanged(this, item);
+        }
+
+        public object Tag
+        {
+            get => _tag;
+            set => _tag = value;
         }
     }
 }

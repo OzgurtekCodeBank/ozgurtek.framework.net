@@ -7,6 +7,8 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 {
     public class GdDoubleEntry : Entry
     {
+        private object _tag;
+
         public GdDoubleEntry()
         {
             FontSize = 14;
@@ -35,6 +37,12 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
                 if (value != null)
                     Text = value.Value.ToString(CultureInfo.InvariantCulture);
             }
+        }
+
+        public object Tag
+        {
+            get => _tag;
+            set => _tag = value;
         }
     }
 }

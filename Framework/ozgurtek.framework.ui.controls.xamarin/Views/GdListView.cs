@@ -10,6 +10,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
     {
         public EventHandler NeedMoreElement;
         public EventHandler<GdListViewItem> ItemClicked;
+        private object _tag;
 
         public readonly ObservableCollection<GdListViewItem> Items;
 
@@ -155,6 +156,12 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 
             if (ItemClicked != null)
                 ItemClicked(this, item);
+        }
+
+        public object Tag
+        {
+            get => _tag;
+            set => _tag = value;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
         private Frame _headerFrame;
         private Label _headerLabel;
         private ColumnDefinition _firstColumnDf;
+        private object _tag;
 
         public GdViewBox()
         {
@@ -134,5 +135,10 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
             _contentGrid.RowDefinitions.Clear();
         }
 
+        public object Tag
+        {
+            get => _tag;
+            set => _tag = value;
+        }
     }
 }

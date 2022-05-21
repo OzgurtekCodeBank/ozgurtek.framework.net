@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 
 namespace ozgurtek.framework.ui.controls.xamarin.Views
 {
@@ -9,6 +6,8 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
     {
         public TapGestureRecognizer Gesture;
         private GdLabel _label;
+        private object _tag;
+
         public GdButton()
         {
             BackgroundColor = Color.White;
@@ -24,8 +23,15 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
             _label.GestureRecognizers.Add(Gesture);
         }
 
-        public GdLabel Label => _label;
+        public GdLabel Label
+        {
+            get { return _label; }
+        }
 
-
+        public object Tag
+        {
+            get => _tag;
+            set => _tag = value;
+        }
     }
 }

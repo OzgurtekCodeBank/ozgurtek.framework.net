@@ -74,37 +74,6 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
                     if (!row.IsNull("geometry"))
                     {
                         string source = "hareketsiz.png";
-                        //string source = row.GetAsInteger("hiz") > 5 ? "arac_takip.png" : "hareketsiz.png";
-                        if (!row.IsNull("yon"))
-                        {
-                            if ((row.GetAsInteger("yon") <= 15))
-                                source = "car-top-green-0.png";
-                            else if ((row.GetAsInteger("yon") > 15) && (row.GetAsInteger("yon") <= 45))
-                                source = "car-top-green-30.png";
-                            else if ((row.GetAsInteger("yon") > 45) && (row.GetAsInteger("yon") <= 75))
-                                source = "car-top-green-60.png";
-                            else if ((row.GetAsInteger("yon") > 75) && (row.GetAsInteger("yon") <= 105))
-                                source = "car-top-green-90.png";
-                            else if ((row.GetAsInteger("yon") > 105) && (row.GetAsInteger("yon") <= 135))
-                                source = "car-top-green-120.png";
-                            else if ((row.GetAsInteger("yon") > 135) && (row.GetAsInteger("yon") <= 165))
-                                source = "car-top-green-150.png";
-                            else if ((row.GetAsInteger("yon") > 165) && (row.GetAsInteger("yon") <= 195))
-                                source = "car-top-green-180.png";
-                            else if ((row.GetAsInteger("yon") > 195) && (row.GetAsInteger("yon") <= 225))
-                                source = "car-top-green-210.png";
-                            else if ((row.GetAsInteger("yon") > 225) && (row.GetAsInteger("yon") <= 255))
-                                source = "car-top-green-240.png";
-                            else if ((row.GetAsInteger("yon") > 255) && (row.GetAsInteger("yon") <= 285))
-                                source = "car-top-green-270.png";
-                            else if ((row.GetAsInteger("yon") > 285) && (row.GetAsInteger("yon") <= 315))
-                                source = "car-top-green-300.png";
-                            else if ((row.GetAsInteger("yon") > 315) && (row.GetAsInteger("yon") <= 345))
-                                source = "car-top-green-330.png";
-                            else if ((row.GetAsInteger("yon") > 345))
-                                source = "car-top-green-0.png";
-                        }
-
                         Point point = (Point)row.GetAsGeometry("geometry");
                         ImageMarker _marker = new ImageMarker(point, source);
                         _map.Markers.Add(_marker);

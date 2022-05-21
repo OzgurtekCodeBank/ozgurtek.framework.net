@@ -28,7 +28,7 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
         private void CreateImage(string source)
         {
             Assembly assembly = GetType().GetTypeInfo().Assembly;
-            source = "mersin.ibs.mobile.Images." + source;
+            source = "ozgurtek.framework.test.xamarin.Images." + source;
             using (Stream stream = assembly.GetManifestResourceStream(source))
             {
                 _bitmap = SKBitmap.Decode(stream);

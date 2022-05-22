@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Util;
 
@@ -216,6 +217,36 @@ namespace ozgurtek.framework.common.Data.Format
         {
             get => _sqlFilter;
             set => _sqlFilter = value;
+        }
+
+        /// <summary>
+        /// case senstive comparision strings
+        /// </summary>
+        public bool CaseSenstive
+        {
+            get
+            {
+                return _dataTable.CaseSensitive;
+            }
+            set
+            {
+                _dataTable.CaseSensitive = value;
+            }
+        }
+
+        /// <summary>
+        /// locale comparision strings
+        /// </summary>
+        public CultureInfo Locale
+        {
+            get
+            {
+                return _dataTable.Locale;
+            }
+            set
+            {
+                _dataTable.Locale = value;
+            }
         }
 
         public DataTable ToDataTable()

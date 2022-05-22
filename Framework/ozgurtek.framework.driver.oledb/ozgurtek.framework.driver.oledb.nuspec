@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>ozgurtek.framework.driver.oledb</id>
-		<version>2.0.50</version>
+		<version>2.0.51</version>
 		<title>http://www.otekyazilim.com/</title>
 		<authors>http://www.otekyazilim.com/</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,18 +13,7 @@
 		<releaseNotes>oledb driver</releaseNotes>
 		<copyright>http://www.otekyazilim.com/</copyright>
 		<dependencies>
-			<!--<dependency id="ozgurtek.framework.core" version="2.0.47" />-->
-			<dependency id="ozgurtek.framework.common" version="2.0.50" />
-			<!--<dependency id="Microsoft.Extensions.Caching.Memory" version="6.0.1" />-->
-			<!--<dependency id="NetTopologySuite" version="2.4.0" />-->
-			<!--<dependency id="NetTopologySuite.Features" version="2.1.0" />-->
-			<!--<dependency id="NetTopologySuite.IO.GeoJSON" version="2.0.4" />-->
-			<!--<dependency id="Newtonsoft.Json" version="13.0.1" />-->
-			<!--<dependency id="ProjNET4GeoAPI" version="1.4.1" />-->
-			<!--<dependency id="System.Memory" version="4.5.4" />-->
-			<!--<dependency id="System.Numerics.Vectors" version="4.5.0" />-->
-			<!--<dependency id="System.Runtime.CompilerServices.Unsafe" version="6.0.0" />-->
-			<!--<dependency id="System.Text.Json" version="6.0.2" />-->
+			<dependency id="ozgurtek.framework.common" version="2.0.51" />
 		</dependencies>
 	</metadata>
 </package>

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
@@ -8,6 +10,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     [TestFixture]
     public class OgrDriverTest
     {
+        private string _path = @"C:\Users\eniso\Desktop\work\testdata\shp\";
         //private string _source = @"C:\Users\eniso\Desktop\work\testdata\shp\mahalle.shp";
         private string _source = @"WFS:http://185.122.200.110:8080/geoserver/dhmi/wfs?service=WFS";
 
@@ -19,9 +22,19 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.GreaterOrEqual(driverName.Count, 1);
         }
 
-        /**
-         * Veritabanındaki tablo sayısını öğrenmek
-         */
+        [Test]
+        public void CreateDataSourceTest()
+        {
+            string driverName = "ESRI Shapefile";
+            //bool canCreateDataSource = GdOgrDataSource.CanCreateDataSource(driverName);
+            //Assert.Equals(canCreateDataSource, true);
+
+            string file = Path.Combine(_path, Guid.NewGuid() + ".shp");
+            GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName, file, null);
+            GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
+            Assert.NotNull(ogrTable);
+        }
+
         [Test]
         public void TableCountTest()
         {
@@ -29,9 +42,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.GreaterOrEqual(dataSource.TableCount, 1);
         }
 
-        /**
-        * Veritabanındaki tüm tablo isimlerini almak
-        */
         [Test]
         public void GetTablesTest()
         {
@@ -40,9 +50,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.GreaterOrEqual(clone.Count, 1);
         }
 
-        /**
-         * tablo adı ile bir tabloyu almak
-         */
         [Test]
         public void GetTableTest()
         {

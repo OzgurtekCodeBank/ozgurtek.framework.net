@@ -27,7 +27,6 @@ namespace ozgurtek.framework.driver.gdal
         public static GdOgrDataSource Open(string source, bool editable = false)
         {
             GdalConfiguration.ConfigureOgr();
-
             int count = Ogr.GetDriverCount();
             for (int i = 0; i < count; i++)
             {
@@ -56,12 +55,18 @@ namespace ozgurtek.framework.driver.gdal
             return new GdOgrDataSource(dataSource, source);
         }
 
+        public static int Delete(string driverName, string source)
+        {
+            GdalConfiguration.ConfigureOgr();
+            Driver ogrDriver = Ogr.GetDriverByName(driverName);
+            return ogrDriver.DeleteDataSource(source);
+        }
+
         public static IEnumerable<string> DriverNames
         {
             get
             {
                 GdalConfiguration.ConfigureOgr();
-
                 int count = Ogr.GetDriverCount();
                 for (int i = 0; i < count; i++)
                 {
@@ -69,6 +74,20 @@ namespace ozgurtek.framework.driver.gdal
                     yield return ogrDriver.GetName();
                 }
             }
+        }
+
+        public static bool CanCreateDataSource(string driverName)
+        {
+            GdalConfiguration.ConfigureOgr();
+            Driver ogrDriver = Ogr.GetDriverByName(driverName);
+            return ogrDriver.TestCapability(Ogr.ODrCCreateDataSource);
+        }
+
+        public static bool CanDeleteDataSource(string driverName)
+        {
+            GdalConfiguration.ConfigureOgr();
+            Driver ogrDriver = Ogr.GetDriverByName(driverName);
+            return ogrDriver.TestCapability(Ogr.ODrCDeleteDataSource);
         }
 
         public int TableCount
@@ -114,6 +133,16 @@ namespace ozgurtek.framework.driver.gdal
             wkbGeometryType wkbGeometryType = GetGeometryType(geometryType, allowMultigeom);
             Layer layer = _ogrDs.CreateLayer(name, spatialReference, wkbGeometryType, options);
             return new GdOgrTable(layer);
+        }
+
+        public void DeleteTable(string name)
+        {
+            //_ogrDs.
+        }
+
+        public void Dispose()
+        {
+            _ogrDs.Dispose();
         }
 
         private SpatialReference GetSpatialReference(int? srid)

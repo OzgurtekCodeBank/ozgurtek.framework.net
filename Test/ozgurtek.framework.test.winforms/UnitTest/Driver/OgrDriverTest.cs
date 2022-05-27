@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using OSGeo.OGR;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 

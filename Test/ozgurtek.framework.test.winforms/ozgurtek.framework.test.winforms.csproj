@@ -63,6 +63,7 @@
     <Compile Include="UnitTest\Driver\DbMemTableTest.cs" />
     <Compile Include="UnitTest\Driver\MediaDataSourceTest.cs" />
     <Compile Include="UnitTest\Driver\MemTableTest.cs" />
+    <Compile Include="UnitTest\Driver\OgrDriverTest.cs" />
     <Compile Include="UnitTest\Driver\OleDbTest.cs" />
     <Compile Include="UnitTest\Driver\ServerDataSourceTest.cs" />
     <Compile Include="UnitTest\Driver\GmlTest.cs" />
@@ -113,6 +114,10 @@
       <Project>{063D5D2F-1491-4DCB-8ED6-C0DCCBD75605}</Project>
       <Name>ozgurtek.framework.core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.gdal\ozgurtek.framework.driver.gdal.csproj">
+      <Project>{F707A4C5-9238-475B-8B30-70DB727FD92E}</Project>
+      <Name>ozgurtek.framework.driver.gdal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Framework\ozgurtek.framework.driver.oledb\ozgurtek.framework.driver.oledb.csproj">
       <Project>{47FC1C01-B417-40FB-9B11-FB6CE9C2D349}</Project>
       <Name>ozgurtek.framework.driver.oledb</Name>
@@ -135,6 +140,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GDAL.Plugins">
+      <Version>3.4.3</Version>
+    </PackageReference>
     <PackageReference Include="JetBrains.dotMemoryUnit">
       <Version>3.2.20220510</Version>
     </PackageReference>

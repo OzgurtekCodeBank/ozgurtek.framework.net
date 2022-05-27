@@ -40,6 +40,7 @@
             this.label1.Size = new System.Drawing.Size(467, 31);
             this.label1.TabIndex = 0;
             this.label1.Text = "for unit testing, see the unit test folder";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // TestForm
             // 

@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GeoAPI.CoordinateSystems">
+      <HintPath>..\..\..\..\..\Users\eniso\.nuget\packages\geoapi.coordinatesystems\1.7.5\lib\net45\GeoAPI.CoordinateSystems.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -53,6 +56,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ozgurtek.framework.common\ozgurtek.framework.common.csproj">
+      <Project>{699085C2-0668-4888-9912-59351211D0E6}</Project>
+      <Name>ozgurtek.framework.common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ozgurtek.framework.core\ozgurtek.framework.core.csproj">
       <Project>{063D5D2F-1491-4DCB-8ED6-C0DCCBD75605}</Project>
       <Name>ozgurtek.framework.core</Name>
@@ -61,6 +68,9 @@
   <ItemGroup>
     <PackageReference Include="GDAL.Plugins">
       <Version>3.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="GeoAPI.CoordinateSystems">
+      <Version>1.7.5</Version>
     </PackageReference>
     <PackageReference Include="NetTopologySuite">
       <Version>2.4.0</Version>

@@ -23,12 +23,21 @@ namespace ozgurtek.framework.driver.gdal
                 return (int)_layer.GetFeatureCount(1);
             }
         }
+
+        public string Name
+        {
+            get
+            {
+                return _layer.GetName();
+            }
+        }
+
         public IEnumerable<IGdRow> Rows { get; }
         public Envelope Envelope { get; }
         public GdGeometryType? GeometryType { get; set; }
         public int Srid { get; set; }
         public string GeometryField { get; set; }
-        public string Name { get; }
+        
         public string Description { get; set; }
         public string Address { get; set; }
         public string KeyField { get; set; }
@@ -89,6 +98,11 @@ namespace ozgurtek.framework.driver.gdal
         public IGdTable Clone()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
 
         public event EventHandler<GdRowChangedEventArgs> RowChanged;

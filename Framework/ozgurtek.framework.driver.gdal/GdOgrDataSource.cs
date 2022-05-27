@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
+using OSGeo.OSR;
+using ozgurtek.framework.common.Data;
+using ozgurtek.framework.common.Geodesy;
 using ozgurtek.framework.core.Data;
 
 namespace ozgurtek.framework.driver.gdal
 {
     public class GdOgrDataSource
     {
-        private static bool _isInit;
         private readonly DataSource _ogrDs;
         private readonly string _connectionString;
 
@@ -21,20 +24,51 @@ namespace ozgurtek.framework.driver.gdal
             get { return _connectionString; }
         }
 
-        public static GdOgrDataSource Open(string source)
+        public static GdOgrDataSource Open(string source, bool editable = false)
         {
-            InitGdal();
+            GdalConfiguration.ConfigureOgr();
 
             int count = Ogr.GetDriverCount();
             for (int i = 0; i < count; i++)
             {
                 Driver ogrDriver = Ogr.GetDriver(i);
-                DataSource dataSource = ogrDriver.Open(source, 1);
+                DataSource dataSource = ogrDriver.Open(source, DbConvert.ToInt16(editable));
                 if (dataSource != null)
                     return new GdOgrDataSource(dataSource, source);
             }
 
             return null;
+        }
+
+        public static GdOgrDataSource Open(string driverName, string source, bool editable = false)
+        {
+            GdalConfiguration.ConfigureOgr();
+            Driver ogrDriver = Ogr.GetDriverByName(driverName);
+            DataSource dataSource = ogrDriver.Open(source, DbConvert.ToInt16(editable));
+            return new GdOgrDataSource(dataSource, source);
+        }
+
+        public static GdOgrDataSource Create(string driverName, string source, string[] options)
+        {
+            GdalConfiguration.ConfigureOgr();
+            Driver ogrDriver = Ogr.GetDriverByName(driverName);
+            DataSource dataSource = ogrDriver.CreateDataSource(source, options);
+            return new GdOgrDataSource(dataSource, source);
+        }
+
+        public static IEnumerable<string> DriverNames
+        {
+            get
+            {
+                GdalConfiguration.ConfigureOgr();
+
+                int count = Ogr.GetDriverCount();
+                for (int i = 0; i < count; i++)
+                {
+                    Driver ogrDriver = Ogr.GetDriver(i);
+                    yield return ogrDriver.GetName();
+                }
+            }
         }
 
         public int TableCount
@@ -60,8 +94,8 @@ namespace ozgurtek.framework.driver.gdal
 
         public GdOgrTable ExecuteSql(string name, IGdFilter filter)
         {
-            //_ogrDs.ExecuteSQL()
-            return null;
+            Layer layer = _ogrDs.ExecuteSQL(filter.Text, null, null);
+            return new GdOgrTable(layer);
         }
 
         public DataSource OgrDataSource
@@ -71,17 +105,61 @@ namespace ozgurtek.framework.driver.gdal
 
         public string Name
         {
-            get { return "Gdal-Ogr Data Source"; }
+            get { return "Osgeo-Ogr Data Source"; }
         }
 
-        private static void InitGdal()
+        public GdOgrTable CreateTable(string name, GdGeometryType? geometryType, int? srid, string[] options, bool allowMultigeom = false)
         {
-            if (_isInit)
-                return;
+            SpatialReference spatialReference = GetSpatialReference(srid);
+            wkbGeometryType wkbGeometryType = GetGeometryType(geometryType, allowMultigeom);
+            Layer layer = _ogrDs.CreateLayer(name, spatialReference, wkbGeometryType, options);
+            return new GdOgrTable(layer);
+        }
 
-            GdalConfiguration.ConfigureGdal();
-            Ogr.RegisterAll();
-            _isInit = true;
+        private SpatialReference GetSpatialReference(int? srid)
+        {
+            if (!srid.HasValue)
+                return null;
+
+            ICoordinateSystem coordinateSystem = GdProjection.GetCrs(srid.Value);
+            if (coordinateSystem == null)
+                return null;
+
+            SpatialReference reference = new SpatialReference(coordinateSystem.WKT);
+            return reference;
+        }
+
+        private wkbGeometryType  GetGeometryType(GdGeometryType? type, bool allowMultigeom)
+        {
+            if (!type.HasValue)
+                return wkbGeometryType.wkbNone;
+
+            if (!allowMultigeom)
+            {
+                switch (type)
+                {
+                    case GdGeometryType.Line:
+                        return wkbGeometryType.wkbLineString;
+                    case GdGeometryType.Polygon:
+                        return wkbGeometryType.wkbPolygon;
+                    case GdGeometryType.Point:
+                        return wkbGeometryType.wkbMultiPoint;
+                    default:
+                        return wkbGeometryType.wkbUnknown;
+                }
+            }
+
+            switch (type)
+            {
+                case GdGeometryType.Line:
+                    return wkbGeometryType.wkbMultiLineString;
+                case GdGeometryType.Polygon:
+                    return wkbGeometryType.wkbMultiPolygon;
+                case GdGeometryType.Point:
+                    return wkbGeometryType.wkbMultiPoint;
+                default:
+                    return wkbGeometryType.wkbUnknown;
+            }
         }
     }
 }

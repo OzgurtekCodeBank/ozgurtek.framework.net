@@ -226,6 +226,9 @@ namespace ozgurtek.framework.common.Data.Format.Wmts
 
         /// <remarks/>
         FeatureInfo,
+
+        /// <remarks/>
+        TileJSON,
     }
 
     /// <remarks/>

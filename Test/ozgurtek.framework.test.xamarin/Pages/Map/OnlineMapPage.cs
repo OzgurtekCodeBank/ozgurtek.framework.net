@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using NetTopologySuite.Geometries;
+using ozgurtek.framework.common.Data.Format.Wmst;
+using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.core.Mapping;
 using ozgurtek.framework.test.xamarin.Managers;
@@ -51,6 +54,19 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             _map.BackColor = GdColor.Gray;
 
             _map.LayerCollection.AddRange(GdApp.Instance.Data.BaseMaps());
+
+            string url = "https://giris.csb.gov.tr/geoserver/gwc/service/wmts";
+            GdWmtsDataSource wmtsDataSource = new GdWmtsDataSource(url);
+            wmtsDataSource.Open();
+            List<GdWmtsMap> gdWmtsMaps = wmtsDataSource.GetMap();
+            GdWmtsMap map = gdWmtsMaps[46];
+            map.HttpDownloadInfo.UseMemoryCache = true;
+            map.HttpDownloadInfo.UseDiskCache = true;
+            //map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.SettingManager.CacheFolder;
+
+            GdTileLayer layer = new GdTileLayer(map, "test");
+            _map.LayerCollection.Add(layer);
+
             AdjustVisible();
         }
 

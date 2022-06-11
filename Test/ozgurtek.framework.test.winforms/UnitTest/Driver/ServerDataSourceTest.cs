@@ -12,8 +12,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     [TestFixture]
     public class ServerDataSourceTest : AbstractTableTest
     {
-        private readonly string _credential = "xyz";
-        private readonly Uri _uri = new Uri("xyz");
+        //username:password:applicationid
+        private readonly string _credential = "enisozgur:Ozgurtek/2019:30CB5074-897E-426E-B61A-64B057FB64A7";
+        private readonly Uri _uri = new Uri("http://localhost:57017/GdSpatialService.svc");
 
         private GdServerDataSource CreateNewDataSource
         {

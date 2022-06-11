@@ -20,7 +20,7 @@ namespace ozgurtek.framework.driver.postgres
             return new GdPgDataSource(source);
         }
 
-        public static GdPgDataSource Open(string host, string username, string pass, int port, string database)
+        public static GdPgDataSource Open(string host, string username, string pass, int port, string database, string searchPath)
         {
             NpgsqlConnectionStringBuilder builder = new NpgsqlConnectionStringBuilder();
             builder.Host = host;
@@ -28,7 +28,7 @@ namespace ozgurtek.framework.driver.postgres
             builder.Password = pass;
             builder.Port = port;
             builder.Database = database;
-            builder.SearchPath = "public";
+            builder.SearchPath = searchPath;
             builder.ApplicationName = "ozgurtek.framework.driver.postgres";
             string connectionString = builder.ConnectionString;
             return Open(connectionString);
@@ -43,8 +43,12 @@ namespace ozgurtek.framework.driver.postgres
         {
             get
             {
+                string searchPath = string.Empty;
+                if (!string.IsNullOrEmpty(CsBuilder.SearchPath))
+                    searchPath = $"table_schema='{CsBuilder.SearchPath}' and";
+
                 string sql = $"Select Count(*) From INFORMATION_SCHEMA.tables " +
-                             $"Where table_catalog='{CsBuilder.Database}' and table_schema='{CsBuilder.SearchPath}' and " +
+                             $"Where table_catalog='{CsBuilder.Database}' and {searchPath} " +
                              $"table_name Not In ('spatial_ref_sys', 'geography_columns', 'geometry_columns', 'raster_columns', 'raster_overviews') and " +
                              $"table_type In ('BASE TABLE', 'VIEW')";
 
@@ -54,14 +58,17 @@ namespace ozgurtek.framework.driver.postgres
 
         public IEnumerable<GdPgTable> GetTable()
         {
+            string searchPath = string.Empty;
+            if (!string.IsNullOrEmpty(CsBuilder.SearchPath))
+                searchPath = $"table_schema='{CsBuilder.SearchPath}' and";
+
             string sql = $"Select table_name From INFORMATION_SCHEMA.tables " +
-                         $"Where table_catalog='{CsBuilder.Database}' and table_schema='{CsBuilder.SearchPath}' and " +
+                         $"Where table_catalog='{CsBuilder.Database}' and {searchPath} " +
                          $"table_name Not In ('spatial_ref_sys', 'geography_columns', 'geometry_columns', 'raster_columns', 'raster_overviews') and " +
                          $"table_type In ('BASE TABLE', 'VIEW') " +
                          $"Order By table_name";
 
-            string cmdText = string.Format(sql, CsBuilder.SearchPath);
-            DataTable table = ExecuteTable(cmdText);
+            DataTable table = ExecuteTable(sql);
             if (table.Rows.Count == 0)
                 yield break;
 
@@ -74,13 +81,16 @@ namespace ozgurtek.framework.driver.postgres
 
         public GdPgTable GetTable(string name)
         {
-            string sql = $"Select table_name From INFORMATION_SCHEMA.tables " +
-                         $"Where table_catalog='{CsBuilder.Database}' and table_schema='{CsBuilder.SearchPath}' and " +
-                         $"table_name Not In ('spatial_ref_sys', 'geography_columns', 'geometry_columns', 'raster_columns', 'raster_overviews') and " +
-                         $"table_type In ('BASE TABLE', 'VIEW')";
+            string searchPath = string.Empty;
+            if (!string.IsNullOrEmpty(CsBuilder.SearchPath))
+                searchPath = $"table_schema='{CsBuilder.SearchPath}' and";
 
-            string cmdText = string.Format(sql, CsBuilder.SearchPath, name);
-            object value = ExecuteScalar(cmdText);
+            string sql = $"Select table_name From INFORMATION_SCHEMA.tables " +
+                         $"Where table_catalog='{CsBuilder.Database}' and {searchPath} " +
+                         $"table_name Not In ('spatial_ref_sys', 'geography_columns', 'geometry_columns', 'raster_columns', 'raster_overviews') and " +
+                         $"table_type In ('BASE TABLE', 'VIEW') and table_name = '{name}'";
+
+            object value = ExecuteScalar(sql);
             if (value == null)
                 return null;
 

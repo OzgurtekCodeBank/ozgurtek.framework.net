@@ -418,6 +418,66 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         }
 
         /// <summary>
+        /// tablo silmek
+        /// </summary>
+        [Test]
+        public void CreateFieldTest()
+        {
+            if (!CanEditTable)
+                return;
+
+            IGdDbTable table = CreateTable("test1");
+            if (!table.CanEditField)
+                return;
+
+            //objectid
+            GdField objectIdField = new GdField();
+            objectIdField.FieldName = "objectid";
+            objectIdField.PrimaryKey = true;
+            objectIdField.FieldType = GdDataType.Integer;
+            table.CreateField(objectIdField);
+
+            //geometry
+            GdField geomField = new GdField();
+            geomField.FieldName = "geometry";
+            geomField.FieldType = GdDataType.Geometry;
+            geomField.GeometryType = GdGeometryType.Polygon;
+            geomField.Srid = 4326;
+            table.CreateField(geomField);
+
+            //string field
+            GdField strField = new GdField();
+            strField.FieldName = "str_field";
+            strField.FieldType = GdDataType.String;
+            table.CreateField(strField);
+
+            //double field
+            GdField doubleField = new GdField();
+            doubleField.FieldName = "double_field";
+            doubleField.FieldType = GdDataType.Real;
+            table.CreateField(doubleField);
+
+            //boolean field
+            GdField boolField = new GdField();
+            boolField.FieldName = "bool_field";
+            boolField.FieldType = GdDataType.Boolean;
+            table.CreateField(boolField);
+
+            //date field
+            GdField dateField = new GdField();
+            dateField.FieldName = "date_field";
+            dateField.FieldType = GdDataType.Date;
+            table.CreateField(dateField);
+
+            //blob field
+            GdField blobField = new GdField();
+            blobField.FieldName = "blob_field";
+            blobField.FieldType = GdDataType.Blob;
+            table.CreateField(blobField);
+
+        }
+
+        /// <summary>
         /// FTS sorgusu...
         /// </summary>
         [Test]

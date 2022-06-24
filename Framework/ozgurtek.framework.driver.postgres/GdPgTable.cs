@@ -197,6 +197,8 @@ namespace ozgurtek.framework.driver.postgres
                 else
                     dataTypeString = $"geometry({geomTypeString})";
             }
+            else if (field.FieldType == GdDataType.Blob)
+                dataTypeString = "bytea";
             else
                 dataTypeString = GetDataTypeString(field.FieldType);
 
@@ -216,14 +218,6 @@ namespace ozgurtek.framework.driver.postgres
             if (field.PrimaryKey)
             {
                 sql = $"Alter table {Name} Add PRIMARY KEY ({field.FieldName})";
-                command.CommandText = sql;
-                command.ExecuteNonQuery();
-            }
-
-            //geometry type constraint
-            if (field.GeometryType.HasValue)
-            {
-                sql = $"Alter table {Name} Add Column geom2 Multi{field.GeometryType}";
                 command.CommandText = sql;
                 command.ExecuteNonQuery();
             }

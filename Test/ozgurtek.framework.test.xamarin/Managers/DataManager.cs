@@ -19,7 +19,7 @@ namespace ozgurtek.framework.test.xamarin.Managers
         public GdServerDataSource CreateNewServerDataSource()
         {
             _serverDataSource = new GdServerDataSource(new Uri(ServiceUrl), OverrideToken);
-            _serverDataSource.SetOverrideToken(OverrideToken);
+            //_serverDataSource.SetOverrideToken(OverrideToken);
             return _serverDataSource;
         }
 

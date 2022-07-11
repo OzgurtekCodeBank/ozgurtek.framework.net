@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NetTopologySuite.Geometries;
+using ozgurtek.framework.common.Data.Format.Wms;
 using ozgurtek.framework.common.Data.Format.Wmst;
 using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.core.Data;
@@ -53,22 +54,19 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             _map.Viewport.Srid = 4326;
             _map.BackColor = GdColor.Gray;
 
-            _map.LayerCollection.AddRange(GdApp.Instance.Data.BaseMaps());
+            //_map.LayerCollection.AddRange(GdApp.Instance.Data.BaseMaps());
 
-            string url = "https://giris.csb.gov.tr/geoserver/gwc/service/wmts";
-            GdWmtsDataSource wmtsDataSource = new GdWmtsDataSource(url);
-            wmtsDataSource.Open();
-            List<GdWmtsMap> gdWmtsMaps = wmtsDataSource.GetMap();
-            GdWmtsMap map = gdWmtsMaps[46];
-            map.HttpDownloadInfo.UseMemoryCache = true;
-            map.HttpDownloadInfo.UseDiskCache = true;
-            //map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.SettingManager.CacheFolder;
 
-            GdTileLayer layer = new GdTileLayer(map, "test");
-            _map.LayerCollection.Add(layer);
+            GdWmsMap map = new GdWmsMap("http://nokta.dhmi.gov.tr/geoserver/dhmi/wms");
+            map.Name = "dhmi_havalimani_kroki_layer_group";
+            map.Srid = 4326;
+            map.Envelope = new Envelope(25.7935104370117, 44.3272933959961, 36.2690200805664, 43.3511161804199);
+            GdWmsLayer gdWmsLayer = new GdWmsLayer(map, "havalimani_kroki");
+            _map.LayerCollection.Add(gdWmsLayer);
 
             AdjustVisible();
         }
+
 
         private void AdjustVisible()
         {
@@ -85,3 +83,16 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
         }
     }
 }
+
+
+//string url = "https://giris.csb.gov.tr/geoserver/gwc/service/wmts";
+//GdWmtsDataSource wmtsDataSource = new GdWmtsDataSource(url);
+//wmtsDataSource.Open();
+//List<GdWmtsMap> gdWmtsMaps = wmtsDataSource.GetMap();
+//GdWmtsMap map = gdWmtsMaps[46];
+//map.HttpDownloadInfo.UseMemoryCache = true;
+//map.HttpDownloadInfo.UseDiskCache = true;
+////map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.SettingManager.CacheFolder;
+
+//GdTileLayer layer = new GdTileLayer(map, "test");
+//_map.LayerCollection.Add(layer);

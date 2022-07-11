@@ -103,21 +103,31 @@ namespace ozgurtek.framework.common.Data.Format
         /// Gets Table
         /// </summary>
         /// <param name="tableName">table name present int sps_tables table</param>
+        /// <param name="limit">table limit</param>
+        /// <param name="offset">table offset</param>
         /// <returns>IGdTable table</returns>
-        public GdMemoryTable GetTable(string tableName)
+        public GdMemoryTable GetTable(string tableName, long? limit = null, long? offset = null)
         {
             CheckForAuthority();
 
             //collect query parameters
             string queryParam = null;
             List<string> queryparams = new List<string>();
+
+            if (limit.HasValue)
+                queryparams.Add($"sps_limit:{limit}");//sps_limit reserve field
+
+            if (offset.HasValue)
+                queryparams.Add($"sps_offset:{offset}");//sps_offset reserve field
+
             if (_queryParameters.Count > 0)
             {
                 foreach (KeyValuePair<string, string> kvp in _queryParameters)
                     queryparams.Add(kvp.Key.Trim() + ":" + kvp.Value.Trim());
-
-                queryParam = string.Join(";", queryparams);
             }
+
+            if (queryparams.Count > 0)
+                queryParam = string.Join(";", queryparams);
 
             string url = _uri.AbsoluteUri + "/execute";
             Uri uri = new Uri(url);
@@ -411,14 +421,14 @@ namespace ozgurtek.framework.common.Data.Format
             _client?.Dispose();
         }
 
-        /// <summary>
-        /// override token
-        /// </summary>
-        /// <param name="token"></param>
-        public void SetOverrideToken(string token)
-        {
-            _token = token;
-        }
+        ///// <summary>
+        ///// override token
+        ///// </summary>
+        ///// <param name="token"></param>
+        //public void SetOverrideToken(string token)
+        //{
+        //    _token = token;
+        //}
 
         /// <summary>
         /// verilen token'ı alır

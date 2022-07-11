@@ -32,16 +32,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.AreEqual(credential, true);
         }
 
-        [Test]
-        public void CheckUserByOverrideTokenTest()
-        {
-            GdServerDataSource dataSource = CreateNewDataSource;
-            dataSource.SetOverrideToken(
-                "B%3dC%3d%3d%3bC%40%3e%3c%3a%3a%3b%3f%3cA%3d%40%c2%86%3a%3e%3b8%3d%3f8%3f8%3a%3b%c2%86%7co%7d%7fDons%7c%7co%c2%80y");
-            GdMemoryTable memoryTable = dataSource.GetTable("unit_test:v1_get_all_il");
-            Assert.AreEqual(memoryTable.RowCount, 1);
-        }
-
+        
         [Test]
         public void GetTableTest()
         {
@@ -51,7 +42,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             memoryTable = CreateNewDataSource.GetTable("unit_test:v1_get_all_ilce");
             Assert.AreEqual(memoryTable.RowCount, 1);
 
-            memoryTable = CreateNewDataSource.GetTable("unit_test:v1_get_all_mahalle");
+            memoryTable = CreateNewDataSource.GetTable("unit_test:v1_get_all_mahalle", 3,5);
             Assert.Greater(memoryTable.RowCount, 1);
         }
 
@@ -64,6 +55,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Geometry geometry = row.GetAsGeometry("shape");
             Assert.NotNull(geometry);
         }
+        
 
         [Test]
         public void GetTableByParamTest()
@@ -72,6 +64,14 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             serverDataSource.AddParameter("p1", "2");//limit
             serverDataSource.AddParameter("p2", "20");//offset
             GdMemoryTable memoryTable = serverDataSource.GetTable("unit_test:v1_get_bagimisizbolum");
+            Assert.AreEqual(memoryTable.RowCount, 2);
+        }
+
+        [Test]
+        public void GetTableByParamTest2()
+        {
+            GdServerDataSource serverDataSource = CreateNewDataSource;
+            GdMemoryTable memoryTable = serverDataSource.GetTable("unit_test:v1_get_bagimisizbolum_all", 2, 20);
             Assert.AreEqual(memoryTable.RowCount, 2);
         }
 

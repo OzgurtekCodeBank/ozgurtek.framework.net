@@ -2,18 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>ozgurtek.framework.driver.postgres</id>
-    <version>2.0.51</version>
+    <version>2.0.53</version>
     <authors>http://www.otekyazilim.com/</authors>
     <projectUrl>http://www.otekyazilim.com/</projectUrl>
     <description>postgres driver</description>
     <copyright>http://www.otekyazilim.com/</copyright>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="ozgurtek.framework.common" version="2.0.51" exclude="Build,Analyzers" />
-        <!--<dependency id="ozgurtek.framework.core" version="2.0.46" exclude="Build,Analyzers" />-->
+        <dependency id="ozgurtek.framework.common" version="2.0.53" exclude="Build,Analyzers" />
         <dependency id="NetTopologySuite.IO.PostGis" version="2.1.0" exclude="Build,Analyzers" />
-        <dependency id="Npgsql" version="6.0.4" exclude="Build,Analyzers" />
-        <dependency id="Npgsql.NetTopologySuite" version="6.0.4" exclude="Build,Analyzers" />
+        <dependency id="Npgsql" version="6.0.5" exclude="Build,Analyzers" />
+        <dependency id="Npgsql.NetTopologySuite" version="6.0.5" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

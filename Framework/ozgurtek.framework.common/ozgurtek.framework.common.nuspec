@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>ozgurtek.framework.common</id>
-    <version>2.0.53</version>
+    <version>2.0.54</version>
     <authors>http://www.otekyazilim.com/</authors>
     <projectUrl>http://www.otekyazilim.com/</projectUrl>
     <description>common implementations</description>
@@ -14,6 +14,7 @@
         <dependency id="NetTopologySuite.IO.GeoJSON" version="2.0.4" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
         <dependency id="ProjNET4GeoAPI" version="1.4.1" exclude="Build,Analyzers" />
+        <dependency id="System.IdentityModel.Tokens.Jwt" version="6.21.0" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

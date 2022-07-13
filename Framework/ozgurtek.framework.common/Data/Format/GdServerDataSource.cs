@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ozgurtek.framework.common.Data.Format
 {
@@ -438,7 +439,7 @@ namespace ozgurtek.framework.common.Data.Format
             if (_token == null)
             {
                 string encryptedCredential = GdCrypto.EncryptSimple(_credential);
-                encryptedCredential = HttpUtility.UrlEncode(encryptedCredential);
+                encryptedCredential = Base64UrlEncoder.Encode(encryptedCredential);
                 Uri uri = new Uri(_uri.AbsoluteUri + "/CreateToken");
                 var payload = new Dictionary<string, string>
                 {

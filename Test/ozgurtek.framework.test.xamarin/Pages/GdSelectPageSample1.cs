@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace ozgurtek.framework.test.xamarin.Pages
 {
-    public class GdSelectPageSample1 : GdSelectPage
+    public class GdSelectPageSample1 : GdListPage
     {
         public GdSelectPageSample1()
         {
@@ -17,7 +17,7 @@ namespace ozgurtek.framework.test.xamarin.Pages
             for (int i = 0; i < 100; i++)
             {
                 ImageSource imageSource = ImageSource.FromFile("bina.png");
-                CreateItem("building" + i, imageSource);
+                ListView.CreateItem("building" + i, imageSource);
             }
 
             ListView.ItemClicked += ItemClicked;

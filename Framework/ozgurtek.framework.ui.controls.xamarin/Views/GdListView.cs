@@ -8,13 +8,13 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 {
     public class GdListView : ScrollView
     {
+        private object _tag;
+        
         public EventHandler NeedMoreElement;
         public EventHandler<GdListViewItem> ItemClicked;
-        private object _tag;
-
+        
         public readonly ObservableCollection<GdListViewItem> Items;
 
-        private long _pageCount = -1;
         private readonly StackLayout _stackLayout;
         private Color _selectedColor = Color.LightGray;
         private SelectionMode _selectionMode = SelectionMode.Single;
@@ -22,17 +22,12 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
         
         public GdListView()
         {
-            //DataTemplate dataTemplate = new DataTemplate(() => new GdListViewItem());
-
             _stackLayout = new StackLayout
             {
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Fill
             };
-
-            //BindableLayout.SetItemsSource(_stackLayout, Items);
-            //BindableLayout.SetItemTemplate(_stackLayout, dataTemplate);
 
             Items = new ObservableCollection<GdListViewItem>();
             Items.CollectionChanged += ItemsOnCollectionChanged;
@@ -45,7 +40,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
         {
             double scrollingSpace = (int)(ContentSize.Height - Height - 1);
             if (scrollingSpace <= e.ScrollY && NeedMoreElement != null)
-                NeedMoreElement(this, EventArgs.Empty);
+                OnNeedMoreElements();
         }
 
         private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -162,6 +157,41 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
         {
             get => _tag;
             set => _tag = value;
+        }
+
+        public GdListViewItem CreateItem(string text, ImageSource imageSource = null, int id = -1)
+        {
+            GdListViewItem item = new GdListViewItem();
+            item.Label.Text = text;
+            item.ItemId = id;
+
+            Image image = new Image();
+            image.HeightRequest = 25;
+            image.Source = imageSource;
+            item.AddLeft(image);
+
+            Items.Add(item);
+
+            return item;
+        }
+
+        public GdListViewItem CreateItem(Color color)
+        {
+            GdListViewItem item = new GdListViewItem();
+            item.Children.Clear();
+            item.BackgroundColor = color;
+            item.HeightRequest = 30;
+            item.HorizontalOptions = LayoutOptions.FillAndExpand;
+            Items.Add(item);
+            return item;
+        }
+
+        protected void OnNeedMoreElements()
+        {
+            if (NeedMoreElement == null)
+                return;
+
+            NeedMoreElement(this, EventArgs.Empty);
         }
     }
 }

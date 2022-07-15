@@ -13,7 +13,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
     {
         private object _tag;
         private TapGestureRecognizer _gesture;
-        private GdSelectPage _page;
+        private GdListPage _page;
         private GdListViewItem _selectedItem;
         public EventHandler<GdListViewItem> SelectedItemChanged;
 
@@ -33,7 +33,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 
         private void InitializeComponent()
         {
-            _page = new GdSelectPage();
+            _page = new GdListPage();
             _page.Caption = "Select";
             _page.WidthSize = new GdPageSize(200);
             _page.HeightSize = new GdPageSize(280);
@@ -51,7 +51,7 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
             };
         }
 
-        public GdSelectPage SelectPage
+        public GdListPage SelectPage
         {
             get { return _page; }
         }
@@ -106,13 +106,13 @@ namespace ozgurtek.framework.ui.controls.xamarin.Views
 
         public GdListViewItem CreateItem(string text, ImageSource imageSource = null, int id = -1)
         {
-            GdListViewItem item = _page.CreateItem(text, imageSource, id);
+            GdListViewItem item = _page.ListView.CreateItem(text, imageSource, id);
             return item;
         }
 
         public GdListViewItem CreateItem(string value, int key)
         {
-            GdListViewItem item = _page.CreateItem(value, null, key);
+            GdListViewItem item = _page.ListView.CreateItem(value, null, key);
             return item;
         }
 

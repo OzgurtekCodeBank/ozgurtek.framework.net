@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace ozgurtek.framework.ui.controls.xamarin.Pages
 {
-    internal class GdColorSelectPage : GdSelectPage
+    internal class GdColorSelectPage : GdListPage
     {
         public double Alpha { get; set; }
         public GdColorSelectPage()
@@ -19,15 +19,14 @@ namespace ozgurtek.framework.ui.controls.xamarin.Pages
         {
             base.OnAppearing();
 
-            CreateItem(Color.FromRgba(0, 0, 0, Alpha));
-            CreateItem(Color.FromRgba(0, 0, 128, Alpha));
-            CreateItem(Color.FromRgba(0, 128, 0, Alpha));
-            CreateItem(Color.FromRgba(128, 0, 0, Alpha));
-            CreateItem(Color.FromRgba(255, 255, 255, Alpha));
-            CreateItem(Color.FromRgba(255, 255, 0, Alpha));
-            CreateItem(Color.FromRgba(0, 255, 255, Alpha));
-            CreateItem(Color.FromRgba(128, 0, 128, Alpha));
+            ListView.CreateItem(Color.FromRgba(0, 0, 0, Alpha));
+            ListView.CreateItem(Color.FromRgba(0, 0, 128, Alpha));
+            ListView.CreateItem(Color.FromRgba(0, 128, 0, Alpha));
+            ListView.CreateItem(Color.FromRgba(128, 0, 0, Alpha));
+            ListView.CreateItem(Color.FromRgba(255, 255, 255, Alpha));
+            ListView.CreateItem(Color.FromRgba(255, 255, 0, Alpha));
+            ListView.CreateItem(Color.FromRgba(0, 255, 255, Alpha));
+            ListView.CreateItem(Color.FromRgba(128, 0, 128, Alpha));
         }
-
     }
 }

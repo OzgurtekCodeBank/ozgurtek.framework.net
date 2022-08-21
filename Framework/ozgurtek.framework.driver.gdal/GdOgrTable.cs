@@ -15,6 +15,8 @@ namespace ozgurtek.framework.driver.gdal
         private readonly Layer _layer;
         private readonly string _address;
         private IGdSchema _schema;
+        private string _attributeFilter;
+        private IGdGeometryFilter _geometryFilter;
 
         public GdOgrTable(Layer layer, string address)
         {
@@ -97,10 +99,29 @@ namespace ozgurtek.framework.driver.gdal
                         }
                     }
 
-                    //fid
+                    //additional geometry
+                    int geomFieldCount = feature.GetGeomFieldCount();
+                    for (int i = 0; i < geomFieldCount; i++)
+                    {
+                        GeomFieldDefn geomFieldDefn = feature.GetGeomFieldDefnRef(i);
+                        string fieldName = geomFieldDefn.GetName();
+                        if (string.IsNullOrWhiteSpace(fieldName))
+                            continue;
+
+                        Geometry ogrGeom = feature.GetGeomFieldRef(i);
+                        if (ogrGeom == null)
+                            continue;
+
+                        byte[] wkbBuffer = new byte[ogrGeom.WkbSize()];
+                        ogrGeom.ExportToWkb(wkbBuffer);
+                        NetTopologySuite.Geometries.Geometry ntsgeom = DbConvert.ToGeometry(wkbBuffer);
+                        buffer.Put(fieldName, ntsgeom, GdDataType.Geometry);
+                    }
+
+                    //default fid
                     buffer.Put("gd_fid", feature.GetFID(), GdDataType.Integer);
 
-                    //geometry
+                    //default geometry
                     Geometry geometry = feature.GetGeometryRef();
                     if (geometry != null)
                     {
@@ -110,7 +131,7 @@ namespace ozgurtek.framework.driver.gdal
                         buffer.Put("gd_geom", geom, GdDataType.Geometry);
                     }
 
-                    //style string
+                    //default style string
                     string styleString = feature.GetStyleString();
                     if (!string.IsNullOrWhiteSpace(styleString))
                     {
@@ -181,7 +202,7 @@ namespace ozgurtek.framework.driver.gdal
 
         public int Srid
         {
-            get { throw new NotSupportedException("Use GetProjWkt method"); }
+            get { throw new NotSupportedException("Use ProjectionString method"); }
             set { throw new NotSupportedException("Not Supported"); }
         }
 
@@ -252,15 +273,21 @@ namespace ozgurtek.framework.driver.gdal
         {
             get
             {
-                return null;
+                return _geometryFilter;
             }
             set
             {
-                if (value.Envelope != null)
-                    _layer.SetSpatialFilterRect(value.Envelope.MinX, value.Envelope.MinY, value.Envelope.MaxX, value.Envelope.MaxY);
-                else
-                    _layer.SetSpatialFilterRect(-1, -1, -1, -1, -1);
+                _geometryFilter = value;
 
+                if (value == null)
+                {
+                    _layer.SetSpatialFilter(null);
+                    return;
+                }
+
+                if (value.Envelope != null)
+                    _layer.SetSpatialFilterRect(value.Envelope.MinX, value.Envelope.MinY, value.Envelope.MaxX,
+                        value.Envelope.MaxY);
 
                 if (value.Geometry != null)
                 {
@@ -268,30 +295,6 @@ namespace ozgurtek.framework.driver.gdal
                     Geometry geometryFromWkt = Ogr.CreateGeometryFromWkt(ref wkt, _layer.GetSpatialRef());
                     _layer.SetSpatialFilter(geometryFromWkt);
                 }
-                else
-                    _layer.SetSpatialFilter(null);
-            }
-        }
-
-        public string GetProjWkt()
-        {
-            SpatialReference spatialReference = _layer.GetSpatialRef();
-            if (spatialReference == null)
-                return null;
-
-            spatialReference.ExportToWkt(out var wkt, null);
-            return wkt;
-        }
-
-        public string AttributeFilter
-        {
-            get
-            {
-                return null;
-            }
-            set
-            {
-                _layer.SetAttributeFilter(value);
             }
         }
 
@@ -354,5 +357,31 @@ namespace ozgurtek.framework.driver.gdal
         }
 
         public event EventHandler<GdRowChangedEventArgs> RowChanged;
+
+        public string ProjectionString
+        {
+            get
+            {
+                SpatialReference spatialReference = _layer.GetSpatialRef();
+                if (spatialReference == null)
+                    return null;
+
+                spatialReference.ExportToWkt(out var wkt, null);
+                return wkt;
+            }
+        }
+
+        public string AttributeFilter
+        {
+            get
+            {
+                return _attributeFilter;
+            }
+            set
+            {
+                _attributeFilter = value;
+                _layer.SetAttributeFilter(value);
+            }
+        }
     }
 }

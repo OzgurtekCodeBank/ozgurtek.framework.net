@@ -98,7 +98,7 @@ namespace ozgurtek.framework.driver.gdal
         public GdOgrTable GetTable(string name)
         {
             Layer layer = _ogrDs.GetLayerByName(name);
-            return new GdOgrTable(layer);
+            return new GdOgrTable(layer, _ogrDs.GetName());
         }
 
         public IEnumerable<GdOgrTable> GetTable()
@@ -107,14 +107,14 @@ namespace ozgurtek.framework.driver.gdal
             for (int i = 0; i < layerCount; i++)
             {
                 Layer layer = _ogrDs.GetLayerByIndex(i);
-                yield return new GdOgrTable(layer);
+                yield return new GdOgrTable(layer, _connectionString);
             }
         }
 
         public GdOgrTable ExecuteSql(string name, IGdFilter filter)
         {
             Layer layer = _ogrDs.ExecuteSQL(filter.Text, null, null);
-            return new GdOgrTable(layer);
+            return new GdOgrTable(layer, _connectionString);
         }
 
         public DataSource OgrDataSource
@@ -132,7 +132,7 @@ namespace ozgurtek.framework.driver.gdal
             SpatialReference spatialReference = GdOgrUtil.GetSpatialReference(srid);
             wkbGeometryType wkbGeometryType = GdOgrUtil.GetGeometryType(geometryType, allowMultigeom);
             Layer layer = _ogrDs.CreateLayer(name, spatialReference, wkbGeometryType, options);
-            return new GdOgrTable(layer);
+            return new GdOgrTable(layer, _connectionString);
         }
 
         public int DeleteTable(int index)

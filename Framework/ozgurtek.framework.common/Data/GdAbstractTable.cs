@@ -1,10 +1,8 @@
 ﻿using NetTopologySuite.Geometries;
-using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 
 namespace ozgurtek.framework.common.Data

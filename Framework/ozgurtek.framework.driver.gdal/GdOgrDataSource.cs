@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Geodesy;
 using ozgurtek.framework.core.Data;
 
 namespace ozgurtek.framework.driver.gdal
@@ -75,7 +73,8 @@ namespace ozgurtek.framework.driver.gdal
                 }
             }
         }
-
+        
+        //todo: hata atıyor bakmak lazım
         public static bool CanCreateDataSource(string driverName)
         {
             GdalConfiguration.ConfigureOgr();
@@ -83,6 +82,7 @@ namespace ozgurtek.framework.driver.gdal
             return ogrDriver.TestCapability(Ogr.ODrCCreateDataSource);
         }
 
+        //todo: hata atıyor bakmak lazım
         public static bool CanDeleteDataSource(string driverName)
         {
             GdalConfiguration.ConfigureOgr();
@@ -129,66 +129,40 @@ namespace ozgurtek.framework.driver.gdal
 
         public GdOgrTable CreateTable(string name, GdGeometryType? geometryType, int? srid, string[] options, bool allowMultigeom = false)
         {
-            SpatialReference spatialReference = GetSpatialReference(srid);
-            wkbGeometryType wkbGeometryType = GetGeometryType(geometryType, allowMultigeom);
+            SpatialReference spatialReference = GdOgrUtil.GetSpatialReference(srid);
+            wkbGeometryType wkbGeometryType = GdOgrUtil.GetGeometryType(geometryType, allowMultigeom);
             Layer layer = _ogrDs.CreateLayer(name, spatialReference, wkbGeometryType, options);
             return new GdOgrTable(layer);
         }
 
-        public void DeleteTable(string name)
+        public int DeleteTable(int index)
         {
-            //_ogrDs.
+            return _ogrDs.DeleteLayer(index);
+        }
+
+        public int SyncToDisck()
+        {
+            return _ogrDs.SyncToDisk();
+        }
+
+        public int StartTransaction(int force)
+        {
+            return _ogrDs.StartTransaction(force);
+        }
+
+        public int CommitTransaction()
+        {
+            return _ogrDs.CommitTransaction();
+        }
+
+        public int RollbackTransaction()
+        {
+            return _ogrDs.RollbackTransaction();
         }
 
         public void Dispose()
         {
             _ogrDs.Dispose();
-        }
-
-        private SpatialReference GetSpatialReference(int? srid)
-        {
-            if (!srid.HasValue)
-                return null;
-
-            ICoordinateSystem coordinateSystem = GdProjection.GetCrs(srid.Value);
-            if (coordinateSystem == null)
-                return null;
-
-            SpatialReference reference = new SpatialReference(coordinateSystem.WKT);
-            return reference;
-        }
-
-        private wkbGeometryType  GetGeometryType(GdGeometryType? type, bool allowMultigeom)
-        {
-            if (!type.HasValue)
-                return wkbGeometryType.wkbNone;
-
-            if (!allowMultigeom)
-            {
-                switch (type)
-                {
-                    case GdGeometryType.Line:
-                        return wkbGeometryType.wkbLineString;
-                    case GdGeometryType.Polygon:
-                        return wkbGeometryType.wkbPolygon;
-                    case GdGeometryType.Point:
-                        return wkbGeometryType.wkbMultiPoint;
-                    default:
-                        return wkbGeometryType.wkbUnknown;
-                }
-            }
-
-            switch (type)
-            {
-                case GdGeometryType.Line:
-                    return wkbGeometryType.wkbMultiLineString;
-                case GdGeometryType.Polygon:
-                    return wkbGeometryType.wkbMultiPolygon;
-                case GdGeometryType.Point:
-                    return wkbGeometryType.wkbMultiPoint;
-                default:
-                    return wkbGeometryType.wkbUnknown;
-            }
         }
     }
 }

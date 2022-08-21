@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="GdOgrUtil.cs" />
     <Compile Include="GdOgrDataSource.cs" />
     <Compile Include="GdOgrTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

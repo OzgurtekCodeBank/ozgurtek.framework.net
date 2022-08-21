@@ -166,7 +166,7 @@
       <Version>13.0.1</Version>
     </PackageReference>
     <PackageReference Include="Npgsql.NetTopologySuite">
-      <Version>6.0.5</Version>
+      <Version>6.0.6</Version>
     </PackageReference>
     <PackageReference Include="NUnit">
       <Version>3.13.3</Version>

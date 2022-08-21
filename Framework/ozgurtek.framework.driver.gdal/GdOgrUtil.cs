@@ -126,5 +126,29 @@ namespace ozgurtek.framework.driver.gdal
             SpatialReference reference = new SpatialReference(coordinateSystem.WKT);
             return reference;
         }
+
+        internal static GdDataType GetDataType(FieldType fieldType)
+        {
+            switch (fieldType)
+            {
+                case FieldType.OFTDate:
+                case FieldType.OFTDateTime:
+                case FieldType.OFTTime:
+                    return GdDataType.Date;
+
+                case FieldType.OFTBinary:
+                    return GdDataType.Blob;
+
+                case FieldType.OFTInteger:
+                case FieldType.OFTInteger64:
+                    return GdDataType.Integer;
+
+                case FieldType.OFTReal:
+                    return GdDataType.Real;
+
+                default:
+                    return GdDataType.String;
+            }
+        }
     }
 }

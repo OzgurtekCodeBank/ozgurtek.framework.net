@@ -12,7 +12,7 @@
         <dependency id="ozgurtek.framework.common" version="2.0.53" exclude="Build,Analyzers" />
         <dependency id="Rg.Plugins.Popup" version="2.1.0" exclude="Build,Analyzers" />
         <dependency id="Xamarin.Essentials" version="1.7.3" exclude="Build,Analyzers" />
-        <dependency id="Xamarin.Forms" version="5.0.0.2478" exclude="Build,Analyzers" />
+        <dependency id="Xamarin.Forms" version="5.0.0.2515" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

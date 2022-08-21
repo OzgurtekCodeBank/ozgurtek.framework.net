@@ -44,14 +44,73 @@ namespace ozgurtek.framework.driver.gdal
                     GdRowBuffer buffer = new GdRowBuffer();
                     buffer.Table = this;
 
-                    foreach (IGdField field in _schema.Fields)
+                    //create fields of buffer
+                    FeatureDefn featureDefn = feature.GetDefnRef();
+                    for (int i = 0; i < featureDefn.GetFieldCount(); i++)
                     {
-                        if (field.FieldType == GdDataType.Integer)
-                            buffer.Put(field.FieldName, feature.GetFieldAsInteger64(field.FieldName));
-                        if (field.FieldType == GdDataType.Real)
-                            buffer.Put(field.FieldName, feature.GetFieldAsDouble(field.FieldName));
-                        else
-                            buffer.Put(field.FieldName, feature.GetFieldAsString(field.FieldName));
+                        FieldDefn fieldDefn = featureDefn.GetFieldDefn(i);
+                        string fieldName = fieldDefn.GetName();
+                        FieldType fieldType = fieldDefn.GetFieldType();
+
+                        if (feature.IsFieldNull(fieldName))
+                        {
+                            buffer.PutNull(fieldName);
+                            continue;
+                        }
+
+                        switch (fieldType)
+                        {
+                            case FieldType.OFTDate:
+                            case FieldType.OFTDateTime:
+                            case FieldType.OFTTime:
+                                try
+                                {
+                                    feature.GetFieldAsDateTime(fieldName, out var year, out var month, out var day, out var hour, out var minute, out var second, out _);
+                                    DateTime dateTime = new DateTime(year, month, day, hour, minute, (int)second);
+                                    buffer.Put(fieldName, dateTime, GdDataType.Date);
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
+                                break;
+
+                            case FieldType.OFTInteger:
+                                buffer.Put(fieldName, feature.GetFieldAsInteger(fieldName), GdDataType.Integer);
+                                break;
+
+                            case FieldType.OFTInteger64:
+                                buffer.Put(fieldName, feature.GetFieldAsInteger64(fieldName), GdDataType.Integer);
+                                break;
+
+                            case FieldType.OFTReal:
+                                buffer.Put(fieldName, feature.GetFieldAsDouble(fieldName), GdDataType.Real);
+                                break;
+
+                            default:
+                                buffer.Put(fieldName, feature.GetFieldAsString(fieldName), GdDataType.String);
+                                break;
+                        }
+                    }
+
+                    //fid
+                    buffer.Put("gd_fid", feature.GetFID(), GdDataType.Integer);
+                    
+                    //geometry
+                    Geometry geometry = feature.GetGeometryRef();
+                    if (geometry != null)
+                    {
+                        byte[] wkbBuffer = new byte[geometry.WkbSize()];
+                        geometry.ExportToWkb(wkbBuffer);
+                        NetTopologySuite.Geometries.Geometry geom = DbConvert.ToGeometry(wkbBuffer);
+                        buffer.Put("gd_geom", geom, GdDataType.Geometry);
+                    }
+
+                    //style string
+                    string styleString = feature.GetStyleString();
+                    if (!string.IsNullOrWhiteSpace(styleString))
+                    {
+                        buffer.Put("gd_style", styleString, GdDataType.String);
                     }
 
                     yield return buffer;
@@ -68,23 +127,23 @@ namespace ozgurtek.framework.driver.gdal
 
                 GdSchema schema = new GdSchema();
 
-                FeatureDefn ogrFeatureDef = _layer.GetLayerDefn();
-                int fieldCount = ogrFeatureDef.GetFieldCount();
+                FeatureDefn layerDefn = _layer.GetLayerDefn();
+                int fieldCount = layerDefn.GetFieldCount();
                 for (int i = 0; i < fieldCount; i++)
                 {
-                    FieldDefn ogrFieldDef = ogrFeatureDef.GetFieldDefn(i);
+                    FieldDefn ogrFieldDef = layerDefn.GetFieldDefn(i);
                     
                     GdField field = new GdField();
                     field.FieldName = ogrFieldDef.GetName();
-                    field.FieldType = GetDataType(ogrFieldDef.GetFieldType());
+                    field.FieldType = GdOgrUtil.GetDataType(ogrFieldDef.GetFieldType());
                     field.DefaultVal = ogrFieldDef.GetDefault();
                     field.NotNull = !DbConvert.ToBoolean(ogrFieldDef.IsNullable());
 
                     //find geometry field
-                    int geomFieldCount = ogrFeatureDef.GetGeomFieldCount();
+                    int geomFieldCount = layerDefn.GetGeomFieldCount();
                     for (int j = 0; j < geomFieldCount; j++)
                     {
-                        GeomFieldDefn geomFieldDefn = ogrFeatureDef.GetGeomFieldDefn(j);
+                        GeomFieldDefn geomFieldDefn = layerDefn.GetGeomFieldDefn(j);
                         if (geomFieldDefn.GetName().Equals(field.FieldName))
                         {
                             wkbGeometryType wkbGeometryType = geomFieldDefn.GetFieldType();
@@ -172,29 +231,5 @@ namespace ozgurtek.framework.driver.gdal
         }
 
         public event EventHandler<GdRowChangedEventArgs> RowChanged;
-
-        private GdDataType GetDataType(FieldType fieldType)
-        {
-            switch (fieldType)
-            {
-                case FieldType.OFTDate:
-                case FieldType.OFTDateTime:
-                case FieldType.OFTTime:
-                    return GdDataType.Date;
-
-                case FieldType.OFTBinary:
-                    return GdDataType.Boolean;
-
-                case FieldType.OFTInteger:
-                case FieldType.OFTInteger64:
-                    return GdDataType.Integer;
-
-                case FieldType.OFTReal:
-                    return GdDataType.Real;
-
-                default:
-                    return GdDataType.String;
-            }
-        }
     }
 }

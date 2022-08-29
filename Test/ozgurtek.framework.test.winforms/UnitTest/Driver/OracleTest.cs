@@ -7,9 +7,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 {
     public class OracleTest : AbstractDbTableTest
     {
-        private readonly string _ds = "xyz";
-        private readonly string _user = "xyz";
-        private readonly string _pass = "xyz";
+        private readonly string _ds = "185.122.200.110:1521/ORCL";
+        private readonly string _user = "UNIT_TEST";
+        private readonly string _pass = "12";
 
         private string ConnectionString
         {

@@ -104,7 +104,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void GetTableTest2()
         {
-            IGdTable table = GetTable(Normalize("TEMP_TABLE"));
+            IGdTable table = GetTable(Normalize("TEMP"));
 
             Assert.AreEqual(table.Schema.Count, 9);
             Assert.AreEqual(table.Schema.GetFieldByName(Normalize("OBJECTID")).FieldType, GdDataType.Integer);
@@ -338,7 +338,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void UpdateRowTest()
         {
-            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
+            IGdDbTable table = GetTable(Normalize("TEMP"));
             table.KeyField = Normalize(Normalize("OBJECTID"));
             long id = table.Insert(GetOneRow());
 
@@ -387,7 +387,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void DeleteRowTest()
         {
-            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
+            IGdDbTable table = GetTable(Normalize("TEMP"));
             table.KeyField = Normalize("OBJECTID");
             long id = table.Insert(GetOneRow());
             long delete = table.Delete(id);
@@ -400,7 +400,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void TruncateTest()
         {
-            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
+            IGdDbTable table = GetTable(Normalize("TEMP"));
             table.Truncate();
         }
 

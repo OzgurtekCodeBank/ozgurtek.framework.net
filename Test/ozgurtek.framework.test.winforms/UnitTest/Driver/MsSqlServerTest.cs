@@ -7,10 +7,10 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 {
     public class MsSqlServerTest : AbstractDbTableTest
     {
-        private readonly string _ds = "xyz";
-        private readonly string _user = "xyz";
-        private readonly string _pass = "xyz";
-        private readonly string _catalog = "xyz";
+        private readonly string _ds = "185.122.200.110";
+        private readonly string _user = "sa";
+        private readonly string _pass = "3Es4Emim5cH7HLzohUpR";
+        private readonly string _catalog = "UNIT_TEST";
 
         private string ConnectionString
         {

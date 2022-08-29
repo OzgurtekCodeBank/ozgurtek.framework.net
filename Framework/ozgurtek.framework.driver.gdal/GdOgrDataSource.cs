@@ -124,7 +124,7 @@ namespace ozgurtek.framework.driver.gdal
 
         public string Name
         {
-            get { return "Osgeo-Ogr Data Source"; }
+            get { return "Otek Osgeo-Ogr Data Source"; }
         }
 
         public GdOgrTable CreateTable(string name, GdGeometryType? geometryType, int? srid, string[] options, bool allowMultigeom = false)

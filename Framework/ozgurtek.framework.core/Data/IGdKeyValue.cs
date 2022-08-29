@@ -2,7 +2,7 @@
 {
     public interface IGdKeyValue
     {
-        int Key { get; }
+        long Key { get; }
 
         string Value { get; }
     }

@@ -14,7 +14,7 @@ namespace ozgurtek.framework.driver.sqlite
             _table = table;
         }
 
-        public void Insert(int id, Envelope envelope)
+        public void Insert(long id, Envelope envelope)
         {
             object[] values = new object[6];
             values[0] = id;
@@ -34,7 +34,7 @@ namespace ozgurtek.framework.driver.sqlite
             _connection.ExecuteNonQuery(sql);
         }
 
-        public void Update(int id, Envelope envelope)
+        public void Update(long id, Envelope envelope)
         {
             object[] values = new object[4];
             string key = _table.Name.Trim() + "_" + _table.GeometryField.Trim();
@@ -88,7 +88,7 @@ namespace ozgurtek.framework.driver.sqlite
                 if (envelope == null || envelope.IsNull)
                     continue;
 
-                int fid = row.GetAsInteger(_table.KeyField);
+                long fid = row.GetAsInteger(_table.KeyField);
                 Insert(fid, envelope);
 
                 if (track != null && featureCount > 0)

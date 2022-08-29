@@ -120,7 +120,7 @@ namespace ozgurtek.framework.common.Data
             set { _offset = value; }
         }
 
-        public override int RowCount
+        public override long RowCount
         {
             get
             {

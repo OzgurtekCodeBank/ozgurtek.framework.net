@@ -32,7 +32,7 @@ namespace ozgurtek.framework.driver.sqlite
                 List<IGdKeyValue> keyValues = new List<IGdKeyValue>();
                 foreach (IGdRow codeValRow in codeValTable.Rows)
                 {
-                    int code = codeValRow.GetAsInteger("code");
+                    long code = codeValRow.GetAsInteger("code");
                     string value = codeValRow.GetAsString("value");
 
                     GdKeyValue keyValue = new GdKeyValue(code, value);
@@ -64,7 +64,7 @@ namespace ozgurtek.framework.driver.sqlite
             table.Insert(buffer);
         }
 
-        public void AddKeyValue(string domainName, int code, string value)
+        public void AddKeyValue(string domainName, long code, string value)
         {
             GdSqlLiteTable table = _dataSource.GetTable("coded_values");
             GdRowBuffer buffer = new GdRowBuffer();
@@ -104,7 +104,7 @@ namespace ozgurtek.framework.driver.sqlite
             _connection.ExecuteNonQuery(sql);
         }
 
-        public void DeleteKeyValue(string domain, int code)
+        public void DeleteKeyValue(string domain, long code)
         {
             string sql = $"delete from coded_values where domain_name = '{domain}' and code = {code}";
             _connection.ExecuteNonQuery(sql);

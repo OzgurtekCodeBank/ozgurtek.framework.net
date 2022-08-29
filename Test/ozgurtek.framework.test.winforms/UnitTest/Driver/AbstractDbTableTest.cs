@@ -104,7 +104,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void GetTableTest2()
         {
-            IGdTable table = GetTable(Normalize("TEMP"));
+            IGdTable table = GetTable(Normalize("TEMP_TABLE"));
 
             Assert.AreEqual(table.Schema.Count, 9);
             Assert.AreEqual(table.Schema.GetFieldByName(Normalize("OBJECTID")).FieldType, GdDataType.Integer);
@@ -149,7 +149,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 Geometry geometry = row.GetAsGeometry(Normalize("SHAPE"));
                 string text = geometry.ToText();
 
-                int integer = row.GetAsInteger(Normalize("OBJECTID"));
+                long integer = row.GetAsInteger(Normalize("OBJECTID"));
                 fields.Add($"{integer}-{text}");
             }
 
@@ -338,7 +338,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void UpdateRowTest()
         {
-            IGdDbTable table = GetTable(Normalize(Normalize("TEMP")));
+            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
             table.KeyField = Normalize(Normalize("OBJECTID"));
             long id = table.Insert(GetOneRow());
 
@@ -387,8 +387,8 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void DeleteRowTest()
         {
-            IGdDbTable table = GetTable(Normalize(Normalize("TEMP")));
-            table.KeyField = Normalize(Normalize("OBJECTID"));
+            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
+            table.KeyField = Normalize("OBJECTID");
             long id = table.Insert(GetOneRow());
             long delete = table.Delete(id);
             Assert.GreaterOrEqual(delete, 0);
@@ -400,7 +400,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void TruncateTest()
         {
-            IGdDbTable table = GetTable(Normalize(Normalize("TEMP")));
+            IGdDbTable table = GetTable(Normalize("TEMP_TABLE"));
             table.Truncate();
         }
 

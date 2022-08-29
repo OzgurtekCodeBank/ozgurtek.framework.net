@@ -162,19 +162,19 @@ namespace ozgurtek.framework.driver.sqlite
                     continue;
 
                 //find geometry type
-                int geomtype = row.GetAsInteger("gt");
+                long geomtype = row.GetAsInteger("gt");
                 OgcGeometryType ogcGeometryType = (OgcGeometryType)geomtype;
                 GdGeometryType? geometryType = GdGeometryUtil.ConvertGeometryType(ogcGeometryType);
 
                 //find srid
-                int srid = 0;
+                long srid = 0;
                 if (!row.IsNull("srid"))
                     srid = row.GetAsInteger("srid");
 
                 field.FieldType = GdDataType.Geometry;
                 field.GeometryFormat = format;
                 field.GeometryType = geometryType;
-                field.Srid = srid;
+                field.Srid = (int)srid;
             }
         }
 

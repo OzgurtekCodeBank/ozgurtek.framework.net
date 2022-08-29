@@ -13,8 +13,12 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     public class ServerDataSourceTest : AbstractTableTest
     {
         //username:password:applicationid
-        private readonly string _credential = "enisozgur:Ozgurtek/2019:30CB5074-897E-426E-B61A-64B057FB64A7";
-        private readonly Uri _uri = new Uri("http://localhost:57017/GdSpatialService.svc");
+        //private readonly string _credential = "enisozgur:Ozgurtek/2019:30CB5074-897E-426E-B61A-64B057FB64A7";
+        private readonly string _credential = "cigdemtest:123456:0c000803-3836-45d3-9a5c-0bf156185cd9;c60a265a-5ea0-4544-92e8-a6935d13e964";
+
+        //private readonly Uri _uri = new Uri("http://localhost:57017/GdSpatialService.svc");
+        private readonly Uri _uri = new Uri("https://giris.csb.gov.tr/GdSpatialService.svc");
+
 
         private GdServerDataSource CreateNewDataSource
         {
@@ -32,9 +36,17 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.AreEqual(credential, true);
         }
 
-        
         [Test]
         public void GetTableTest()
+        {
+            GdServerDataSource dataSource = CreateNewDataSource;
+            dataSource.AddParameter("uavtkodu", "20181529");
+            GdMemoryTable table = dataSource.GetTable("webgisdev:yes_bagimsizbolum");
+        }
+
+
+        [Test]
+        public void GetTableTest2()
         {
             GdMemoryTable memoryTable = CreateNewDataSource.GetTable("unit_test:v1_get_all_il");
             Assert.AreEqual(memoryTable.RowCount, 1);
@@ -123,7 +135,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             deleteTable.CreateField(new GdField("objectid", GdDataType.Integer));
             foreach (IGdRow row in result.Rows)
             {
-                int integer = row.GetAsInteger("objectid");
+                long integer = row.GetAsInteger("objectid");
                 GdRowBuffer buffer = new GdRowBuffer();
                 buffer.Put("objectid", integer);
                 deleteTable.Insert(buffer);

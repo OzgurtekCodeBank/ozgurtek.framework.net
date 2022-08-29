@@ -4,20 +4,20 @@ namespace ozgurtek.framework.common.Data
 {
     public class GdKeyValue : IGdKeyValue
     {
-        private int _key;
+        private long _key;
         private string _value;
 
         public GdKeyValue()
         {
         }
 
-        public GdKeyValue(int key, string value)
+        public GdKeyValue(long key, string value)
         {
             _key = key;
             _value = value;
         }
 
-        public int Key
+        public long Key
         {
             get => _key;
             set => _key = value;

@@ -139,7 +139,7 @@ namespace ozgurtek.framework.driver.sqlite
             get { return true; }
         }
 
-        public int RowCount
+        public long RowCount
         {
             get
             {
@@ -287,7 +287,7 @@ namespace ozgurtek.framework.driver.sqlite
                 if (row.IsNull(KeyField))
                     continue;
 
-                int key = row.GetAsInteger(KeyField);
+                long key = row.GetAsInteger(KeyField);
                 if (key == rowId)
                     return row;
             }
@@ -384,7 +384,7 @@ namespace ozgurtek.framework.driver.sqlite
             }
 
             string setStr = string.Join(",", list);
-            int key = row.GetAsInteger(KeyField);
+            long key = row.GetAsInteger(KeyField);
             string sql = $"UPDATE {Name} SET {setStr} WHERE {KeyField} = {key}";
             int result = _connection.ExecuteNonQuery(sql, values.ToArray());
 
@@ -401,7 +401,7 @@ namespace ozgurtek.framework.driver.sqlite
                     Envelope envelope = geometry.EnvelopeInternal;
                     if (envelope != null)
                     {
-                        int id = row.GetAsInteger(KeyField);
+                        long id = row.GetAsInteger(KeyField);
                         _index.Update(id, envelope);
                     }
                 }

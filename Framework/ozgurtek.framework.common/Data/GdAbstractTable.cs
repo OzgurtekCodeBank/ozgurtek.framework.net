@@ -140,7 +140,7 @@ namespace ozgurtek.framework.common.Data
             set { _srid = value; }
         }
 
-        public virtual int RowCount
+        public virtual long RowCount
         {
             get { return Rows.Count(); }
         }
@@ -152,7 +152,7 @@ namespace ozgurtek.framework.common.Data
 
             foreach (IGdRow row in Rows)
             {
-                int fid = row.GetAsInteger(KeyField);
+                long fid = row.GetAsInteger(KeyField);
                 if (fid == rowId)
                     return row;
             }

@@ -10,13 +10,13 @@ namespace ozgurtek.framework.core.Data
 
         void AddDomain(string domainName);
 
-        void AddKeyValue(string domainName, int code, string value);
+        void AddKeyValue(string domainName, long code, string value);
 
         void DeleteDomain(string domainName);
 
         void UpdateDomain(string oldValue, string newValue);
 
-        void DeleteKeyValue(string domain, int code);
+        void DeleteKeyValue(string domain, long code);
 
         void AddFieldAsDomain(string tableName, string fieldName, string domainName);
 

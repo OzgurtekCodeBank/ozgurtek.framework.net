@@ -228,7 +228,7 @@ namespace ozgurtek.framework.driver.sqlite
             _domain.AddDomain(domainName);
         }
 
-        public void AddKeyValue(string domainName, int code, string value)
+        public void AddKeyValue(string domainName, long code, string value)
         {
             _domain.AddKeyValue(domainName, code, value);
         }
@@ -243,7 +243,7 @@ namespace ozgurtek.framework.driver.sqlite
             _domain.UpdateDomain(oldValue, newValue);
         }
 
-        public void DeleteKeyValue(string domain, int code)
+        public void DeleteKeyValue(string domain, long code)
         {
             _domain.DeleteKeyValue(domain, code);
         }

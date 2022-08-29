@@ -25,7 +25,7 @@ namespace ozgurtek.framework.common.Data
             AddOrReplace(key, value);
         }
 
-        public virtual void Put(string key, int value)
+        public virtual void Put(string key, long value)
         {
             AddOrReplace(key, value);
         }
@@ -96,9 +96,9 @@ namespace ozgurtek.framework.common.Data
             return DbConvert.ToString(Row[key].Value);
         }
 
-        public virtual int GetAsInteger(string key)
+        public virtual long GetAsInteger(string key)
         {
-            return DbConvert.ToInt32(Row[key].Value);
+            return DbConvert.ToInt64(Row[key].Value);
         }
 
         public virtual double GetAsReal(string key)
@@ -160,7 +160,7 @@ namespace ozgurtek.framework.common.Data
                 PutNull(key);
         }
 
-        public virtual void Put(string key, int? value)
+        public virtual void Put(string key, long? value)
         {
             if (value.HasValue)
                 Put(key, value.Value);

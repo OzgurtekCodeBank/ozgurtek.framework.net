@@ -11,7 +11,7 @@
         String,
 
         /// <summary>
-        /// Integer type
+        /// Integer type as long
         /// </summary>
         Integer,
 

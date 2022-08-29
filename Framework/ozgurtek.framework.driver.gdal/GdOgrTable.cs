@@ -24,9 +24,9 @@ namespace ozgurtek.framework.driver.gdal
             _address = address;
         }
 
-        public int RowCount
+        public long RowCount
         {
-            get { return (int) _layer.GetFeatureCount(1); }
+            get { return _layer.GetFeatureCount(1); }
         }
 
         public string Name

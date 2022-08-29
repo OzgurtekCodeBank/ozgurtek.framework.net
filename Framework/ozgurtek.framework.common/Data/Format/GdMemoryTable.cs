@@ -81,7 +81,7 @@ namespace ozgurtek.framework.common.Data.Format
             if (string.IsNullOrEmpty(KeyField))
                 throw new Exception("KeyField Missing...");
 
-            int dataRow = row.GetAsInteger(KeyField);
+            long dataRow = row.GetAsInteger(KeyField);
 
             DataRow finded = null;
             foreach (DataRow tableRow in _dataTable.Rows)

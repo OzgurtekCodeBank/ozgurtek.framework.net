@@ -9,7 +9,7 @@ namespace ozgurtek.framework.core.Data
         /// <summary>
         /// Gets the number of row in this layer.
         /// </summary>
-        int RowCount { get; }
+        long RowCount { get; }
 
         /// <summary>
         /// Performs a search in this table

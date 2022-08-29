@@ -22,7 +22,7 @@ namespace ozgurtek.framework.core.Data
         /// </summary>
         ///  <param name="key">the name of the value to put</param>        
         ///  <param name="value">the data for the value to put</param>        
-        void Put(string key, int value);
+        void Put(string key, long value);
 
         /// <summary>
         /// Adds a value to the set.
@@ -109,7 +109,7 @@ namespace ozgurtek.framework.core.Data
         /// </summary>
         ///  <param name="key">key the value to get</param>        
         /// <returns>the Integer for the value</returns>
-        int GetAsInteger(string key);
+        long GetAsInteger(string key);
 
         /// <summary>
         /// Gets a value and converts it to a Double.

@@ -71,7 +71,7 @@ namespace ozgurtek.framework.driver.sqlite
         {
             _table.BeginTransaction();
             foreach (IGdKeyValue keyValue in keyValues)
-                Add(keyValue.Key, keyValue.Value);
+                Add((int)keyValue.Key, keyValue.Value);
             _table.CommitTransaction();
         }
     }

@@ -14,7 +14,7 @@
         <dependency id="NetTopologySuite.IO.GeoJSON" version="2.0.4" exclude="Build,Analyzers" />
         <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
         <dependency id="ProjNET4GeoAPI" version="1.4.1" exclude="Build,Analyzers" />
-        <dependency id="System.IdentityModel.Tokens.Jwt" version="6.22.0" exclude="Build,Analyzers" />
+        <dependency id="System.IdentityModel.Tokens.Jwt" version="6.22.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
   </metadata>

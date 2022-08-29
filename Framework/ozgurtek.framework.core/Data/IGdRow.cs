@@ -26,7 +26,7 @@ namespace ozgurtek.framework.core.Data
         /// </summary>
         ///  <param name="key">key the value to get</param>        
         /// <returns>the Integer for the value</returns>
-        int GetAsInteger(string key);
+        long GetAsInteger(string key);
 
         /// <summary>
         /// Gets a value and converts it to a Double.

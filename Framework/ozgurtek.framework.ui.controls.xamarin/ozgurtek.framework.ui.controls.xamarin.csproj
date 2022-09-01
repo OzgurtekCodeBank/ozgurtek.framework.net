@@ -77,12 +77,12 @@
 	    
 	    
 	    zilim.com/</Copyright>
-    <Version>2.0.53</Version>
+    <Version>2.0.55</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
-    <AssemblyVersion>2.0.53.0</AssemblyVersion>
+    <AssemblyVersion>2.0.55.0</AssemblyVersion>
     <Description>common xamarin controls (select, button, dialog etc...)</Description>
-    <FileVersion>2.0.53.0</FileVersion>
+    <FileVersion>2.0.55.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />

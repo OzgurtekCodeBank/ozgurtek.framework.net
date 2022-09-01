@@ -3,13 +3,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ozgurtek.framework.driver.postgres</AssemblyName>
     <RootNamespace>ozgurtek.framework.driver.postgres</RootNamespace>
-    <Version>2.0.53</Version>
+    <Version>2.0.55</Version>
     <Authors>http://www.otekyazilim.com/</Authors>
     <Copyright>http://www.otekyazilim.com/</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
-    <AssemblyVersion>2.0.53.0</AssemblyVersion>
-    <FileVersion>2.0.53.0</FileVersion>
+    <AssemblyVersion>2.0.55.0</AssemblyVersion>
+    <FileVersion>2.0.55.0</FileVersion>
     <Description>postgres driver</Description>
     <Company>http://www.otekyazilim.com/</Company>
   </PropertyGroup>

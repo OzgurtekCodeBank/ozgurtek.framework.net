@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>ozgurtek.framework.core</id>
-    <version>2.0.55</version>
+    <version>2.0.57</version>
     <authors>http://www.otekyazilim.com/</authors>
     <projectUrl>http://www.otekyazilim.com/</projectUrl>
     <description>basic interfaces</description>

@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.56</Version>
+    <Version>2.0.57</Version>
     <Authors>http://www.otekyazilim.com/</Authors>
     <Copyright>http://www.otekyazilim.com/</Copyright>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageProjectUrl>http://www.otekyazilim.com/</PackageProjectUrl>
-    <AssemblyVersion>2.0.55.0</AssemblyVersion>
+    <AssemblyVersion>2.0.57.0</AssemblyVersion>
     <Description>sqlite driver</Description>
-    <FileVersion>2.0.55.0</FileVersion>
+    <FileVersion>2.0.57.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NetTopologySuite" Version="2.5.0" />

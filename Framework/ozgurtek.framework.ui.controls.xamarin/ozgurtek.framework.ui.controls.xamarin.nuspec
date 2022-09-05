@@ -2,14 +2,14 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>ozgurtek.framework.ui.controls.xamarin</id>
-    <version>2.0.55</version>
+    <version>2.0.57</version>
     <authors>http://www.otekyazilim.com/</authors>
     <projectUrl>http://www.otekyazilim.com/</projectUrl>
     <description>common xamarin controls (select, button, dialog etc...)</description>
     <copyright>http://www.otekyazilim.com/</copyright>
     <dependencies>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="ozgurtek.framework.common" version="2.0.55" exclude="Build,Analyzers" />
+        <dependency id="ozgurtek.framework.common" version="2.0.57" exclude="Build,Analyzers" />
         <dependency id="Rg.Plugins.Popup" version="2.1.0" exclude="Build,Analyzers" />
         <dependency id="Xamarin.Essentials" version="1.7.3" exclude="Build,Analyzers" />
         <dependency id="Xamarin.Forms" version="5.0.0.2515" exclude="Build,Analyzers" />

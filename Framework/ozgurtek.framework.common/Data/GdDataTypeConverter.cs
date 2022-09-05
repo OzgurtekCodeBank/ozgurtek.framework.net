@@ -53,7 +53,7 @@ namespace ozgurtek.framework.common.Data
             switch (dataType)
             {
                 case GdDataType.Integer:
-                    return typeof(int);
+                    return typeof(long);
                 case GdDataType.Boolean:
                     return typeof(bool);
                 case GdDataType.Blob:

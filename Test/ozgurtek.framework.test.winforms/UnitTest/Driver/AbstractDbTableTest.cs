@@ -53,7 +53,10 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void GetTableTest()
         {
-            IGdTable table = GetTable(Normalize("MAHALLE"));
+            IGdTable table = GetTable(Normalize("TEMP"));
+            string geojson = table.ToGeojson(GdGeoJsonSeralizeType.All);
+            GdJsonTableDeserializer abc = new GdJsonTableDeserializer();
+            GdMemoryTable gdMemoryTable = abc.Deserialize(geojson);
             Assert.IsNotNull(table);
         }
 

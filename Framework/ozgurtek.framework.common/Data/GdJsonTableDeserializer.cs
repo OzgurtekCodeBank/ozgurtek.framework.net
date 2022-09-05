@@ -185,7 +185,7 @@ namespace ozgurtek.framework.common.Data
                 case GdDataType.Date:
                     return (DateTime)jToken;
                 case GdDataType.Integer:
-                    return (int)jToken;
+                    return (long)jToken;
                 case GdDataType.Real:
                     return (double)jToken;
                 case GdDataType.String:

@@ -36,10 +36,10 @@ namespace ozgurtek.framework.common.Data
         public virtual IGdTileMatrixSet TileMatrixSet { get; set; }
         public virtual int Srid { get; set; }
         public virtual Envelope Envelope { get; set; }
-        public virtual string Name { get; set; }
-        public virtual string ConnectionString { get; set; }
-        public virtual string Title { get; set; }
-        public virtual string Format { get; set; }
+        public virtual string Name { get; set; } = string.Empty;
+        public virtual string ConnectionString { get; set; } = string.Empty;
+        public virtual string Title { get; set; } = string.Empty;
+        public virtual string Format { get; set; } = string.Empty;
         public abstract Uri GetUri(long x, long y, int zoomLevel);
     }
 }

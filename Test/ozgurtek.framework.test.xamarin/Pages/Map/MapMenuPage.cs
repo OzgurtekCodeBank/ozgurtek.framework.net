@@ -36,6 +36,18 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             markerLabel.Text = "Marker Rendering";
             _viewBox.AddItem("Markers", markerLabel);
             markerLabel.Gesture.Tapped += AtsGestureOnTapped;
+
+            //xyz map
+            GdLabel xyzLabel = new GdLabel();
+            xyzLabel.Text = "XYZ Map";
+            _viewBox.AddItem("XYZ Map", xyzLabel);
+            xyzLabel.Gesture.Tapped += GestureOnTapped;
+        }
+
+        private void GestureOnTapped(object sender, EventArgs e)
+        {
+            XyzMapPage page = new XyzMapPage();
+            page.ShowPage(null);
         }
 
         private void AtsGestureOnTapped(object sender, EventArgs e)

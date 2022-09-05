@@ -4,6 +4,7 @@ using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Data.Format.OnlineMap;
 using ozgurtek.framework.common.Data.Format.Wms;
+using ozgurtek.framework.common.Data.Format.Xyz;
 using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.core.Mapping;
 
@@ -93,6 +94,17 @@ namespace ozgurtek.framework.test.xamarin.Managers
             map.HttpDownloadInfo.UseMemoryCache = true;
             map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
             return new GdTileLayer(map, map.Name);
+        }
+
+        public IGdTileLayer GetXyzMap()
+        {
+            //https://webgisharita.csb.gov.tr/geowebcache/service/tms/1.0.0/kadastro@900913_512@png/{z}/{x}/{y}.png
+            GdXyzMap map = new GdXyzMap("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
+            map.HttpDownloadInfo.UseDiskCache = true;
+            map.HttpDownloadInfo.UseMemoryCache = true;
+            map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
+            return new GdTileLayer(map, map.Name);
+
         }
 
         private static string WmsServiceUrl

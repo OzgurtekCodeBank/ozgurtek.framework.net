@@ -1,60 +1,45 @@
-﻿namespace ozgurtek.framework.common.Data.Format.Xyz
+﻿using System;
+using System.Globalization;
+using NetTopologySuite.Geometries;
+using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
+using ozgurtek.framework.core.Data;
+
+namespace ozgurtek.framework.common.Data.Format.Xyz
 {
-    public class GdXyzMap
+    public class GdXyzMap : GdAbstractTileMap
     {
-        //private string _urlToFormat;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="urlFormat">
-        /// Url scheme. Example:
-        /// www.provider.com/{x}/{y}/{z}.png</param>
+        IGdTileMatrixSet _tileMatrixSet = new GdGoogleMapsTileMatrixSet();
+        private string _urlFormat;
+
         public GdXyzMap(string urlFormat)
         {
-            //UrlToFormat = urlFormat;
+            _urlFormat = urlFormat;
+            //Name = urlFormat;
+            //Title = urlFormat;
+            //ConnectionString = _urlFormat;
+            //Format = 
         }
 
-        //public override string Name { get; }
+        public override IGdTileMatrixSet TileMatrixSet
+        {
+            get { return _tileMatrixSet; }
+            set { _tileMatrixSet = value; }
+        }
 
-        //public override int Srid
-        //{
-        //    get { return 4326; }
-        //    set
-        //    {
+        public override int Srid { get; set; } = 3857;
 
-        //    }
-        //}
+        public override Envelope Envelope { get; set; } =
+            new Envelope(-20026376.39, 20026376.39, -20048966.10, 20048966.10);
 
-        //public override Envelope Envelope
-        //{
-        //    get { return new Envelope(-180.0, 180, -85.06, 85.06); }
-        //}
+        public override Uri GetUri(long x, long y, int zoomLevel)
+        {
+            string replace = _urlFormat.Replace("{", "");
+            replace = replace.Replace("}", "");
+            replace = replace.Replace("x", x.ToString(CultureInfo.InvariantCulture))
+                .Replace("y", y.ToString(CultureInfo.InvariantCulture))
+                .Replace("z", zoomLevel.ToString(CultureInfo.InvariantCulture));
 
-        //public override Uri GetUri(long x, long y, int zoomLevel)
-        //{
-        //    return new Uri(string.Format(_urlToFormat, x, y, zoomLevel));
-        //}
-
-        //public string UrlToFormat
-        //{
-        //    get { return _urlToFormat; }
-        //    set
-        //    {
-        //        _urlToFormat =
-        //            value.Replace("{x}", "{0}")
-        //                .Replace("{y}", "{1}")
-        //                .Replace("{z}", "{2}");
-        //    }
-        //}
-
-        //public override int MinZoomLevel
-        //{
-        //    get { return 1; }
-        //}
-
-        //public override int MaxZoomLevel
-        //{
-        //    get { return 21; }
-        //}
+            return new Uri(replace);
+        }
     }
 }

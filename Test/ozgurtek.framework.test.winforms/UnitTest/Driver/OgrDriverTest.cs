@@ -13,10 +13,10 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     {
         private string _path = @"C:\Users\eniso\Desktop\work\testdata\shp\";
 
-        private string _source = @"C:\Users\eniso\Desktop\work\testdata\shp\mahalle.shp";
+        //private string _source = @"C:\Users\eniso\Desktop\work\testdata\shp\mahalle.shp";
         //private string _source = @"WFS:http://185.122.200.110:8080/geoserver/dhmi/wfs?service=WFS";
         //private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.gml";
-        //private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.kmz";
+        private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.kmz";
 
         [Test]
         public void DriverTest()

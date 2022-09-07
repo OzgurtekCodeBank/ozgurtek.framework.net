@@ -17,6 +17,7 @@ namespace ozgurtek.framework.driver.gdal
         private IGdSchema _schema;
         private string _attributeFilter;
         private IGdGeometryFilter _geometryFilter;
+        private string _geometryField;
 
         public GdOgrTable(Layer layer, string address)
         {
@@ -71,8 +72,8 @@ namespace ozgurtek.framework.driver.gdal
                                 {
                                     feature.GetFieldAsDateTime(fieldName, out var year, out var month, out var day,
                                         out var hour, out var minute, out var second, out _);
-                                    DateTime dateTime = new DateTime(year, month, day, hour, minute, (int) second);
-                                    buffer.Put(fieldName, dateTime, GdDataType.Date);
+                                    //DateTime dateTime = new DateTime(year, month, day, hour, minute, (int) second);
+                                    buffer.Put(fieldName, DateTime.Now, GdDataType.Date);
                                 }
                                 catch
                                 {
@@ -208,8 +209,8 @@ namespace ozgurtek.framework.driver.gdal
 
         public string GeometryField
         {
-            get { return _layer.GetGeometryColumn(); }
-            set { throw new NotSupportedException("Not Supported"); }
+            get { return _geometryField; }
+            set { _geometryField = value; }
         }
 
         public string Description

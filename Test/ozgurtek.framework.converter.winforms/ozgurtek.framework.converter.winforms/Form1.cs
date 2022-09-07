@@ -31,6 +31,12 @@ namespace ozgurtek.framework.converter.winforms
             IEnumerable<IGdTable> tables = GetTable();
             foreach (IGdTable table in tables)
             {
+                table.GeometryField = "gd_geom";
+                if (table.RowCount == 0)
+                    continue;
+
+                string geojson = table.ToGeojson(GdGeoJsonSeralizeType.All);
+
                 foreach (IGdRow row in table.Rows)
                 {
                     foreach (IGdParamater paramater in row.Paramaters)

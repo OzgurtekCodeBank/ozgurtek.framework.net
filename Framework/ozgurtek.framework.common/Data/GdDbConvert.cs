@@ -1,6 +1,9 @@
 ﻿using NetTopologySuite.Geometries;
 using System;
+using System.IO;
+using System.Text;
 using NetTopologySuite.IO;
+using Newtonsoft.Json;
 using ozgurtek.framework.core.Data;
 
 namespace ozgurtek.framework.common.Data
@@ -288,10 +291,19 @@ namespace ozgurtek.framework.common.Data
             return value == null || value == DBNull.Value;
         }
 
-        public static string ToJson(Geometry geometry)
+        public static string ToJson(Geometry geometry, GeometryFactory geomFactory = null, int dimension = 2)
         {
-            GeoJsonWriter writter = new GeoJsonWriter();
-            return writter.Write(geometry);
+            GeometryFactory factory = geomFactory;
+            if (factory == null)
+                factory = GeometryFactory.Default;
+            
+            StringBuilder sb = new StringBuilder();
+            StringWriter writer = new StringWriter(sb);
+            JsonSerializer jsonSerializer = GeoJsonSerializer.Create(factory, dimension);
+            jsonSerializer.Serialize(writer, geometry);
+            writer.Flush();
+
+            return sb.ToString();
         }
 
         public static byte[] ToWkb(Geometry geometry)

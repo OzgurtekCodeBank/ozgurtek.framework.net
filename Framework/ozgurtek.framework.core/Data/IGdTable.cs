@@ -139,7 +139,7 @@ namespace ozgurtek.framework.core.Data
         /// convert to geojson
         /// </summary>
         /// <returns></returns>
-        string ToGeojson(GdGeoJsonSeralizeType type);
+        string ToGeojson(GdGeoJsonSeralizeType type, int dimension = 2);
 
         /// <summary>
         /// Clones the structure of the table

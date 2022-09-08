@@ -8,11 +8,25 @@ namespace ozgurtek.framework.common.Data
     public class GdGeoJsonSerializer
     {
         private GdGeoJsonSeralizeType _serializeType = GdGeoJsonSeralizeType.All;
+        private int _dimension = 2;
+        private GeometryFactory _geometryFactory = GeometryFactory.Default;
 
         public GdGeoJsonSeralizeType SerializeType
         {
             get { return _serializeType; }
             set { _serializeType = value; }
+        }
+
+        public int Dimension
+        {
+            get => _dimension;
+            set => _dimension = value;
+        }
+
+        public GeometryFactory GeometryFactory
+        {
+            get => _geometryFactory;
+            set => _geometryFactory = value;
         }
 
         public string Serialize(IGdTable table)
@@ -69,7 +83,7 @@ namespace ozgurtek.framework.common.Data
                 if (!string.IsNullOrEmpty(geometryField) && !row.IsNull(geometryField))
                 {
                     Geometry geometry = row.GetAsGeometry(geometryField);
-                    string json = DbConvert.ToJson(geometry);
+                    string json = DbConvert.ToJson(geometry, GeometryFactory, Dimension);
                     JObject jObject = JObject.Parse(json);
                     JProperty property = new JProperty("geometry", jObject);
                     feature.Add(property);

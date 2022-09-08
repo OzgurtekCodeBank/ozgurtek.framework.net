@@ -221,10 +221,11 @@ namespace ozgurtek.framework.common.Data
             throw new NotSupportedException();
         }
 
-        public virtual string ToGeojson(GdGeoJsonSeralizeType type)
+        public virtual string ToGeojson(GdGeoJsonSeralizeType type, int dimension = 2)
         {
             GdGeoJsonSerializer serializer = new GdGeoJsonSerializer();
             serializer.SerializeType = type;
+            serializer.Dimension = dimension;
             return serializer.Serialize(this);
         }
 

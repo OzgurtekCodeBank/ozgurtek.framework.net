@@ -339,10 +339,11 @@ namespace ozgurtek.framework.driver.gdal
             get { return false; }
         }
 
-        public string ToGeojson(GdGeoJsonSeralizeType type)
+        public string ToGeojson(GdGeoJsonSeralizeType type, int dimension = 2)
         {
             GdGeoJsonSerializer serializer = new GdGeoJsonSerializer();
             serializer.SerializeType = GdGeoJsonSeralizeType.All;
+            serializer.Dimension = dimension;
             return serializer.Serialize(this);
         }
 

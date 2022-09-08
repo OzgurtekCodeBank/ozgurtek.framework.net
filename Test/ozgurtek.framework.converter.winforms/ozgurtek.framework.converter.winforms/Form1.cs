@@ -35,7 +35,7 @@ namespace ozgurtek.framework.converter.winforms
                 if (table.RowCount == 0)
                     continue;
 
-                string geojson = table.ToGeojson(GdGeoJsonSeralizeType.All);
+                string geojson = table.ToGeojson(GdGeoJsonSeralizeType.All, 3);
 
                 foreach (IGdRow row in table.Rows)
                 {

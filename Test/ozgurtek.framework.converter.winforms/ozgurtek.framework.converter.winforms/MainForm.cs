@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using NetTopologySuite.Geometries;
-
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 using Geometry = NetTopologySuite.Geometries.Geometry;
 
 namespace ozgurtek.framework.converter.winforms
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.kmz";
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -58,7 +50,15 @@ namespace ozgurtek.framework.converter.winforms
             GdOgrDataSource dataSource = GdOgrDataSource.Open(_source);
             return dataSource.GetTable();
         }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            dbUserControl.Start();
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            dbUserControl.End();
+        }
     }
-
-
 }

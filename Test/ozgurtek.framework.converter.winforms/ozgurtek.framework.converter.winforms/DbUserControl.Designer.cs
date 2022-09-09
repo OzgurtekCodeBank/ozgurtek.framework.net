@@ -32,27 +32,19 @@ namespace ozgurtek.framework.converter.winforms
             this.ConnectionStringLabel = new System.Windows.Forms.Label();
             this.ConnectionStringText = new System.Windows.Forms.TextBox();
             this.QueryTextBox = new System.Windows.Forms.TextBox();
-            this.GeometryFieldLabel = new System.Windows.Forms.Label();
-            this.StyleFieldLabel = new System.Windows.Forms.Label();
-            this.KeyFieldComboBox = new System.Windows.Forms.ComboBox();
-            this.ExtFieldComboBox = new System.Windows.Forms.ComboBox();
-            this.KeyFieldLabel = new System.Windows.Forms.Label();
-            this.GeometryFieldComboBox = new System.Windows.Forms.ComboBox();
-            this.ExtFieldLabel = new System.Windows.Forms.Label();
-            this.StyleFieldComboBox = new System.Windows.Forms.ComboBox();
             this.DatabaseFrame = new System.Windows.Forms.GroupBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.FieldsFrame = new System.Windows.Forms.GroupBox();
             this.OutputGroupBox = new System.Windows.Forms.GroupBox();
+            this.folderButton = new System.Windows.Forms.Button();
             this.OutPutFolderTextBox = new System.Windows.Forms.TextBox();
+            this.EpsgTextBox = new System.Windows.Forms.TextBox();
             this.EntityPerPageTextBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.OutputFolderLabel = new System.Windows.Forms.Label();
             this.EntityPerPageLabel = new System.Windows.Forms.Label();
             this.ExportButton = new System.Windows.Forms.Button();
-            this.folderButton = new System.Windows.Forms.Button();
             this.DatabaseFrame.SuspendLayout();
-            this.FieldsFrame.SuspendLayout();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,78 +72,6 @@ namespace ozgurtek.framework.converter.winforms
             this.QueryTextBox.Name = "QueryTextBox";
             this.QueryTextBox.Size = new System.Drawing.Size(686, 116);
             this.QueryTextBox.TabIndex = 1;
-            // 
-            // GeometryFieldLabel
-            // 
-            this.GeometryFieldLabel.AutoSize = true;
-            this.GeometryFieldLabel.Location = new System.Drawing.Point(19, 79);
-            this.GeometryFieldLabel.Name = "GeometryFieldLabel";
-            this.GeometryFieldLabel.Size = new System.Drawing.Size(77, 13);
-            this.GeometryFieldLabel.TabIndex = 2;
-            this.GeometryFieldLabel.Text = "Geometry Field";
-            // 
-            // StyleFieldLabel
-            // 
-            this.StyleFieldLabel.AutoSize = true;
-            this.StyleFieldLabel.Location = new System.Drawing.Point(19, 160);
-            this.StyleFieldLabel.Name = "StyleFieldLabel";
-            this.StyleFieldLabel.Size = new System.Drawing.Size(55, 13);
-            this.StyleFieldLabel.TabIndex = 2;
-            this.StyleFieldLabel.Text = "Style Field";
-            // 
-            // KeyFieldComboBox
-            // 
-            this.KeyFieldComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.KeyFieldComboBox.FormattingEnabled = true;
-            this.KeyFieldComboBox.Location = new System.Drawing.Point(110, 27);
-            this.KeyFieldComboBox.Name = "KeyFieldComboBox";
-            this.KeyFieldComboBox.Size = new System.Drawing.Size(158, 21);
-            this.KeyFieldComboBox.TabIndex = 3;
-            // 
-            // ExtFieldComboBox
-            // 
-            this.ExtFieldComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ExtFieldComboBox.FormattingEnabled = true;
-            this.ExtFieldComboBox.Location = new System.Drawing.Point(110, 114);
-            this.ExtFieldComboBox.Name = "ExtFieldComboBox";
-            this.ExtFieldComboBox.Size = new System.Drawing.Size(158, 21);
-            this.ExtFieldComboBox.TabIndex = 4;
-            // 
-            // KeyFieldLabel
-            // 
-            this.KeyFieldLabel.AutoSize = true;
-            this.KeyFieldLabel.Location = new System.Drawing.Point(19, 30);
-            this.KeyFieldLabel.Name = "KeyFieldLabel";
-            this.KeyFieldLabel.Size = new System.Drawing.Size(50, 13);
-            this.KeyFieldLabel.TabIndex = 2;
-            this.KeyFieldLabel.Text = "Key Field";
-            // 
-            // GeometryFieldComboBox
-            // 
-            this.GeometryFieldComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.GeometryFieldComboBox.FormattingEnabled = true;
-            this.GeometryFieldComboBox.Location = new System.Drawing.Point(110, 71);
-            this.GeometryFieldComboBox.Name = "GeometryFieldComboBox";
-            this.GeometryFieldComboBox.Size = new System.Drawing.Size(158, 21);
-            this.GeometryFieldComboBox.TabIndex = 3;
-            // 
-            // ExtFieldLabel
-            // 
-            this.ExtFieldLabel.AutoSize = true;
-            this.ExtFieldLabel.Location = new System.Drawing.Point(19, 122);
-            this.ExtFieldLabel.Name = "ExtFieldLabel";
-            this.ExtFieldLabel.Size = new System.Drawing.Size(81, 13);
-            this.ExtFieldLabel.TabIndex = 2;
-            this.ExtFieldLabel.Text = "Exturusion Field";
-            // 
-            // StyleFieldComboBox
-            // 
-            this.StyleFieldComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.StyleFieldComboBox.FormattingEnabled = true;
-            this.StyleFieldComboBox.Location = new System.Drawing.Point(110, 152);
-            this.StyleFieldComboBox.Name = "StyleFieldComboBox";
-            this.StyleFieldComboBox.Size = new System.Drawing.Size(158, 21);
-            this.StyleFieldComboBox.TabIndex = 4;
             // 
             // DatabaseFrame
             // 
@@ -186,57 +106,68 @@ namespace ozgurtek.framework.converter.winforms
             this.label1.TabIndex = 0;
             this.label1.Text = "Query";
             // 
-            // FieldsFrame
-            // 
-            this.FieldsFrame.Controls.Add(this.KeyFieldLabel);
-            this.FieldsFrame.Controls.Add(this.StyleFieldLabel);
-            this.FieldsFrame.Controls.Add(this.StyleFieldComboBox);
-            this.FieldsFrame.Controls.Add(this.ExtFieldLabel);
-            this.FieldsFrame.Controls.Add(this.KeyFieldComboBox);
-            this.FieldsFrame.Controls.Add(this.GeometryFieldLabel);
-            this.FieldsFrame.Controls.Add(this.ExtFieldComboBox);
-            this.FieldsFrame.Controls.Add(this.GeometryFieldComboBox);
-            this.FieldsFrame.Location = new System.Drawing.Point(26, 371);
-            this.FieldsFrame.Name = "FieldsFrame";
-            this.FieldsFrame.Size = new System.Drawing.Size(298, 188);
-            this.FieldsFrame.TabIndex = 6;
-            this.FieldsFrame.TabStop = false;
-            this.FieldsFrame.Text = "Fields";
-            // 
             // OutputGroupBox
             // 
             this.OutputGroupBox.Controls.Add(this.folderButton);
             this.OutputGroupBox.Controls.Add(this.OutPutFolderTextBox);
+            this.OutputGroupBox.Controls.Add(this.EpsgTextBox);
             this.OutputGroupBox.Controls.Add(this.EntityPerPageTextBox);
+            this.OutputGroupBox.Controls.Add(this.label2);
             this.OutputGroupBox.Controls.Add(this.OutputFolderLabel);
             this.OutputGroupBox.Controls.Add(this.EntityPerPageLabel);
-            this.OutputGroupBox.Location = new System.Drawing.Point(338, 371);
+            this.OutputGroupBox.Location = new System.Drawing.Point(16, 371);
             this.OutputGroupBox.Name = "OutputGroupBox";
-            this.OutputGroupBox.Size = new System.Drawing.Size(417, 184);
+            this.OutputGroupBox.Size = new System.Drawing.Size(739, 184);
             this.OutputGroupBox.TabIndex = 7;
             this.OutputGroupBox.TabStop = false;
             this.OutputGroupBox.Text = "Output";
             // 
+            // folderButton
+            // 
+            this.folderButton.Location = new System.Drawing.Point(76, 116);
+            this.folderButton.Name = "folderButton";
+            this.folderButton.Size = new System.Drawing.Size(23, 23);
+            this.folderButton.TabIndex = 2;
+            this.folderButton.Text = "...";
+            this.folderButton.UseVisualStyleBackColor = true;
+            this.folderButton.Click += new System.EventHandler(this.folderButton_Click);
+            // 
             // OutPutFolderTextBox
             // 
-            this.OutPutFolderTextBox.Location = new System.Drawing.Point(101, 68);
+            this.OutPutFolderTextBox.Location = new System.Drawing.Point(101, 116);
             this.OutPutFolderTextBox.Multiline = true;
             this.OutPutFolderTextBox.Name = "OutPutFolderTextBox";
-            this.OutPutFolderTextBox.Size = new System.Drawing.Size(295, 105);
+            this.OutPutFolderTextBox.Size = new System.Drawing.Size(617, 50);
             this.OutPutFolderTextBox.TabIndex = 1;
+            // 
+            // EpsgTextBox
+            // 
+            this.EpsgTextBox.Location = new System.Drawing.Point(101, 71);
+            this.EpsgTextBox.Name = "EpsgTextBox";
+            this.EpsgTextBox.Size = new System.Drawing.Size(617, 20);
+            this.EpsgTextBox.TabIndex = 1;
             // 
             // EntityPerPageTextBox
             // 
             this.EntityPerPageTextBox.Location = new System.Drawing.Point(100, 29);
             this.EntityPerPageTextBox.Name = "EntityPerPageTextBox";
-            this.EntityPerPageTextBox.Size = new System.Drawing.Size(295, 20);
+            this.EntityPerPageTextBox.Size = new System.Drawing.Size(618, 20);
             this.EntityPerPageTextBox.TabIndex = 1;
             this.EntityPerPageTextBox.Text = "10";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(11, 71);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(73, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "Source EPSG";
             // 
             // OutputFolderLabel
             // 
             this.OutputFolderLabel.AutoSize = true;
-            this.OutputFolderLabel.Location = new System.Drawing.Point(10, 71);
+            this.OutputFolderLabel.Location = new System.Drawing.Point(10, 119);
             this.OutputFolderLabel.Name = "OutputFolderLabel";
             this.OutputFolderLabel.Size = new System.Drawing.Size(68, 13);
             this.OutputFolderLabel.TabIndex = 0;
@@ -261,30 +192,17 @@ namespace ozgurtek.framework.converter.winforms
             this.ExportButton.UseVisualStyleBackColor = true;
             this.ExportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
-            // folderButton
-            // 
-            this.folderButton.Location = new System.Drawing.Point(76, 68);
-            this.folderButton.Name = "folderButton";
-            this.folderButton.Size = new System.Drawing.Size(23, 23);
-            this.folderButton.TabIndex = 2;
-            this.folderButton.Text = "...";
-            this.folderButton.UseVisualStyleBackColor = true;
-            this.folderButton.Click += new System.EventHandler(this.folderButton_Click);
-            // 
             // DbUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ExportButton);
             this.Controls.Add(this.OutputGroupBox);
-            this.Controls.Add(this.FieldsFrame);
             this.Controls.Add(this.DatabaseFrame);
             this.Name = "DbUserControl";
             this.Size = new System.Drawing.Size(772, 648);
             this.DatabaseFrame.ResumeLayout(false);
             this.DatabaseFrame.PerformLayout();
-            this.FieldsFrame.ResumeLayout(false);
-            this.FieldsFrame.PerformLayout();
             this.OutputGroupBox.ResumeLayout(false);
             this.OutputGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -296,17 +214,8 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.Label ConnectionStringLabel;
         private System.Windows.Forms.TextBox ConnectionStringText;
         private System.Windows.Forms.TextBox QueryTextBox;
-        private System.Windows.Forms.Label GeometryFieldLabel;
-        private System.Windows.Forms.Label StyleFieldLabel;
-        private System.Windows.Forms.ComboBox KeyFieldComboBox;
-        private System.Windows.Forms.ComboBox ExtFieldComboBox;
-        private System.Windows.Forms.Label KeyFieldLabel;
-        private System.Windows.Forms.ComboBox GeometryFieldComboBox;
-        private System.Windows.Forms.Label ExtFieldLabel;
-        private System.Windows.Forms.ComboBox StyleFieldComboBox;
         private System.Windows.Forms.GroupBox DatabaseFrame;
         private System.Windows.Forms.Button ConnectButton;
-        private System.Windows.Forms.GroupBox FieldsFrame;
         private System.Windows.Forms.GroupBox OutputGroupBox;
         private System.Windows.Forms.Label EntityPerPageLabel;
         private System.Windows.Forms.TextBox EntityPerPageTextBox;
@@ -315,5 +224,7 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.Button ExportButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button folderButton;
+        private System.Windows.Forms.TextBox EpsgTextBox;
+        private System.Windows.Forms.Label label2;
     }
 }

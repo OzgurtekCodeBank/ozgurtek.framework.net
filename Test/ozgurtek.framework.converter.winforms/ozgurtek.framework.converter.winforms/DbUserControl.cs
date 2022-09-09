@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ozgurtek.framework.common.Data;
+using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.postgres;
 
@@ -34,19 +35,6 @@ namespace ozgurtek.framework.converter.winforms
             key.SetValue("epsg", EpsgTextBox.Text);
         }
 
-        private void ConnectButton_Click(object sender, System.EventArgs e)
-        {
-            try
-            {
-                IGdTable table = GetTable();
-                IGdSchema schema = table.Schema;
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message);
-            }
-        }
-
         private void folderButton_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
@@ -69,12 +57,29 @@ namespace ozgurtek.framework.converter.winforms
 
         private void Export()
         {
+            progressBar.Minimum = 0;
+            progressBar.Maximum = 100;
+            IGdTable table = GetTable();
+            GdTrack track = new GdTrack();
+            track.ProgressChanged += ProgressChanged;
             GdExt3dModelExportEngine engine = new GdExt3dModelExportEngine();
-            engine.Export(GetTable(), OutPutFolderTextBox.Text, DbConvert.ToInt64(EntityPerPageTextBox.Text), DbConvert.ToInt32(EpsgTextBox.Text));
+            engine.Export(table, OutPutFolderTextBox.Text, DbConvert.ToInt64(EntityPerPageTextBox.Text), DbConvert.ToInt32(EpsgTextBox.Text), track);
+        }
+
+        private void ProgressChanged(object sender, double e)
+        {
+            int c = DbConvert.ToInt32(e);
+            progressBar.Value = c;
         }
 
         private void CheckUi()
         {
+            if (string.IsNullOrWhiteSpace(ConnectionStringText.Text))
+                throw new SystemException("ConnectionStringText Missing");
+
+            if (string.IsNullOrWhiteSpace(QueryTextBox.Text))
+                throw new SystemException("QueryTextBox Missing");
+
             if (string.IsNullOrWhiteSpace(EntityPerPageTextBox.Text))
                 throw new SystemException("EntityPerPageTextBox Missing");
 

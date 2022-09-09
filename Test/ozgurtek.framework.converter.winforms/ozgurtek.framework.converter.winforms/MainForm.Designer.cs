@@ -29,6 +29,7 @@ namespace ozgurtek.framework.converter.winforms
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.fileTabPage = new System.Windows.Forms.TabPage();
             this.fileUserControl = new ozgurtek.framework.converter.winforms.FileUserControl();
@@ -47,7 +48,7 @@ namespace ozgurtek.framework.converter.winforms
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(777, 657);
+            this.tabControl.Size = new System.Drawing.Size(777, 638);
             this.tabControl.TabIndex = 0;
             // 
             // fileTabPage
@@ -56,7 +57,7 @@ namespace ozgurtek.framework.converter.winforms
             this.fileTabPage.Location = new System.Drawing.Point(4, 22);
             this.fileTabPage.Name = "fileTabPage";
             this.fileTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.fileTabPage.Size = new System.Drawing.Size(769, 569);
+            this.fileTabPage.Size = new System.Drawing.Size(769, 612);
             this.fileTabPage.TabIndex = 0;
             this.fileTabPage.Text = "File";
             this.fileTabPage.UseVisualStyleBackColor = true;
@@ -66,7 +67,7 @@ namespace ozgurtek.framework.converter.winforms
             this.fileUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.fileUserControl.Location = new System.Drawing.Point(3, 3);
             this.fileUserControl.Name = "fileUserControl";
-            this.fileUserControl.Size = new System.Drawing.Size(763, 563);
+            this.fileUserControl.Size = new System.Drawing.Size(763, 606);
             this.fileUserControl.TabIndex = 0;
             // 
             // dbTabPage
@@ -75,7 +76,7 @@ namespace ozgurtek.framework.converter.winforms
             this.dbTabPage.Location = new System.Drawing.Point(4, 22);
             this.dbTabPage.Name = "dbTabPage";
             this.dbTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.dbTabPage.Size = new System.Drawing.Size(769, 631);
+            this.dbTabPage.Size = new System.Drawing.Size(769, 612);
             this.dbTabPage.TabIndex = 1;
             this.dbTabPage.Text = "Database";
             this.dbTabPage.UseVisualStyleBackColor = true;
@@ -85,19 +86,20 @@ namespace ozgurtek.framework.converter.winforms
             this.dbUserControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dbUserControl.Location = new System.Drawing.Point(3, 3);
             this.dbUserControl.Name = "dbUserControl";
-            this.dbUserControl.Size = new System.Drawing.Size(763, 625);
+            this.dbUserControl.Size = new System.Drawing.Size(763, 606);
             this.dbUserControl.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 657);
+            this.ClientSize = new System.Drawing.Size(777, 638);
             this.Controls.Add(this.tabControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Otek Model Creator";
+            this.Text = "Otek 3D Model Creator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl.ResumeLayout(false);

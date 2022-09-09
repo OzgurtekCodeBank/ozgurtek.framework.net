@@ -18,11 +18,13 @@ namespace ozgurtek.framework.converter.winforms
         private const string Style = "gd_style";
         private const string Description = "gd_description";
 
-        public void Export(IGdTable table, string outputFolder, long entityPerFile, int epsgCode)
+        public void Export(IGdTable table, string outputFolder, long entityPerFile, int epsgCode, IGdTrack track)
         {
             PrepareMemTable();
 
+            double current = 0;
             long count = 0;
+            long tableCount = table.RowCount;
             foreach (IGdRow row in table.Rows)
             {
                 GdRowBuffer buffer = new GdRowBuffer();
@@ -48,8 +50,14 @@ namespace ozgurtek.framework.converter.winforms
                     Flush(outputFolder);
                     PrepareMemTable();
                     count = 0;
+
+                    if (track != null)
+                        track.ReportProgress(DbConvert.ToDouble(++current * entityPerFile * 100 / tableCount));
                 }
             }
+
+            if (track != null)
+                track.ReportProgress(100);
 
             MessageBox.Show("Finish");
         }

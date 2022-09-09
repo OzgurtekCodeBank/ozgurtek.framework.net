@@ -33,7 +33,6 @@ namespace ozgurtek.framework.converter.winforms
             this.ConnectionStringText = new System.Windows.Forms.TextBox();
             this.QueryTextBox = new System.Windows.Forms.TextBox();
             this.DatabaseFrame = new System.Windows.Forms.GroupBox();
-            this.ConnectButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.OutputGroupBox = new System.Windows.Forms.GroupBox();
             this.folderButton = new System.Windows.Forms.Button();
@@ -44,6 +43,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputFolderLabel = new System.Windows.Forms.Label();
             this.EntityPerPageLabel = new System.Windows.Forms.Label();
             this.ExportButton = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.DatabaseFrame.SuspendLayout();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -75,27 +75,16 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // DatabaseFrame
             // 
-            this.DatabaseFrame.Controls.Add(this.ConnectButton);
             this.DatabaseFrame.Controls.Add(this.ConnectionStringText);
             this.DatabaseFrame.Controls.Add(this.QueryTextBox);
             this.DatabaseFrame.Controls.Add(this.label1);
             this.DatabaseFrame.Controls.Add(this.ConnectionStringLabel);
             this.DatabaseFrame.Location = new System.Drawing.Point(16, 13);
             this.DatabaseFrame.Name = "DatabaseFrame";
-            this.DatabaseFrame.Size = new System.Drawing.Size(740, 352);
+            this.DatabaseFrame.Size = new System.Drawing.Size(740, 300);
             this.DatabaseFrame.TabIndex = 5;
             this.DatabaseFrame.TabStop = false;
             this.DatabaseFrame.Text = "Database";
-            // 
-            // ConnectButton
-            // 
-            this.ConnectButton.Location = new System.Drawing.Point(291, 302);
-            this.ConnectButton.Name = "ConnectButton";
-            this.ConnectButton.Size = new System.Drawing.Size(158, 25);
-            this.ConnectButton.TabIndex = 2;
-            this.ConnectButton.Text = "Connect";
-            this.ConnectButton.UseVisualStyleBackColor = true;
-            this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
             // label1
             // 
@@ -115,7 +104,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputGroupBox.Controls.Add(this.label2);
             this.OutputGroupBox.Controls.Add(this.OutputFolderLabel);
             this.OutputGroupBox.Controls.Add(this.EntityPerPageLabel);
-            this.OutputGroupBox.Location = new System.Drawing.Point(16, 371);
+            this.OutputGroupBox.Location = new System.Drawing.Point(17, 330);
             this.OutputGroupBox.Name = "OutputGroupBox";
             this.OutputGroupBox.Size = new System.Drawing.Size(739, 184);
             this.OutputGroupBox.TabIndex = 7;
@@ -184,7 +173,7 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // ExportButton
             // 
-            this.ExportButton.Location = new System.Drawing.Point(307, 593);
+            this.ExportButton.Location = new System.Drawing.Point(305, 531);
             this.ExportButton.Name = "ExportButton";
             this.ExportButton.Size = new System.Drawing.Size(158, 25);
             this.ExportButton.TabIndex = 2;
@@ -192,15 +181,23 @@ namespace ozgurtek.framework.converter.winforms
             this.ExportButton.UseVisualStyleBackColor = true;
             this.ExportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(17, 567);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(739, 23);
+            this.progressBar.TabIndex = 8;
+            // 
             // DbUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.ExportButton);
             this.Controls.Add(this.OutputGroupBox);
             this.Controls.Add(this.DatabaseFrame);
             this.Name = "DbUserControl";
-            this.Size = new System.Drawing.Size(772, 648);
+            this.Size = new System.Drawing.Size(772, 593);
             this.DatabaseFrame.ResumeLayout(false);
             this.DatabaseFrame.PerformLayout();
             this.OutputGroupBox.ResumeLayout(false);
@@ -215,7 +212,6 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.TextBox ConnectionStringText;
         private System.Windows.Forms.TextBox QueryTextBox;
         private System.Windows.Forms.GroupBox DatabaseFrame;
-        private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.GroupBox OutputGroupBox;
         private System.Windows.Forms.Label EntityPerPageLabel;
         private System.Windows.Forms.TextBox EntityPerPageTextBox;
@@ -226,5 +222,6 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.Button folderButton;
         private System.Windows.Forms.TextBox EpsgTextBox;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }

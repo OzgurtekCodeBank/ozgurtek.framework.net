@@ -55,6 +55,9 @@ namespace ozgurtek.framework.driver.postgres
         {
             get
             {
+                if (string.IsNullOrWhiteSpace(GeometryField))
+                    throw new Exception("GeometryField Not Set");
+
                 using (IDbConnection connection = _dataSource.GetConnection())
                 {
                     using (IDbCommand command = connection.CreateCommand())

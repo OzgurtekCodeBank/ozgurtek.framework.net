@@ -51,6 +51,33 @@ namespace ozgurtek.framework.driver.postgres
             return new GdPgTable(DataSource, Name, _filter);
         }
 
+        public override Envelope Envelope
+        {
+            get
+            {
+                using (IDbConnection connection = _dataSource.GetConnection())
+                {
+                    using (IDbCommand command = connection.CreateCommand())
+                    {
+                        IGdFilter filter = CreateFilter();
+                        command.CommandText = $"SELECT ST_Envelope(ST_Collect({GeometryField})) FROM ({filter.Text}) A";
+                        foreach (IGdParamater parameter in filter.Parameters)
+                            command.Parameters.Add(CreateParameter(parameter));
+
+                        using (IDataReader reader = command.ExecuteReader())
+                        {
+                            bool read = reader.Read();
+                            object value = reader.GetValue(0);
+                            if (value is Geometry geometry)
+                                return geometry.EnvelopeInternal;
+                        }
+                    }
+                }
+
+                return null;
+            }
+        }
+
         protected override IDbDataParameter CreateParameter(IGdParamater parameter)
         {
             NpgsqlParameter result = new NpgsqlParameter();

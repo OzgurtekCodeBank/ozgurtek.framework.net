@@ -32,8 +32,7 @@ namespace ozgurtek.framework.converter.winforms
 
         public void End()
         {
-            RegistryKey key =
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             key.SetValue("connection_string", ConnectionStringText.Text);
             key.SetValue("query", QueryTextBox.Text);
             key.SetValue("output_folder", OutPutFolderTextBox.Text);
@@ -72,7 +71,8 @@ namespace ozgurtek.framework.converter.winforms
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
             GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
             gdPgTable.GeometryField = "gd_geometry";
-            Envelope envelope = new Envelope(587404.656000137, 605976.384, 4519140.6319, 4532563.38566273); //todo: enis
+            //Envelope envelope = new Envelope(587404.656000137, 605976.384, 4519140.6319, 4532563.38566273); //todo: enis
+            Envelope envelope = gdPgTable.Envelope;
             Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
             List<GdTileIndex> tileIndices = Divide(project, project.Width / 10, project.Height / 10); //todo: enis
 

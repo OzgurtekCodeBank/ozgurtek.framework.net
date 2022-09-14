@@ -1,10 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
+using ozgurtek.framework.common.Geodesy;
+using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
+using ozgurtek.framework.core.Mapping;
 using ozgurtek.framework.driver.postgres;
+using ozgurtek.framework.driver.sqlite;
 
 namespace ozgurtek.framework.converter.winforms
 {
@@ -94,7 +101,56 @@ namespace ozgurtek.framework.converter.winforms
         {
             GdPgDataSource dataSource = GdPgDataSource.Open(ConnectionStringText.Text);
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
-            return dataSource.ExecuteSql("sql", filter);
+            GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
+            Envelope envelope = gdPgTable.Envelope;
+            Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
+            List<GdTileIndex> divide = Divide(project, project.Width / 10, project.Height / 10);
+
+            string path = Path.Combine(OutPutFolderTextBox.Text, "index.sqlite");
+            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
+            GdSqlLiteTable table = sqlLiteDataSource.CreateTable("gd_index", null, null, null);
+            table.CreateField(new GdField("min_x", GdDataType.Real));
+            table.CreateField(new GdField("min_y", GdDataType.Real));
+            table.CreateField(new GdField("max_x", GdDataType.Real));
+            table.CreateField(new GdField("max_y", GdDataType.Real));
+
+            foreach (GdTileIndex index in divide)
+            {
+                GdRowBuffer buffer= new GdRowBuffer();
+                buffer.Put("min_x", index.Envelope.MinX);
+                buffer.Put("min_y", index.Envelope.MinY);
+                buffer.Put("max_x", index.Envelope.MaxX);
+                buffer.Put("max_y", index.Envelope.MaxY);
+                table.Insert(buffer);
+            }
+
+            return gdPgTable;
+
+        }
+
+        public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
+        {
+            List<GdTileIndex> worldArray = new List<GdTileIndex>();
+
+            long xindex = 0;
+            long yindex = 0;
+            for (double x = viewport.MinX; x < viewport.MaxX; x+= tileWidth)
+            {
+                for (double y = viewport.MinY; y < viewport.MaxY; y+= tileHeight)
+                {
+                    GdTileIndex index = new GdTileIndex(xindex, yindex);
+                    Coordinate coordinateMin = new Coordinate(x, y);
+                    Coordinate coordinateMax = new Coordinate(x + tileWidth, y + tileHeight);
+                    Envelope env = new Envelope(coordinateMin, coordinateMax);
+                    index.Envelope = env;
+                    worldArray.Add(index);
+                    yindex++;
+                }
+
+                xindex++;
+            }
+
+            return worldArray;
         }
     }
 }

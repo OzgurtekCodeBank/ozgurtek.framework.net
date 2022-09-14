@@ -452,9 +452,10 @@ namespace ozgurtek.framework.driver.sqlite
             _metedata.DeleteField(field);
         }
 
-        public string ToGeojson(GdGeoJsonSeralizeType type)
+        public string ToGeojson(GdGeoJsonSeralizeType type,int dimension = 2)
         {
             GdGeoJsonSerializer serializer = new GdGeoJsonSerializer();
+            serializer.Dimension = dimension;
             serializer.SerializeType = type;
             return serializer.Serialize(this);
         }
@@ -463,6 +464,8 @@ namespace ozgurtek.framework.driver.sqlite
         {
             return GdMemoryTable.LoadFromTable(this).ToDataTable();
         }
+
+       
 
         public IGdTable Clone()
         {

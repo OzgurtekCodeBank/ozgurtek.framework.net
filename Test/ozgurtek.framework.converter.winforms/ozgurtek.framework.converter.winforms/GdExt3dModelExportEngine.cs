@@ -30,6 +30,7 @@ namespace ozgurtek.framework.converter.winforms
                 Envelope envelope = GdProjection.Project(index.Envelope, 4326, epsgCode);
                 GeometryFactory factory = new GeometryFactory();
                 Geometry geometry1 = factory.ToGeometry(envelope);
+                geometry1.SRID = epsgCode;
                 table.GeometryFilter = new GdGeometryFilter(geometry1, GdSpatialRelation.Intersects);
 
                 foreach (IGdRow row in table.Rows)

@@ -66,7 +66,7 @@ namespace ozgurtek.framework.converter.winforms
         {
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
-            
+
             GdTrack track = new GdTrack();
             track.ProgressChanged += ProgressChanged;
 
@@ -74,9 +74,9 @@ namespace ozgurtek.framework.converter.winforms
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
             GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
             gdPgTable.GeometryField = "gd_geometry";
-            Envelope envelope = new Envelope(587404.656000137, 605976.384, 4519140.6319  , 4532563.38566273);
+            Envelope envelope = new Envelope(587404.656000137, 605976.384, 4519140.6319, 4532563.38566273); //todo: enis
             Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
-            List<GdTileIndex> tileIndices = Divide(project, project.Width / 10, project.Height / 10);
+            List<GdTileIndex> tileIndices = Divide(project, project.Width / 10, project.Height / 10); //todo: enis
 
             string path = Path.Combine(OutPutFolderTextBox.Text, "index.sqlite");
             GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
@@ -124,16 +124,16 @@ namespace ozgurtek.framework.converter.winforms
                 throw new SystemException("EpsgTextBox Missing");
         }
 
-        
+
         public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
         {
             List<GdTileIndex> worldArray = new List<GdTileIndex>();
 
             long xindex = 0;
             long yindex = 0;
-            for (double x = viewport.MinX; x < viewport.MaxX; x+= tileWidth)
+            for (double y = viewport.MinY; y <= viewport.MaxY - double.Epsilon; y += tileHeight)
             {
-                for (double y = viewport.MinY; y < viewport.MaxY; y+= tileHeight)
+                for (double x = viewport.MinX; x <= viewport.MaxX - double.Epsilon; x += tileWidth)
                 {
                     GdTileIndex index = new GdTileIndex(xindex, yindex);
                     Coordinate coordinateMin = new Coordinate(x, y);

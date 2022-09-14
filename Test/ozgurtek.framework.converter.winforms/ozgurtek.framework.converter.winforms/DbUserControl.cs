@@ -66,11 +66,38 @@ namespace ozgurtek.framework.converter.winforms
         {
             progressBar.Minimum = 0;
             progressBar.Maximum = 100;
-            IGdTable table = GetTable();
+            
             GdTrack track = new GdTrack();
             track.ProgressChanged += ProgressChanged;
+
+            GdPgDataSource dataSource = GdPgDataSource.Open(ConnectionStringText.Text);
+            GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
+            GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
+            gdPgTable.GeometryField = "gd_geometry";
+            Envelope envelope = new Envelope(587404.656000137, 605976.384, 4519140.6319  , 4532563.38566273);
+            Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
+            List<GdTileIndex> tileIndices = Divide(project, project.Width / 10, project.Height / 10);
+
+            string path = Path.Combine(OutPutFolderTextBox.Text, "index.sqlite");
+            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
+            GdSqlLiteTable table = sqlLiteDataSource.CreateTable("gd_index", null, null, null);
+            table.CreateField(new GdField("min_x", GdDataType.Real));
+            table.CreateField(new GdField("min_y", GdDataType.Real));
+            table.CreateField(new GdField("max_x", GdDataType.Real));
+            table.CreateField(new GdField("max_y", GdDataType.Real));
+
+            foreach (GdTileIndex index in tileIndices)
+            {
+                GdRowBuffer buffer = new GdRowBuffer();
+                buffer.Put("min_x", index.Envelope.MinX);
+                buffer.Put("min_y", index.Envelope.MinY);
+                buffer.Put("max_x", index.Envelope.MaxX);
+                buffer.Put("max_y", index.Envelope.MaxY);
+                table.Insert(buffer);
+            }
+
             GdExt3dModelExportEngine engine = new GdExt3dModelExportEngine();
-            engine.Export(table, OutPutFolderTextBox.Text, DbConvert.ToInt64(EntityPerPageTextBox.Text), DbConvert.ToInt32(EpsgTextBox.Text), track);
+            engine.Export(gdPgTable, OutPutFolderTextBox.Text, tileIndices, DbConvert.ToInt32(EpsgTextBox.Text), track);
         }
 
         private void ProgressChanged(object sender, double e)
@@ -97,37 +124,7 @@ namespace ozgurtek.framework.converter.winforms
                 throw new SystemException("EpsgTextBox Missing");
         }
 
-        private IGdTable GetTable()
-        {
-            GdPgDataSource dataSource = GdPgDataSource.Open(ConnectionStringText.Text);
-            GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
-            GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
-            Envelope envelope = gdPgTable.Envelope;
-            Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
-            List<GdTileIndex> divide = Divide(project, project.Width / 10, project.Height / 10);
-
-            string path = Path.Combine(OutPutFolderTextBox.Text, "index.sqlite");
-            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
-            GdSqlLiteTable table = sqlLiteDataSource.CreateTable("gd_index", null, null, null);
-            table.CreateField(new GdField("min_x", GdDataType.Real));
-            table.CreateField(new GdField("min_y", GdDataType.Real));
-            table.CreateField(new GdField("max_x", GdDataType.Real));
-            table.CreateField(new GdField("max_y", GdDataType.Real));
-
-            foreach (GdTileIndex index in divide)
-            {
-                GdRowBuffer buffer= new GdRowBuffer();
-                buffer.Put("min_x", index.Envelope.MinX);
-                buffer.Put("min_y", index.Envelope.MinY);
-                buffer.Put("max_x", index.Envelope.MaxX);
-                buffer.Put("max_y", index.Envelope.MaxY);
-                table.Insert(buffer);
-            }
-
-            return gdPgTable;
-
-        }
-
+        
         public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
         {
             List<GdTileIndex> worldArray = new List<GdTileIndex>();

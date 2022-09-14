@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using NetTopologySuite.Geometries;
@@ -18,46 +19,45 @@ namespace ozgurtek.framework.converter.winforms
         private const string Style = "gd_style";
         private const string Description = "gd_description";
 
-        public void Export(IGdTable table, string outputFolder, long entityPerFile, int epsgCode, IGdTrack track)
+        public void Export(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode,
+            IGdTrack track)
         {
             PrepareMemTable();
 
-            double current = 0;
-            long count = 0;
-            long tableCount = table.RowCount;
-            foreach (IGdRow row in table.Rows)
+            long fileName = 0;
+            foreach (GdTileIndex index in tileIndex)
             {
-                GdRowBuffer buffer = new GdRowBuffer();
-                buffer.Put(Id, row.GetAsInteger(Id));
-                
-                Geometry geometry = row.GetAsGeometry(Geometry);
-                geometry.SRID = epsgCode;
-                geometry = GdProjection.Project(geometry, 4326);
+                Envelope envelope = GdProjection.Project(index.Envelope, 4326, epsgCode);
+                GeometryFactory factory = new GeometryFactory();
+                Geometry geometry1 = factory.ToGeometry(envelope);
+                table.GeometryFilter = new GdGeometryFilter(geometry1, GdSpatialRelation.Intersects);
 
-                buffer.Put(Geometry, geometry);
-                buffer.Put(Height, row.GetAsReal(Height));
-
-                if (row.Table.Schema.GetFieldByName(Style) != null)
-                    buffer.Put(Style, row.GetAsReal(Style));
-
-                if (row.Table.Schema.GetFieldByName(Description) != null)
-                    buffer.Put(Description, row.GetAsString(Description));
-
-                _table.Insert(buffer);
-
-                if (++count % entityPerFile == 0)
+                foreach (IGdRow row in table.Rows)
                 {
-                    Flush(outputFolder);
-                    PrepareMemTable();
-                    count = 0;
+                    GdRowBuffer buffer = new GdRowBuffer();
+                    buffer.Put(Id, row.GetAsInteger(Id));
 
-                    if (track != null)
-                        track.ReportProgress(DbConvert.ToDouble(++current * entityPerFile * 100 / tableCount));
+                    Geometry geometry = row.GetAsGeometry(Geometry);
+                    geometry.SRID = epsgCode;
+                    geometry = GdProjection.Project(geometry, 4326);
+
+                    buffer.Put(Geometry, geometry);
+                    buffer.Put(Height, row.GetAsReal(Height));
+
+                    if (row.Table.Schema.GetFieldByName(Style) != null)
+                        buffer.Put(Style, row.GetAsReal(Style));
+
+                    if (row.Table.Schema.GetFieldByName(Description) != null)
+                        buffer.Put(Description, row.GetAsString(Description));
+
+                    _table.Insert(buffer);
                 }
+
+                string fullFileName = Path.Combine(outputFolder, DbConvert.ToString(++fileName) + ".json");
+                Flush(fullFileName);
+                PrepareMemTable();
             }
 
-            if (track != null)
-                track.ReportProgress(100);
 
             MessageBox.Show("Finish");
         }
@@ -72,11 +72,10 @@ namespace ozgurtek.framework.converter.winforms
             _table.CreateField(new GdField(Description, GdDataType.Real));
         }
 
-        private void Flush(string outputFolder)
+        private void Flush(string fileName)
         {
             string geojson = _table.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
-            string file = Path.Combine(outputFolder, Guid.NewGuid() + ".geojson");
-            File.WriteAllText(file, geojson);
+            File.WriteAllText(fileName, geojson);
         }
     }
 }

@@ -6,10 +6,8 @@ using Microsoft.Win32;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Geodesy;
-using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
-using ozgurtek.framework.core.Mapping;
 using ozgurtek.framework.driver.postgres;
 using ozgurtek.framework.driver.sqlite;
 

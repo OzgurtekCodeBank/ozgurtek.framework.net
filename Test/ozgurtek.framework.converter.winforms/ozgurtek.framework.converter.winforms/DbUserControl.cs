@@ -70,9 +70,11 @@ namespace ozgurtek.framework.converter.winforms
             GdPgTable table = dataSource.ExecuteSql("sql", filter);
 
             GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
-            engine.Export(table, OutPutFolderTextBox.Text, 
+            engine.Export(table, OutPutFolderTextBox.Text,
                 DbConvert.ToInt32(XyTileCountTextBox.Text),
-                DbConvert.ToInt32(EpsgTextBox.Text), track);
+                DbConvert.ToInt32(EpsgTextBox.Text),
+                DbConvert.ToBoolean(SuppressBlankTileCheck.Checked),
+                track);
         }
 
         private void ProgressChanged(object sender, double e)

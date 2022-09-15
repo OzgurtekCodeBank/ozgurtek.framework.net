@@ -13,14 +13,13 @@ namespace ozgurtek.framework.converter.winforms
 {
     public class GdExtrudedModelExportEngine
     {
-        private GdMemoryTable _memTable;
         private const string Id = "gd_id";
         private const string Geometry = "gd_geometry";
         private const string Height = "gd_ext_height";
         private const string Style = "gd_style";
         private const string Description = "gd_description";
 
-        public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, IGdTrack track)
+        public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, bool suppressBlankTile, IGdTrack track)
         {
             if (!Directory.Exists(outputFolder))
                 throw new Exception("Folder not exists");
@@ -46,29 +45,51 @@ namespace ozgurtek.framework.converter.winforms
             List<GdTileIndex> wgsTileIndex = Divide(project, project.Width / xyTileCount, project.Height / xyTileCount);
 
             //create json models...
-            CreateModels(table, outputFolder, wgsTileIndex, epsgCode, track);
-
-            //create sqlite index file...
-            CreateIndexFile(outputFolder, wgsTileIndex);
+            CreateModels(table, outputFolder, wgsTileIndex, epsgCode, suppressBlankTile, track);
 
             //finish
             if (track != null)
                 track.ReportProgress(100);
         }
 
-        private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode, IGdTrack track)
+        private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode, bool suppressBlankTile, IGdTrack track)
         {
-            PrepareNewMemTable();
+            //crete sqllite index file 
+            string path = Path.Combine(outputFolder, "index.sqlite");
+            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
+            GdSqlLiteTable sqlLiteTable = sqlLiteDataSource.CreateTable("gd_index", GdGeometryType.Polygon, 4326, null);
+            sqlLiteTable.CreateField(new GdField("min_x", GdDataType.Real));
+            sqlLiteTable.CreateField(new GdField("min_y", GdDataType.Real));
+            sqlLiteTable.CreateField(new GdField("max_x", GdDataType.Real));
+            sqlLiteTable.CreateField(new GdField("max_y", GdDataType.Real));
+            sqlLiteTable.BeginTransaction();
 
             long fileName = 0;
             foreach (GdTileIndex index in tileIndex)
             {
+                //search given table
                 Envelope envelope = GdProjection.Project(index.Envelope, 4326, epsgCode);
                 GeometryFactory factory = new GeometryFactory();
                 Geometry filterGeom = factory.ToGeometry(envelope);
                 filterGeom.SRID = epsgCode;
                 table.GeometryFilter = new GdGeometryFilter(filterGeom, GdSpatialRelation.Intersects);
 
+                if (suppressBlankTile && table.RowCount == 0)
+                    continue;
+
+                //write index
+                GdRowBuffer sqlLiteBuffer = new GdRowBuffer();
+                Geometry geometryWgs84 = factory.ToGeometry(index.Envelope);
+                geometryWgs84.SRID = 4326;
+                sqlLiteBuffer.Put("min_x", index.Envelope.MinX);
+                sqlLiteBuffer.Put("min_y", index.Envelope.MinY);
+                sqlLiteBuffer.Put("max_x", index.Envelope.MaxX);
+                sqlLiteBuffer.Put("max_y", index.Envelope.MaxY);
+                sqlLiteBuffer.Put("geometry", geometryWgs84);
+                sqlLiteTable.Insert(sqlLiteBuffer);
+
+                //write json file
+                GdMemoryTable memTable = PrepareNewMemTable();
                 foreach (IGdRow row in table.Rows)
                 {
                     if (row.IsNull(Geometry))
@@ -99,48 +120,17 @@ namespace ozgurtek.framework.converter.winforms
                     if (row.Table.Schema.GetFieldByName(Description) != null)
                         buffer.Put(Description, row.GetAsString(Description));
 
-                    _memTable.Insert(buffer);
+                    memTable.Insert(buffer);
                 }
 
                 //write file....
                 string fullFileName = Path.Combine(outputFolder, DbConvert.ToString(++fileName) + ".json");
-                string geojson = _memTable.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
+                string geojson = memTable.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
                 File.WriteAllText(fullFileName, geojson);
-
-                PrepareNewMemTable();
 
                 if (track != null)
                     track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileIndex.Count));
             }
-        }
-
-        private void CreateIndexFile(string outputFolder, List<GdTileIndex> tileIndex)
-        {
-            //crete sqllite index file 
-            string path = Path.Combine(outputFolder, "index.sqlite");
-            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
-            GdSqlLiteTable sqlLiteTable = sqlLiteDataSource.CreateTable("gd_index", GdGeometryType.Polygon, 4326, null);
-            sqlLiteTable.CreateField(new GdField("min_x", GdDataType.Real));
-            sqlLiteTable.CreateField(new GdField("min_y", GdDataType.Real));
-            sqlLiteTable.CreateField(new GdField("max_x", GdDataType.Real));
-            sqlLiteTable.CreateField(new GdField("max_y", GdDataType.Real));
-
-            sqlLiteTable.BeginTransaction();
-            
-            GeometryFactory factory = new GeometryFactory();
-            foreach (GdTileIndex index in tileIndex)
-            {
-                Geometry geometry = factory.ToGeometry(index.Envelope);
-                geometry.SRID = 4326;
-                GdRowBuffer buffer = new GdRowBuffer();
-                buffer.Put("min_x", index.Envelope.MinX);
-                buffer.Put("min_y", index.Envelope.MinY);
-                buffer.Put("max_x", index.Envelope.MaxX);
-                buffer.Put("max_y", index.Envelope.MaxY);
-                buffer.Put("geometry", geometry);
-                sqlLiteTable.Insert(buffer);
-            }
-            
             sqlLiteTable.CommitTransaction();
         }
 
@@ -169,14 +159,15 @@ namespace ozgurtek.framework.converter.winforms
             return worldArray;
         }
 
-        private void PrepareNewMemTable()
+        private GdMemoryTable PrepareNewMemTable()
         {
-            _memTable = new GdMemoryTable();
-            _memTable.CreateField(new GdField(Id, GdDataType.Integer));
-            _memTable.CreateField(new GdField(Geometry, GdDataType.Geometry));
-            _memTable.CreateField(new GdField(Height, GdDataType.Real));
-            _memTable.CreateField(new GdField(Style, GdDataType.Real));
-            _memTable.CreateField(new GdField(Description, GdDataType.Real));
+            GdMemoryTable memTable = new GdMemoryTable();
+            memTable.CreateField(new GdField(Id, GdDataType.Integer));
+            memTable.CreateField(new GdField(Geometry, GdDataType.Geometry));
+            memTable.CreateField(new GdField(Height, GdDataType.Real));
+            memTable.CreateField(new GdField(Style, GdDataType.Real));
+            memTable.CreateField(new GdField(Description, GdDataType.Real));
+            return memTable;
         }
     }
 }

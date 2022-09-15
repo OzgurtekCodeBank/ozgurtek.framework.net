@@ -44,6 +44,7 @@ namespace ozgurtek.framework.converter.winforms
             this.EntityPerPageLabel = new System.Windows.Forms.Label();
             this.ExportButton = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.SuppressBlankTileCheck = new System.Windows.Forms.CheckBox();
             this.DatabaseFrame.SuspendLayout();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -97,6 +98,7 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // OutputGroupBox
             // 
+            this.OutputGroupBox.Controls.Add(this.SuppressBlankTileCheck);
             this.OutputGroupBox.Controls.Add(this.folderButton);
             this.OutputGroupBox.Controls.Add(this.OutPutFolderTextBox);
             this.OutputGroupBox.Controls.Add(this.EpsgTextBox);
@@ -126,7 +128,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutPutFolderTextBox.Location = new System.Drawing.Point(101, 116);
             this.OutPutFolderTextBox.Multiline = true;
             this.OutPutFolderTextBox.Name = "OutPutFolderTextBox";
-            this.OutPutFolderTextBox.Size = new System.Drawing.Size(617, 50);
+            this.OutPutFolderTextBox.Size = new System.Drawing.Size(617, 23);
             this.OutPutFolderTextBox.TabIndex = 1;
             // 
             // EpsgTextBox
@@ -188,6 +190,18 @@ namespace ozgurtek.framework.converter.winforms
             this.progressBar.Size = new System.Drawing.Size(739, 23);
             this.progressBar.TabIndex = 8;
             // 
+            // SuppressBlankTileCheck
+            // 
+            this.SuppressBlankTileCheck.AutoSize = true;
+            this.SuppressBlankTileCheck.Checked = true;
+            this.SuppressBlankTileCheck.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.SuppressBlankTileCheck.Location = new System.Drawing.Point(597, 161);
+            this.SuppressBlankTileCheck.Name = "SuppressBlankTileCheck";
+            this.SuppressBlankTileCheck.Size = new System.Drawing.Size(120, 17);
+            this.SuppressBlankTileCheck.TabIndex = 3;
+            this.SuppressBlankTileCheck.Text = "Suppress Blank Tile";
+            this.SuppressBlankTileCheck.UseVisualStyleBackColor = true;
+            // 
             // DbUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,5 +237,6 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.TextBox EpsgTextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.CheckBox SuppressBlankTileCheck;
     }
 }

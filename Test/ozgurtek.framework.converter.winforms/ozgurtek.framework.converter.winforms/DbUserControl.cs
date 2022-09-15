@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Geodesy;
 using ozgurtek.framework.common.Util;
-using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.postgres;
-using ozgurtek.framework.driver.sqlite;
 
 namespace ozgurtek.framework.converter.winforms
 {
@@ -32,7 +26,8 @@ namespace ozgurtek.framework.converter.winforms
 
         public void End()
         {
-            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+            RegistryKey key =
+                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             key.SetValue("connection_string", ConnectionStringText.Text);
             key.SetValue("query", QueryTextBox.Text);
             key.SetValue("output_folder", OutPutFolderTextBox.Text);
@@ -67,34 +62,15 @@ namespace ozgurtek.framework.converter.winforms
             GdTrack track = new GdTrack();
             track.ProgressChanged += ProgressChanged;
 
+            //connect db and get table
             GdPgDataSource dataSource = GdPgDataSource.Open(ConnectionStringText.Text);
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
-            GdPgTable gdPgTable = dataSource.ExecuteSql("sql", filter);
-            gdPgTable.GeometryField = "gd_geometry";
-            Envelope envelope = gdPgTable.Envelope;
-            Envelope project = GdProjection.Project(envelope, DbConvert.ToInt32(EpsgTextBox.Text), 4326);
-            List<GdTileIndex> tileIndices = Divide(project, project.Width / 10, project.Height / 10); //todo: enis
-
-            string path = Path.Combine(OutPutFolderTextBox.Text, "index.sqlite");
-            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
-            GdSqlLiteTable table = sqlLiteDataSource.CreateTable("gd_index", null, null, null);
-            table.CreateField(new GdField("min_x", GdDataType.Real));
-            table.CreateField(new GdField("min_y", GdDataType.Real));
-            table.CreateField(new GdField("max_x", GdDataType.Real));
-            table.CreateField(new GdField("max_y", GdDataType.Real));
-
-            foreach (GdTileIndex index in tileIndices)
-            {
-                GdRowBuffer buffer = new GdRowBuffer();
-                buffer.Put("min_x", index.Envelope.MinX);
-                buffer.Put("min_y", index.Envelope.MinY);
-                buffer.Put("max_x", index.Envelope.MaxX);
-                buffer.Put("max_y", index.Envelope.MaxY);
-                table.Insert(buffer);
-            }
+            GdPgTable table = dataSource.ExecuteSql("sql", filter);
 
             GdExt3dModelExportEngine engine = new GdExt3dModelExportEngine();
-            engine.Export(gdPgTable, OutPutFolderTextBox.Text, tileIndices, DbConvert.ToInt32(EpsgTextBox.Text), track);
+            engine.Export(table, OutPutFolderTextBox.Text, 
+                DbConvert.ToInt32(XyTileCountTextBox.Text),
+                DbConvert.ToInt32(EpsgTextBox.Text), track);
         }
 
         private void ProgressChanged(object sender, double e)
@@ -111,40 +87,14 @@ namespace ozgurtek.framework.converter.winforms
             if (string.IsNullOrWhiteSpace(QueryTextBox.Text))
                 throw new SystemException("QueryTextBox Missing");
 
-            if (string.IsNullOrWhiteSpace(EntityPerPageTextBox.Text))
-                throw new SystemException("EntityPerPageTextBox Missing");
+            if (string.IsNullOrWhiteSpace(XyTileCountTextBox.Text))
+                throw new SystemException("XY Tile Size");
 
             if (string.IsNullOrWhiteSpace(OutPutFolderTextBox.Text))
                 throw new SystemException("OutPutFolderTextBox Missing");
 
             if (string.IsNullOrWhiteSpace(EpsgTextBox.Text))
                 throw new SystemException("EpsgTextBox Missing");
-        }
-
-
-        public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
-        {
-            List<GdTileIndex> worldArray = new List<GdTileIndex>();
-
-            long xindex = 0;
-            long yindex = 0;
-            for (double y = viewport.MinY; y <= viewport.MaxY - double.Epsilon; y += tileHeight)
-            {
-                for (double x = viewport.MinX; x <= viewport.MaxX - double.Epsilon; x += tileWidth)
-                {
-                    GdTileIndex index = new GdTileIndex(xindex, yindex);
-                    Coordinate coordinateMin = new Coordinate(x, y);
-                    Coordinate coordinateMax = new Coordinate(x + tileWidth, y + tileHeight);
-                    Envelope env = new Envelope(coordinateMin, coordinateMax);
-                    index.Envelope = env;
-                    worldArray.Add(index);
-                    yindex++;
-                }
-
-                xindex++;
-            }
-
-            return worldArray;
         }
     }
 }

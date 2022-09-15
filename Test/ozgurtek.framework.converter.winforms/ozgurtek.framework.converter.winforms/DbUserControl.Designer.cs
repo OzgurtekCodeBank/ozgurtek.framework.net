@@ -38,7 +38,7 @@ namespace ozgurtek.framework.converter.winforms
             this.folderButton = new System.Windows.Forms.Button();
             this.OutPutFolderTextBox = new System.Windows.Forms.TextBox();
             this.EpsgTextBox = new System.Windows.Forms.TextBox();
-            this.EntityPerPageTextBox = new System.Windows.Forms.TextBox();
+            this.XyTileCountTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.OutputFolderLabel = new System.Windows.Forms.Label();
             this.EntityPerPageLabel = new System.Windows.Forms.Label();
@@ -100,7 +100,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputGroupBox.Controls.Add(this.folderButton);
             this.OutputGroupBox.Controls.Add(this.OutPutFolderTextBox);
             this.OutputGroupBox.Controls.Add(this.EpsgTextBox);
-            this.OutputGroupBox.Controls.Add(this.EntityPerPageTextBox);
+            this.OutputGroupBox.Controls.Add(this.XyTileCountTextBox);
             this.OutputGroupBox.Controls.Add(this.label2);
             this.OutputGroupBox.Controls.Add(this.OutputFolderLabel);
             this.OutputGroupBox.Controls.Add(this.EntityPerPageLabel);
@@ -136,13 +136,13 @@ namespace ozgurtek.framework.converter.winforms
             this.EpsgTextBox.Size = new System.Drawing.Size(617, 20);
             this.EpsgTextBox.TabIndex = 1;
             // 
-            // EntityPerPageTextBox
+            // XyTileCountTextBox
             // 
-            this.EntityPerPageTextBox.Location = new System.Drawing.Point(100, 29);
-            this.EntityPerPageTextBox.Name = "EntityPerPageTextBox";
-            this.EntityPerPageTextBox.Size = new System.Drawing.Size(618, 20);
-            this.EntityPerPageTextBox.TabIndex = 1;
-            this.EntityPerPageTextBox.Text = "10";
+            this.XyTileCountTextBox.Location = new System.Drawing.Point(100, 29);
+            this.XyTileCountTextBox.Name = "XyTileCountTextBox";
+            this.XyTileCountTextBox.Size = new System.Drawing.Size(618, 20);
+            this.XyTileCountTextBox.TabIndex = 1;
+            this.XyTileCountTextBox.Text = "10";
             // 
             // label2
             // 
@@ -167,9 +167,9 @@ namespace ozgurtek.framework.converter.winforms
             this.EntityPerPageLabel.AutoSize = true;
             this.EntityPerPageLabel.Location = new System.Drawing.Point(10, 29);
             this.EntityPerPageLabel.Name = "EntityPerPageLabel";
-            this.EntityPerPageLabel.Size = new System.Drawing.Size(80, 13);
+            this.EntityPerPageLabel.Size = new System.Drawing.Size(72, 13);
             this.EntityPerPageLabel.TabIndex = 0;
-            this.EntityPerPageLabel.Text = "Entity Per Page";
+            this.EntityPerPageLabel.Text = "XY Tile Count";
             // 
             // ExportButton
             // 
@@ -214,7 +214,7 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.GroupBox DatabaseFrame;
         private System.Windows.Forms.GroupBox OutputGroupBox;
         private System.Windows.Forms.Label EntityPerPageLabel;
-        private System.Windows.Forms.TextBox EntityPerPageTextBox;
+        private System.Windows.Forms.TextBox XyTileCountTextBox;
         private System.Windows.Forms.Label OutputFolderLabel;
         private System.Windows.Forms.TextBox OutPutFolderTextBox;
         private System.Windows.Forms.Button ExportButton;

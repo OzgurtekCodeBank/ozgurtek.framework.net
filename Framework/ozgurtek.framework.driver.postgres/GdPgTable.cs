@@ -24,11 +24,18 @@ namespace ozgurtek.framework.driver.postgres
             if (string.IsNullOrEmpty(GeometryField))
                 throw new Exception("GeometryFilter exists but GeometryField empty or null");
 
-            string stMask = ToSTMask(GeometryFilter.SpatialRelation);
-            string geometry = $"public.st_geomfromwkb(@otherGeo, {GeometryFilter.Geometry.SRID})";
-            string spatialClause = $"{stMask}({GeometryField},{geometry})";
-            filter.Text = $"SELECT * FROM ({filter.Text}) A WHERE {spatialClause}";
-            filter.Add("otherGeo", GeometryFilter.Geometry);
+            if (GeometryFilter.Geometry != null)
+            {
+                string stMask = ToSTMask(GeometryFilter.SpatialRelation);
+                string geometry = $"public.st_geomfromwkb(@otherGeo, {GeometryFilter.Geometry.SRID})";
+                string spatialClause = $"{stMask}({GeometryField},{geometry})";
+                filter.Text = $"SELECT * FROM ({filter.Text}) A WHERE {spatialClause}";
+                filter.Add("otherGeo", GeometryFilter.Geometry);
+            }
+            else if (GeometryFilter.Envelope != null)
+            {
+
+            }
         }
 
         public override bool CanEditRow

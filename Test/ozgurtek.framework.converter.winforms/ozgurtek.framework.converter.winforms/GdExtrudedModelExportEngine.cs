@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
+using System.Linq;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format;
@@ -11,9 +11,9 @@ using ozgurtek.framework.driver.sqlite;
 
 namespace ozgurtek.framework.converter.winforms
 {
-    public class GdExt3dModelExportEngine
+    public class GdExtrudedModelExportEngine
     {
-        private GdMemoryTable _table;
+        private GdMemoryTable _memTable;
         private const string Id = "gd_id";
         private const string Geometry = "gd_geometry";
         private const string Height = "gd_ext_height";
@@ -22,6 +22,24 @@ namespace ozgurtek.framework.converter.winforms
 
         public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, IGdTrack track)
         {
+            if (!Directory.Exists(outputFolder))
+                throw new Exception("Folder not exists");
+
+            if (Directory.EnumerateFileSystemEntries(outputFolder).Any())
+                throw new Exception("Folder must be empty");
+
+            IGdField field = table.Schema.GetFieldByName(Id);
+            if (field == null)
+                throw new Exception($"{Id} field missing...");
+
+            field = table.Schema.GetFieldByName(Geometry);
+            if (field == null)
+                throw new Exception($"{Id} field missing...");
+
+            field = table.Schema.GetFieldByName(Height);
+            if (field == null)
+                throw new Exception($"{Height} field missing...");
+
             //divide 4326....
             table.GeometryField = Geometry;
             Envelope project = GdProjection.Project(table.Envelope, DbConvert.ToInt32(epsgCode), 4326);
@@ -36,13 +54,11 @@ namespace ozgurtek.framework.converter.winforms
             //finish
             if (track != null)
                 track.ReportProgress(100);
-
-            MessageBox.Show("Finish...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode, IGdTrack track)
         {
-            PrepareMemTable();
+            PrepareNewMemTable();
 
             long fileName = 0;
             foreach (GdTileIndex index in tileIndex)
@@ -55,30 +71,43 @@ namespace ozgurtek.framework.converter.winforms
 
                 foreach (IGdRow row in table.Rows)
                 {
+                    if (row.IsNull(Geometry))
+                        continue;
+
+                    if (row.IsNull(Id))
+                        continue;
+
                     GdRowBuffer buffer = new GdRowBuffer();
+                    
+                    //id
                     buffer.Put(Id, row.GetAsInteger(Id));
 
+                    //geometry
                     Geometry geometry = row.GetAsGeometry(Geometry);
                     geometry.SRID = epsgCode;
                     geometry = GdProjection.Project(geometry, 4326);
-
                     buffer.Put(Geometry, geometry);
+
+                    //height
                     buffer.Put(Height, row.GetAsReal(Height));
 
+                    //optional style
                     if (row.Table.Schema.GetFieldByName(Style) != null)
                         buffer.Put(Style, row.GetAsReal(Style));
 
+                    //optional description
                     if (row.Table.Schema.GetFieldByName(Description) != null)
                         buffer.Put(Description, row.GetAsString(Description));
 
-                    _table.Insert(buffer);
+                    _memTable.Insert(buffer);
                 }
 
+                //write file....
                 string fullFileName = Path.Combine(outputFolder, DbConvert.ToString(++fileName) + ".json");
-                string geojson = _table.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
+                string geojson = _memTable.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
                 File.WriteAllText(fullFileName, geojson);
 
-                PrepareMemTable();
+                PrepareNewMemTable();
 
                 if (track != null)
                     track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileIndex.Count));
@@ -140,14 +169,14 @@ namespace ozgurtek.framework.converter.winforms
             return worldArray;
         }
 
-        private void PrepareMemTable()
+        private void PrepareNewMemTable()
         {
-            _table = new GdMemoryTable();
-            _table.CreateField(new GdField(Id, GdDataType.Integer));
-            _table.CreateField(new GdField(Geometry, GdDataType.Geometry));
-            _table.CreateField(new GdField(Height, GdDataType.Real));
-            _table.CreateField(new GdField(Style, GdDataType.Real));
-            _table.CreateField(new GdField(Description, GdDataType.Real));
+            _memTable = new GdMemoryTable();
+            _memTable.CreateField(new GdField(Id, GdDataType.Integer));
+            _memTable.CreateField(new GdField(Geometry, GdDataType.Geometry));
+            _memTable.CreateField(new GdField(Height, GdDataType.Real));
+            _memTable.CreateField(new GdField(Style, GdDataType.Real));
+            _memTable.CreateField(new GdField(Description, GdDataType.Real));
         }
     }
 }

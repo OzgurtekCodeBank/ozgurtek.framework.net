@@ -47,10 +47,12 @@ namespace ozgurtek.framework.converter.winforms
             {
                 CheckUi();
                 Export();
+                
+                MessageBox.Show("Finish...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message);
+                MessageBox.Show(exception.Message ,"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -67,7 +69,7 @@ namespace ozgurtek.framework.converter.winforms
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
             GdPgTable table = dataSource.ExecuteSql("sql", filter);
 
-            GdExt3dModelExportEngine engine = new GdExt3dModelExportEngine();
+            GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
             engine.Export(table, OutPutFolderTextBox.Text, 
                 DbConvert.ToInt32(XyTileCountTextBox.Text),
                 DbConvert.ToInt32(EpsgTextBox.Text), track);

@@ -35,15 +35,19 @@ namespace ozgurtek.framework.converter.winforms
             this.fileUserControl = new ozgurtek.framework.converter.winforms.FileUserControl();
             this.dbTabPage = new System.Windows.Forms.TabPage();
             this.dbUserControl = new ozgurtek.framework.converter.winforms.DbUserControl();
+            this.aboutTabPage = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.fileTabPage.SuspendLayout();
             this.dbTabPage.SuspendLayout();
+            this.aboutTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.fileTabPage);
             this.tabControl.Controls.Add(this.dbTabPage);
+            this.tabControl.Controls.Add(this.aboutTabPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
@@ -89,6 +93,26 @@ namespace ozgurtek.framework.converter.winforms
             this.dbUserControl.Size = new System.Drawing.Size(763, 606);
             this.dbUserControl.TabIndex = 0;
             // 
+            // aboutTabPage
+            // 
+            this.aboutTabPage.Controls.Add(this.label1);
+            this.aboutTabPage.Location = new System.Drawing.Point(4, 22);
+            this.aboutTabPage.Name = "aboutTabPage";
+            this.aboutTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.aboutTabPage.Size = new System.Drawing.Size(769, 612);
+            this.aboutTabPage.TabIndex = 2;
+            this.aboutTabPage.Text = "About";
+            this.aboutTabPage.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(27, 32);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(160, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Model Creator 15.09.2022 17:50";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -105,6 +129,8 @@ namespace ozgurtek.framework.converter.winforms
             this.tabControl.ResumeLayout(false);
             this.fileTabPage.ResumeLayout(false);
             this.dbTabPage.ResumeLayout(false);
+            this.aboutTabPage.ResumeLayout(false);
+            this.aboutTabPage.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -116,6 +142,8 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.TabPage dbTabPage;
         private FileUserControl fileUserControl;
         private DbUserControl dbUserControl;
+        private System.Windows.Forms.TabPage aboutTabPage;
+        private System.Windows.Forms.Label label1;
     }
 }
 

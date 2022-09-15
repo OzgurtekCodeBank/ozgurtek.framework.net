@@ -108,7 +108,7 @@
     <Compile Include="FileUserControl.Designer.cs">
       <DependentUpon>FileUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GdExt3dModelExportEngine.cs" />
+    <Compile Include="GdExtrudedModelExportEngine.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

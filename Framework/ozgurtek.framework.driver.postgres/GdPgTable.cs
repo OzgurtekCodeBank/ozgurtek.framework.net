@@ -6,6 +6,7 @@ using ozgurtek.framework.core.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 
 namespace ozgurtek.framework.driver.postgres
 {
@@ -34,7 +35,13 @@ namespace ozgurtek.framework.driver.postgres
             }
             else if (GeometryFilter.Envelope != null)
             {
-
+                string spatialClause = $"{GeometryField} && ST_MakeEnvelope(" +
+                                       $"{GeometryFilter.Envelope.MinX.ToString(CultureInfo.InvariantCulture)}, " +
+                                       $"{GeometryFilter.Envelope.MinY.ToString(CultureInfo.InvariantCulture)}," +
+                                       $"{GeometryFilter.Envelope.MaxX.ToString(CultureInfo.InvariantCulture)}," +
+                                       $"{GeometryFilter.Envelope.MaxY.ToString(CultureInfo.InvariantCulture)}" +
+                                       ")";
+                filter.Text = $"SELECT * FROM ({filter.Text}) A WHERE {spatialClause}";
             }
         }
 

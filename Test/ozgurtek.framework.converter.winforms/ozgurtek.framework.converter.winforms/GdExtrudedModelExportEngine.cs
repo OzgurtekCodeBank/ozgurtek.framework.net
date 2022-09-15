@@ -33,7 +33,7 @@ namespace ozgurtek.framework.converter.winforms
 
             field = table.Schema.GetFieldByName(Geometry);
             if (field == null)
-                throw new Exception($"{Id} field missing...");
+                throw new Exception($"{Geometry} field missing...");
 
             field = table.Schema.GetFieldByName(Height);
             if (field == null)
@@ -41,7 +41,7 @@ namespace ozgurtek.framework.converter.winforms
 
             //divide 4326....
             table.GeometryField = Geometry;
-            Envelope project = GdProjection.Project(table.Envelope, DbConvert.ToInt32(epsgCode), 4326);
+            Envelope project = GdProjection.Project(table.Envelope, epsgCode, 4326);
             List<GdTileIndex> wgsTileIndex = Divide(project, project.Width / xyTileCount, project.Height / xyTileCount);
 
             //create json models...
@@ -69,16 +69,14 @@ namespace ozgurtek.framework.converter.winforms
             {
                 //search given table
                 Envelope envelope = GdProjection.Project(index.Envelope, 4326, epsgCode);
-                GeometryFactory factory = new GeometryFactory();
-                Geometry filterGeom = factory.ToGeometry(envelope);
-                filterGeom.SRID = epsgCode;
-                table.GeometryFilter = new GdGeometryFilter(filterGeom, GdSpatialRelation.Intersects);
+                table.GeometryFilter = new GdGeometryFilter(envelope);
 
                 if (suppressBlankTile && table.RowCount == 0)
                     continue;
 
-                //write index
+                //write index to sqlite file
                 GdRowBuffer sqlLiteBuffer = new GdRowBuffer();
+                GeometryFactory factory = new GeometryFactory();
                 Geometry geometryWgs84 = factory.ToGeometry(index.Envelope);
                 geometryWgs84.SRID = 4326;
                 sqlLiteBuffer.Put("min_x", index.Envelope.MinX);
@@ -123,7 +121,7 @@ namespace ozgurtek.framework.converter.winforms
                     memTable.Insert(buffer);
                 }
 
-                //write file....
+                //write json file....
                 string fullFileName = Path.Combine(outputFolder, DbConvert.ToString(++fileName) + ".json");
                 string geojson = memTable.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
                 File.WriteAllText(fullFileName, geojson);

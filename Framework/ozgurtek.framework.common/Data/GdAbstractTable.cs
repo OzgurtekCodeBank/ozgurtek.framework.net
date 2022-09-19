@@ -63,7 +63,7 @@ namespace ozgurtek.framework.common.Data
             }
         }
 
-        public GdGeometryType? GeometryType
+        public virtual GdGeometryType? GeometryType
         {
             get
             {
@@ -103,7 +103,7 @@ namespace ozgurtek.framework.common.Data
             set { _geometryType = value; }
         }
 
-        public int Srid
+        public virtual int Srid
         {
             get
             {
@@ -185,7 +185,7 @@ namespace ozgurtek.framework.common.Data
             return objects;
         }
 
-        public IGdGeometryFilter GeometryFilter
+        public virtual IGdGeometryFilter GeometryFilter
         {
             get => _geometryFilter;
             set => _geometryFilter = value;

@@ -1,41 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.core.Data;
 using Envelope = NetTopologySuite.Geometries.Envelope;
 using Layer = OSGeo.OGR.Layer;
 
 namespace ozgurtek.framework.driver.gdal
 {
-    public class GdOgrTable : IGdTable
+    public class GdOgrTable : GdAbstractTable
     {
         private readonly Layer _layer;
-        private readonly string _address;
         private IGdSchema _schema;
         private string _attributeFilter;
         private IGdGeometryFilter _geometryFilter;
-        private string _geometryField;
 
         public GdOgrTable(Layer layer, string address)
         {
             _layer = layer;
-            _address = address;
+            Name = layer.GetName();
+            Address = address + ":" + Name;
+            KeyField = _layer.GetFIDColumn();
+            GeometryField = _layer.GetGeometryColumn();
+            GeometryType = GdOgrUtil.GetGeometryType(_layer.GetGeomType());
         }
 
-        public long RowCount
+        public override long RowCount
         {
-            get { return _layer.GetFeatureCount(1); }
+            get
+            {
+                try
+                {
+                    return _layer.GetFeatureCount(1);
+                }
+                catch
+                {
+                    return base.RowCount;
+                }
+            }
         }
 
-        public string Name
-        {
-            get { return _layer.GetName(); }
-        }
-
-        public IEnumerable<IGdRow> Rows
+        public override IEnumerable<IGdRow> Rows
         {
             get
             {
@@ -68,18 +73,7 @@ namespace ozgurtek.framework.driver.gdal
                             case FieldType.OFTDate:
                             case FieldType.OFTDateTime:
                             case FieldType.OFTTime:
-                                try
-                                {
-                                    feature.GetFieldAsDateTime(fieldName, out var year, out var month, out var day,
-                                        out var hour, out var minute, out var second, out _);
-                                    //DateTime dateTime = new DateTime(year, month, day, hour, minute, (int) second);
-                                    buffer.Put(fieldName, DateTime.Now, GdDataType.Date);//todo: enis hata
-                                }
-                                catch
-                                {
-                                    // ignored
-                                }
-
+                                buffer.Put(fieldName, feature.GetFieldAsString(fieldName), GdDataType.String);
                                 break;
 
                             case FieldType.OFTInteger:
@@ -106,8 +100,9 @@ namespace ozgurtek.framework.driver.gdal
                     {
                         GeomFieldDefn geomFieldDefn = feature.GetGeomFieldDefnRef(i);
                         string fieldName = geomFieldDefn.GetName();
+
                         if (string.IsNullOrWhiteSpace(fieldName))
-                            continue;
+                            fieldName = "gd_geom_ext" + i;
 
                         Geometry ogrGeom = feature.GetGeomFieldRef(i);
                         if (ogrGeom == null)
@@ -144,7 +139,7 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
-        public IGdSchema Schema
+        public override IGdSchema Schema
         {
             get
             {
@@ -165,19 +160,6 @@ namespace ozgurtek.framework.driver.gdal
                     field.DefaultVal = ogrFieldDef.GetDefault();
                     field.NotNull = !DbConvert.ToBoolean(ogrFieldDef.IsNullable());
 
-                    //find geometry field
-                    int geomFieldCount = layerDefn.GetGeomFieldCount();
-                    for (int j = 0; j < geomFieldCount; j++)
-                    {
-                        GeomFieldDefn geomFieldDefn = layerDefn.GetGeomFieldDefn(j);
-                        if (geomFieldDefn.GetName().Equals(field.FieldName))
-                        {
-                            wkbGeometryType wkbGeometryType = geomFieldDefn.GetFieldType();
-                            field.GeometryType = GdOgrUtil.GetGeometryType(wkbGeometryType);
-                            break;
-                        }
-                    }
-
                     schema.Add(field);
                 }
 
@@ -185,97 +167,31 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
-        public Envelope Envelope
+        public override IGdTable Clone()
         {
-            get
-            {
-                OSGeo.OGR.Envelope envelope = new OSGeo.OGR.Envelope();
-                _layer.GetExtent(envelope, 1);
-                return new Envelope(envelope.MinX, envelope.MaxX, envelope.MinY, envelope.MaxY);
-            }
-        }
-
-        public GdGeometryType? GeometryType
-        {
-            get { return GdOgrUtil.GetGeometryType(_layer.GetGeomType()); }
-            set { throw new NotSupportedException("Not Supported"); }
-        }
-
-        public int Srid
-        {
-            get { throw new NotSupportedException("Use ProjectionString method"); }
-            set { throw new NotSupportedException("Not Supported"); }
-        }
-
-        public string GeometryField
-        {
-            get { return _geometryField; }
-            set { _geometryField = value; }
-        }
-
-        public string Description
-        {
-            get { return Name; }
-            set { throw new NotSupportedException("Not Supported"); }
-        }
-
-        public string Address
-        {
-            get { return _address + ":" + Name; }
-            set { throw new NotSupportedException("Not Supported"); }
-        }
-
-        public string KeyField
-        {
-            get { return _layer.GetFIDColumn(); }
-            set { throw new NotSupportedException("Not Supported"); }
-        }
-
-        public IGdRow FindRow(long rowId)
-        {
-            foreach (IGdRow row in Rows)
-            {
-                if (row.IsNull("gd_fid"))
-                    continue;
-
-                if (row.GetAsInteger("gd_fid") == rowId)
-                    return row;
-            }
-
             return null;
         }
 
-        public IEnumerable<object> GetDistinctValues(string fieldName)
-        {
-            GdDataType dataType = Schema.GetFieldByName(fieldName).FieldType;
-            HashSet<object> objects = new HashSet<object>();
-            foreach (IGdRow row in Rows)
-            {
-                if (!row.IsNull(fieldName))
-                {
-                    if (dataType == GdDataType.String)
-                        objects.Add(row.GetAsString(fieldName));
-                    else if (dataType == GdDataType.Boolean)
-                        objects.Add(row.GetAsBoolean(fieldName));
-                    else if (dataType == GdDataType.Date)
-                        objects.Add(row.GetAsDate(fieldName));
-                    else if (dataType == GdDataType.Integer)
-                        objects.Add(row.GetAsInteger(fieldName));
-                    else if (dataType == GdDataType.Real)
-                        objects.Add(row.GetAsReal(fieldName));
-                }
-                else
-                    objects.Add(null);
-            }
-            return objects;
-        }
-
-        public IGdGeometryFilter GeometryFilter
+        public override Envelope Envelope
         {
             get
             {
-                return _geometryFilter;
+                try
+                {
+                    OSGeo.OGR.Envelope envelope = new OSGeo.OGR.Envelope();
+                    _layer.GetExtent(envelope, 1);
+                    return new Envelope(envelope.MinX, envelope.MaxX, envelope.MinY, envelope.MaxY);
+                }
+                catch
+                {
+                    return base.Envelope;
+                }
             }
+        }
+
+        public override IGdGeometryFilter GeometryFilter
+        {
+            get { return _geometryFilter; }
             set
             {
                 _geometryFilter = value;
@@ -299,67 +215,6 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
-        public long Insert(IGdRowBuffer row)
-        {
-            throw new NotSupportedException();
-        }
-
-        public long Update(IGdRowBuffer row)
-        {
-            throw new NotSupportedException();
-        }
-
-        public long Delete(long id)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void Truncate()
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool CanEditRow
-        {
-            get { return false; }
-        }
-
-        public void CreateField(IGdField field)
-        {
-            throw new NotSupportedException();
-        }
-
-        public void DeleteField(IGdField field)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool CanEditField
-        {
-            get { return false; }
-        }
-
-        public string ToGeojson(GdGeoJsonSeralizeType type, int dimension = 2)
-        {
-            GdGeoJsonSerializer serializer = new GdGeoJsonSerializer();
-            serializer.SerializeType = GdGeoJsonSeralizeType.All;
-            serializer.Dimension = dimension;
-            return serializer.Serialize(this);
-        }
-
-        public IGdTable Clone()
-        {
-            GdMemoryTable table = GdMemoryTable.LoadFromTable(this);
-            return table;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public event EventHandler<GdRowChangedEventArgs> RowChanged;
-
         public string ProjectionString
         {
             get
@@ -375,10 +230,7 @@ namespace ozgurtek.framework.driver.gdal
 
         public string AttributeFilter
         {
-            get
-            {
-                return _attributeFilter;
-            }
+            get { return _attributeFilter; }
             set
             {
                 _attributeFilter = value;

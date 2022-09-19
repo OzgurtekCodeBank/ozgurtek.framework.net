@@ -35,10 +35,7 @@ namespace ozgurtek.framework.converter.winforms
             if (field == null)
                 throw new Exception($"{Geometry} field missing...");
 
-            field = table.Schema.GetFieldByName(Height);
-            if (field == null)
-                throw new Exception($"{Height} field missing...");
-
+            
             //divide 4326....
             table.GeometryField = Geometry;
             Envelope project = GdProjection.Project(table.Envelope, epsgCode, 4326);
@@ -108,7 +105,8 @@ namespace ozgurtek.framework.converter.winforms
                     buffer.Put(Geometry, geometry);
 
                     //height
-                    buffer.Put(Height, row.GetAsReal(Height));
+                    if (row.Table.Schema.GetFieldByName(Height) != null)
+                        buffer.Put(Height, row.GetAsReal(Height));
 
                     //optional style
                     if (row.Table.Schema.GetFieldByName(Style) != null)

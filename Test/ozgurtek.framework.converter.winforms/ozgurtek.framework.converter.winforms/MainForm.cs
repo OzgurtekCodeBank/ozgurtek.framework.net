@@ -54,11 +54,13 @@ namespace ozgurtek.framework.converter.winforms
         private void MainForm_Load(object sender, EventArgs e)
         {
             dbUserControl.Start();
+            fileUserControl.Start();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             dbUserControl.End();
+            fileUserControl.End();
         }
     }
 }

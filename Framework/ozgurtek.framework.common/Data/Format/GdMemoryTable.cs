@@ -316,7 +316,11 @@ namespace ozgurtek.framework.common.Data.Format
                     if (DbConvert.IsDbNull(geometry))
                         continue;
 
-                    if (!GdGeometryUtil.Relate(geometry, GeometryFilter.Geometry, GeometryFilter.SpatialRelation))
+                    if (GeometryFilter.Geometry != null && 
+                        !GdGeometryUtil.Relate(geometry, GeometryFilter.Geometry, GeometryFilter.SpatialRelation))
+                        continue;
+
+                    if (GeometryFilter.Envelope != null && !GeometryFilter.Envelope.Intersects(geometry.EnvelopeInternal))
                         continue;
                 }
 

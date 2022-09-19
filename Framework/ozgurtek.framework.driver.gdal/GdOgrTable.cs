@@ -73,7 +73,7 @@ namespace ozgurtek.framework.driver.gdal
                                     feature.GetFieldAsDateTime(fieldName, out var year, out var month, out var day,
                                         out var hour, out var minute, out var second, out _);
                                     //DateTime dateTime = new DateTime(year, month, day, hour, minute, (int) second);
-                                    buffer.Put(fieldName, DateTime.Now, GdDataType.Date);
+                                    buffer.Put(fieldName, DateTime.Now, GdDataType.Date);//todo: enis hata
                                 }
                                 catch
                                 {

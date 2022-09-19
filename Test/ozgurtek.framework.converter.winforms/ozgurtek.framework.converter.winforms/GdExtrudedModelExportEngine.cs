@@ -19,7 +19,8 @@ namespace ozgurtek.framework.converter.winforms
         private const string Style = "gd_style";
         private const string Description = "gd_description";
 
-        public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, bool suppressBlankTile, IGdTrack track)
+        public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, bool suppressBlankTile,
+            IGdTrack track)
         {
             if (!Directory.Exists(outputFolder))
                 throw new Exception("Folder not exists");
@@ -35,11 +36,12 @@ namespace ozgurtek.framework.converter.winforms
             if (field == null)
                 throw new Exception($"{Geometry} field missing...");
 
-            
+
             //divide 4326....
             table.GeometryField = Geometry;
             Envelope project = GdProjection.Project(table.Envelope, epsgCode, 4326);
-            List<GdTileIndex> wgsTileIndex = Divide(project, project.Width / xyTileCount, project.Height / xyTileCount);
+            //List<GdTileIndex> wgsTileIndex = Divide(project, project.Width / xyTileCount, project.Height / xyTileCount);
+            List<GdTileIndex> wgsTileIndex = DivideByCount(project, xyTileCount);
 
             //create json models...
             CreateModels(table, outputFolder, wgsTileIndex, epsgCode, suppressBlankTile, track);
@@ -49,7 +51,8 @@ namespace ozgurtek.framework.converter.winforms
                 track.ReportProgress(100);
         }
 
-        private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode, bool suppressBlankTile, IGdTrack track)
+        private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode,
+            bool suppressBlankTile, IGdTrack track)
         {
             //crete sqllite index file 
             string path = Path.Combine(outputFolder, "index.sqlite");
@@ -94,7 +97,7 @@ namespace ozgurtek.framework.converter.winforms
                         continue;
 
                     GdRowBuffer buffer = new GdRowBuffer();
-                    
+
                     //id
                     buffer.Put(Id, row.GetAsInteger(Id));
 
@@ -127,7 +130,31 @@ namespace ozgurtek.framework.converter.winforms
                 if (track != null)
                     track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileIndex.Count));
             }
+
             sqlLiteTable.CommitTransaction();
+        }
+
+        public List<GdTileIndex> DivideByCount(Envelope viewport, long xyTileCount)
+        {
+            List<GdTileIndex> worldArray = new List<GdTileIndex>();
+
+            double xStep = viewport.Width / xyTileCount;
+            double yStep = viewport.Height / xyTileCount;
+
+            for (long y = 0; y < xyTileCount; y++)
+            {
+                for (long x = 0; x < xyTileCount; x++)
+                {
+                    GdTileIndex index = new GdTileIndex(x + 1, y + 1);
+                    Coordinate coordinateMin = new Coordinate(viewport.MinX + x * xStep, viewport.MinY + y * yStep);
+                    Coordinate coordinateMax = new Coordinate(coordinateMin.X + xStep, coordinateMin.Y + yStep);
+                    Envelope env = new Envelope(coordinateMin, coordinateMax);
+                    index.Envelope = env;
+                    worldArray.Add(index);
+                }
+            }
+
+            return worldArray;
         }
 
         public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)

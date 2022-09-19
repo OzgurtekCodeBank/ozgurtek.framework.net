@@ -12,6 +12,7 @@ namespace ozgurtek.framework.converter.winforms
         public DbUserControl()
         {
             InitializeComponent();
+            outputUserControl.RegisteryPrefix = "Db";
         }
 
         public void Start()
@@ -20,8 +21,7 @@ namespace ozgurtek.framework.converter.winforms
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             ConnectionStringText.Text = DbConvert.ToString(key.GetValue("connection_string", ""));
             QueryTextBox.Text = DbConvert.ToString(key.GetValue("query", ""));
-            OutPutFolderTextBox.Text = DbConvert.ToString(key.GetValue("output_folder", ""));
-            EpsgTextBox.Text = DbConvert.ToString(key.GetValue("epsg", ""));
+            outputUserControl.Start();
         }
 
         public void End()
@@ -30,15 +30,7 @@ namespace ozgurtek.framework.converter.winforms
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             key.SetValue("connection_string", ConnectionStringText.Text);
             key.SetValue("query", QueryTextBox.Text);
-            key.SetValue("output_folder", OutPutFolderTextBox.Text);
-            key.SetValue("epsg", EpsgTextBox.Text);
-        }
-
-        private void folderButton_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.ShowDialog();
-            OutPutFolderTextBox.Text = dialog.SelectedPath;
+            outputUserControl.Stop();
         }
 
         private void ExportButton_Click(object sender, EventArgs e)
@@ -69,12 +61,12 @@ namespace ozgurtek.framework.converter.winforms
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
             GdPgTable table = dataSource.ExecuteSql("sql", filter);
 
-            GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
-            engine.Export(table, OutPutFolderTextBox.Text,
-                DbConvert.ToInt32(XyTileCountTextBox.Text),
-                DbConvert.ToInt32(EpsgTextBox.Text),
-                DbConvert.ToBoolean(SuppressBlankTileCheck.Checked),
-                track);
+            //GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
+            //engine.Export(table, outputUserControl.OutPutFolderTextBox.Text,
+            //    DbConvert.ToInt32(outputUserControl.XyTileCountTextBox.Text),
+            //    DbConvert.ToInt32(outputUserControl.EpsgTextBox.Text),
+            //    DbConvert.ToBoolean(outputUserControl.SuppressBlankTileCheck.Checked),
+            //    track);
         }
 
         private void ProgressChanged(object sender, double e)
@@ -90,15 +82,6 @@ namespace ozgurtek.framework.converter.winforms
 
             if (string.IsNullOrWhiteSpace(QueryTextBox.Text))
                 throw new SystemException("QueryTextBox Missing");
-
-            if (string.IsNullOrWhiteSpace(XyTileCountTextBox.Text))
-                throw new SystemException("XY Tile Size");
-
-            if (string.IsNullOrWhiteSpace(OutPutFolderTextBox.Text))
-                throw new SystemException("OutPutFolderTextBox Missing");
-
-            if (string.IsNullOrWhiteSpace(EpsgTextBox.Text))
-                throw new SystemException("EpsgTextBox Missing");
         }
     }
 }

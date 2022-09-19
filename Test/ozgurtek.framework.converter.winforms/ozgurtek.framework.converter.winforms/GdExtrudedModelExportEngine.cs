@@ -13,49 +13,114 @@ namespace ozgurtek.framework.converter.winforms
 {
     public class GdExtrudedModelExportEngine
     {
-        private const string Id = "gd_id";
-        private const string Geometry = "gd_geometry";
-        private const string Height = "gd_ext_height";
-        private const string Style = "gd_style";
-        private const string Description = "gd_description";
+        private const string GdId = "gd_id";
+        private const string GdGeometry = "gd_geometry";
+        private const string GdHeight = "gd_ext_height";
+        private const string GdStyle = "gd_style";
+        private const string GdDescription = "gd_description";
 
-        public void Export(IGdTable table, string outputFolder, long xyTileCount, int epsgCode, bool suppressBlankTile,
-            IGdTrack track)
+        private string _outputFolder;
+        private long _xyTileCount = -1;
+        private int _epsgCode = -1;
+        private bool _suppressBlankTile = true;
+        private string _fidFieldName;
+        private string _geomFieldName;
+        private string _extFieldName;
+        private string _styleFieldName;
+
+        public string OutputFolder
         {
-            if (!Directory.Exists(outputFolder))
+            get => _outputFolder;
+            set => _outputFolder = value;
+        }
+
+        public long XyTileCount
+        {
+            get => _xyTileCount;
+            set => _xyTileCount = value;
+        }
+
+        public int EpsgCode
+        {
+            get => _epsgCode;
+            set => _epsgCode = value;
+        }
+
+        public bool SuppressBlankTile
+        {
+            get => _suppressBlankTile;
+            set => _suppressBlankTile = value;
+        }
+
+        public string FidFieldName
+        {
+            get => _fidFieldName;
+            set => _fidFieldName = value;
+        }
+
+        public string GeomFieldName
+        {
+            get => _geomFieldName;
+            set => _geomFieldName = value;
+        }
+
+        public string ExtFieldName
+        {
+            get => _extFieldName;
+            set => _extFieldName = value;
+        }
+
+        public string StyleFieldName
+        {
+            get => _styleFieldName;
+            set => _styleFieldName = value;
+        }
+
+        public void Export(IGdTable table, IGdTrack track)
+        {
+            //folder
+            if (string.IsNullOrWhiteSpace(OutputFolder))
+                throw new Exception("Folder name blank...");
+
+            if (!Directory.Exists(OutputFolder))
                 throw new Exception("Folder not exists");
 
-            if (Directory.EnumerateFileSystemEntries(outputFolder).Any())
+            if (Directory.EnumerateFileSystemEntries(OutputFolder).Any())
                 throw new Exception("Folder must be empty");
 
-            IGdField field = table.Schema.GetFieldByName(Id);
-            if (field == null)
-                throw new Exception($"{Id} field missing...");
+            //tile count
+            if (XyTileCount <= 0)
+                throw new Exception("XyTileCount Wrong");
 
-            field = table.Schema.GetFieldByName(Geometry);
-            if (field == null)
-                throw new Exception($"{Geometry} field missing...");
+            //epsg code
+            if (EpsgCode <= 0)
+                throw new Exception("EpsgCode Wrong");
 
+            //fid field
+            if (string.IsNullOrWhiteSpace(FidFieldName))
+                throw new Exception("FidFieldName not exists");
+
+            //geometry field
+            if (string.IsNullOrWhiteSpace(GeomFieldName))
+                throw new Exception("GeomFieldName not exists");
 
             //divide 4326....
-            table.GeometryField = Geometry;
-            Envelope project = GdProjection.Project(table.Envelope, epsgCode, 4326);
-            //List<GdTileIndex> wgsTileIndex = Divide(project, project.Width / xyTileCount, project.Height / xyTileCount);
-            List<GdTileIndex> wgsTileIndex = DivideByCount(project, xyTileCount);
+            table.GeometryField = GeomFieldName;
+            Envelope project = GdProjection.Project(table.Envelope, EpsgCode, 4326);
+            List<GdTileIndex> wgsTileIndex = DivideByCount(project, XyTileCount);
 
             //create json models...
-            CreateModels(table, outputFolder, wgsTileIndex, epsgCode, suppressBlankTile, track);
+            CreateModels(table,wgsTileIndex, track);
 
             //finish
             if (track != null)
                 track.ReportProgress(100);
         }
 
-        private void CreateModels(IGdTable table, string outputFolder, List<GdTileIndex> tileIndex, int epsgCode,
-            bool suppressBlankTile, IGdTrack track)
+        private void CreateModels(IGdTable table, List<GdTileIndex> tileIndex, IGdTrack track)
         {
             //crete sqllite index file 
-            string path = Path.Combine(outputFolder, "index.sqlite");
+            string path = Path.Combine(OutputFolder, "index.sqlite");
             GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(path);
             GdSqlLiteTable sqlLiteTable = sqlLiteDataSource.CreateTable("gd_index", GdGeometryType.Polygon, 4326, null);
             sqlLiteTable.CreateField(new GdField("min_x", GdDataType.Real));
@@ -68,10 +133,10 @@ namespace ozgurtek.framework.converter.winforms
             foreach (GdTileIndex index in tileIndex)
             {
                 //search given table
-                Envelope envelope = GdProjection.Project(index.Envelope, 4326, epsgCode);
+                Envelope envelope = GdProjection.Project(index.Envelope, 4326, EpsgCode);
                 table.GeometryFilter = new GdGeometryFilter(envelope);
 
-                if (suppressBlankTile && table.RowCount == 0)
+                if (SuppressBlankTile && table.RowCount == 0)
                     continue;
 
                 //write index to sqlite file
@@ -90,40 +155,40 @@ namespace ozgurtek.framework.converter.winforms
                 GdMemoryTable memTable = PrepareNewMemTable();
                 foreach (IGdRow row in table.Rows)
                 {
-                    if (row.IsNull(Geometry))
+                    if (row.IsNull(GeomFieldName))
                         continue;
 
-                    if (row.IsNull(Id))
+                    if (row.IsNull(FidFieldName))
                         continue;
 
                     GdRowBuffer buffer = new GdRowBuffer();
 
                     //id
-                    buffer.Put(Id, row.GetAsInteger(Id));
+                    buffer.Put(GdId, row.GetAsInteger(FidFieldName));
 
                     //geometry
-                    Geometry geometry = row.GetAsGeometry(Geometry);
-                    geometry.SRID = epsgCode;
+                    Geometry geometry = row.GetAsGeometry(GeomFieldName);
+                    geometry.SRID = EpsgCode;
                     geometry = GdProjection.Project(geometry, 4326);
-                    buffer.Put(Geometry, geometry);
+                    buffer.Put(GdGeometry, geometry);
 
-                    //height
-                    if (row.Table.Schema.GetFieldByName(Height) != null)
-                        buffer.Put(Height, row.GetAsReal(Height));
+                    //optional height
+                    if (!string.IsNullOrEmpty(ExtFieldName))
+                        buffer.Put(GdHeight, row.GetAsReal(ExtFieldName));
 
                     //optional style
-                    if (row.Table.Schema.GetFieldByName(Style) != null)
-                        buffer.Put(Style, row.GetAsReal(Style));
+                    if (!string.IsNullOrEmpty(StyleFieldName))
+                        buffer.Put(GdStyle, row.GetAsString(StyleFieldName));
 
-                    //optional description
-                    if (row.Table.Schema.GetFieldByName(Description) != null)
-                        buffer.Put(Description, row.GetAsString(Description));
+                    ////optional description
+                    //if (!string.IsNullOrEmpty(Des))
+                    //    buffer.Put(Description, row.GetAsString(Description));
 
                     memTable.Insert(buffer);
                 }
 
                 //write json file....
-                string fullFileName = Path.Combine(outputFolder, DbConvert.ToString(++fileName) + ".json");
+                string fullFileName = Path.Combine(OutputFolder, DbConvert.ToString(++fileName) + ".json");
                 string geojson = memTable.ToGeojson(GdGeoJsonSeralizeType.OnlyData, 3);
                 File.WriteAllText(fullFileName, geojson);
 
@@ -185,11 +250,11 @@ namespace ozgurtek.framework.converter.winforms
         private GdMemoryTable PrepareNewMemTable()
         {
             GdMemoryTable memTable = new GdMemoryTable();
-            memTable.CreateField(new GdField(Id, GdDataType.Integer));
-            memTable.CreateField(new GdField(Geometry, GdDataType.Geometry));
-            memTable.CreateField(new GdField(Height, GdDataType.Real));
-            memTable.CreateField(new GdField(Style, GdDataType.Real));
-            memTable.CreateField(new GdField(Description, GdDataType.Real));
+            memTable.CreateField(new GdField(GdId, GdDataType.Integer));
+            memTable.CreateField(new GdField(GdGeometry, GdDataType.Geometry));
+            memTable.CreateField(new GdField(GdHeight, GdDataType.Real));
+            memTable.CreateField(new GdField(GdStyle, GdDataType.Real));
+            memTable.CreateField(new GdField(GdDescription, GdDataType.Real));
             return memTable;
         }
     }

@@ -22,15 +22,16 @@ namespace ozgurtek.framework.converter.winforms
         public FileUserControl()
         {
             InitializeComponent();
+            outputUserControl.RegisteryPrefix = "gdal";
         }
 
         public void Start()
         {
             RegistryKey key =
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+            
             ConnectionStringText.Text = DbConvert.ToString(key.GetValue("file_connection_string", ""));
-            OutPutFolderTextBox.Text = DbConvert.ToString(key.GetValue("file_output_folder", ""));
-            EpsgTextBox.Text = DbConvert.ToString(key.GetValue("file_epsg", ""));
+            outputUserControl.Start();
         }
 
         public void End()
@@ -38,8 +39,8 @@ namespace ozgurtek.framework.converter.winforms
             RegistryKey key =
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             key.SetValue("file_connection_string", ConnectionStringText.Text);
-            key.SetValue("file_output_folder", OutPutFolderTextBox.Text);
-            key.SetValue("file_epsg", EpsgTextBox.Text);
+            
+            outputUserControl.Stop();
         }
 
         private void FileButton_Click(object sender, EventArgs e)
@@ -54,31 +55,43 @@ namespace ozgurtek.framework.converter.winforms
             ConnectionStringText.Text = openFileDialog.FileName;
         }
 
-        private void folderButton_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog dialog = new FolderBrowserDialog();
-            dialog.ShowDialog();
-            OutPutFolderTextBox.Text = dialog.SelectedPath;
-        }
-
         private void ExportButton_Click(object sender, EventArgs e)
         {
+            try
+            {
+                CheckUi();
+                Export();
+
+                MessageBox.Show("Finish...", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void Export()
+        {
             GdTrack track = new GdTrack();
-            GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
+
             string fileName = ConnectionStringText.Text;
             GdOgrDataSource dataSource = GdOgrDataSource.Open(fileName);
             IEnumerable<GdOgrTable> table = dataSource.GetTable();
             foreach (GdOgrTable ogrTable in table)
             {
-                string path = Path.Combine(OutPutFolderTextBox.Text, ogrTable.Name);
+                string path = Path.Combine(outputUserControl.OutPutFolderTextBox.Text, ogrTable.Name);
                 Directory.CreateDirectory(path);
-                GdMemoryTable gdMemoryTable = GetTable(ogrTable);
 
-                engine.Export(gdMemoryTable, path,
-                    DbConvert.ToInt32(XyTileCountTextBox.Text),
-                    DbConvert.ToInt32(EpsgTextBox.Text),
-                    DbConvert.ToBoolean(SuppressBlankTileCheck.Checked),
-                    track);
+                GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
+                engine.EpsgCode = DbConvert.ToInt32(outputUserControl.EpsgTextBox.Text);
+                engine.XyTileCount = DbConvert.ToInt32(outputUserControl.XyTileCountTextBox.Text);
+                engine.SuppressBlankTile = DbConvert.ToBoolean(outputUserControl.SuppressBlankTileCheck.Checked);
+                engine.FidFieldName = outputUserControl.FidFieldTextBox.Text;
+                engine.GeomFieldName = outputUserControl.GeomFieldTextBox.Text;
+                engine.StyleFieldName = outputUserControl.StyleFieldTextBox.Text;
+                engine.OutputFolder = path;
+                
+                engine.Export(ogrTable, track);
             }
         }
 
@@ -101,6 +114,12 @@ namespace ozgurtek.framework.converter.winforms
             }
 
             return memTable;
+        }
+
+        private void CheckUi()
+        {
+            if (string.IsNullOrWhiteSpace(ConnectionStringText.Text))
+                throw new SystemException("ConnectionStringText Missing");
         }
     }
 }

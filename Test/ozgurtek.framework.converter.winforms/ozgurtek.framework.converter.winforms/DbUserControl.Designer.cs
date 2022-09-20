@@ -54,15 +54,15 @@ namespace ozgurtek.framework.converter.winforms
             this.ConnectionStringText.Location = new System.Drawing.Point(32, 44);
             this.ConnectionStringText.Multiline = true;
             this.ConnectionStringText.Name = "ConnectionStringText";
-            this.ConnectionStringText.Size = new System.Drawing.Size(686, 84);
+            this.ConnectionStringText.Size = new System.Drawing.Size(657, 43);
             this.ConnectionStringText.TabIndex = 0;
             // 
             // QueryTextBox
             // 
-            this.QueryTextBox.Location = new System.Drawing.Point(32, 161);
+            this.QueryTextBox.Location = new System.Drawing.Point(31, 107);
             this.QueryTextBox.Multiline = true;
             this.QueryTextBox.Name = "QueryTextBox";
-            this.QueryTextBox.Size = new System.Drawing.Size(686, 116);
+            this.QueryTextBox.Size = new System.Drawing.Size(657, 116);
             this.QueryTextBox.TabIndex = 1;
             // 
             // DatabaseFrame
@@ -73,7 +73,7 @@ namespace ozgurtek.framework.converter.winforms
             this.DatabaseFrame.Controls.Add(this.ConnectionStringLabel);
             this.DatabaseFrame.Location = new System.Drawing.Point(25, 13);
             this.DatabaseFrame.Name = "DatabaseFrame";
-            this.DatabaseFrame.Size = new System.Drawing.Size(707, 300);
+            this.DatabaseFrame.Size = new System.Drawing.Size(707, 245);
             this.DatabaseFrame.TabIndex = 5;
             this.DatabaseFrame.TabStop = false;
             this.DatabaseFrame.Text = "Database";
@@ -81,7 +81,7 @@ namespace ozgurtek.framework.converter.winforms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(29, 145);
+            this.label1.Location = new System.Drawing.Point(28, 91);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 0;
@@ -89,7 +89,7 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // ExportButton
             // 
-            this.ExportButton.Location = new System.Drawing.Point(305, 578);
+            this.ExportButton.Location = new System.Drawing.Point(305, 531);
             this.ExportButton.Name = "ExportButton";
             this.ExportButton.Size = new System.Drawing.Size(158, 25);
             this.ExportButton.TabIndex = 1;
@@ -99,17 +99,17 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(17, 614);
+            this.progressBar.Location = new System.Drawing.Point(17, 567);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(739, 23);
             this.progressBar.TabIndex = 8;
             // 
             // outputUserControl
             // 
-            this.outputUserControl.Location = new System.Drawing.Point(16, 319);
+            this.outputUserControl.Location = new System.Drawing.Point(16, 258);
             this.outputUserControl.Name = "outputUserControl";
             this.outputUserControl.RegisteryPrefix = null;
-            this.outputUserControl.Size = new System.Drawing.Size(732, 253);
+            this.outputUserControl.Size = new System.Drawing.Size(732, 262);
             this.outputUserControl.TabIndex = 0;
             // 
             // DbUserControl
@@ -121,7 +121,7 @@ namespace ozgurtek.framework.converter.winforms
             this.Controls.Add(this.ExportButton);
             this.Controls.Add(this.DatabaseFrame);
             this.Name = "DbUserControl";
-            this.Size = new System.Drawing.Size(772, 650);
+            this.Size = new System.Drawing.Size(770, 600);
             this.DatabaseFrame.ResumeLayout(false);
             this.DatabaseFrame.PerformLayout();
             this.ResumeLayout(false);

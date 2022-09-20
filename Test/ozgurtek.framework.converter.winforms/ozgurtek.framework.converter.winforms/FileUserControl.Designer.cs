@@ -79,14 +79,14 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(8, 498);
+            this.progressBar.Location = new System.Drawing.Point(17, 567);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(739, 23);
             this.progressBar.TabIndex = 12;
             // 
             // ExportButton
             // 
-            this.ExportButton.Location = new System.Drawing.Point(292, 467);
+            this.ExportButton.Location = new System.Drawing.Point(305, 531);
             this.ExportButton.Name = "ExportButton";
             this.ExportButton.Size = new System.Drawing.Size(158, 25);
             this.ExportButton.TabIndex = 1;
@@ -111,7 +111,7 @@ namespace ozgurtek.framework.converter.winforms
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.ExportButton);
             this.Name = "FileUserControl";
-            this.Size = new System.Drawing.Size(765, 539);
+            this.Size = new System.Drawing.Size(770, 600);
             this.DatabaseFrame.ResumeLayout(false);
             this.DatabaseFrame.PerformLayout();
             this.ResumeLayout(false);

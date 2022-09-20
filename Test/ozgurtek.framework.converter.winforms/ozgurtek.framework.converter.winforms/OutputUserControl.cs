@@ -33,6 +33,7 @@ namespace ozgurtek.framework.converter.winforms
             ExtFieldTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "ExtFieldTextBox", ""));
             StyleFieldTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "StyleFieldTextBox", ""));
             DescTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "DescTextBox", ""));
+            SuppressBlankTileCheck.Checked = DbConvert.ToBoolean(key.GetValue(RegisteryPrefix + "SuppressBlankTileCheck", false));
         }
 
         public void Stop()
@@ -48,6 +49,7 @@ namespace ozgurtek.framework.converter.winforms
             key.SetValue(RegisteryPrefix + "ExtFieldTextBox", ExtFieldTextBox.Text);
             key.SetValue(RegisteryPrefix + "StyleFieldTextBox", StyleFieldTextBox.Text);
             key.SetValue(RegisteryPrefix + "DescTextBox", DescTextBox.Text);
+            key.SetValue(RegisteryPrefix + "SuppressBlankTileCheck", SuppressBlankTileCheck.Checked);
         }
 
         private void folderButton_Click(object sender, EventArgs e)
@@ -55,6 +57,18 @@ namespace ozgurtek.framework.converter.winforms
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.ShowDialog();
             OutPutFolderTextBox.Text = dialog.SelectedPath;
+        }
+
+        public void SetParameters(GdExtrudedModelExportEngine engine)
+        {
+            engine.EpsgCode = DbConvert.ToInt32(EpsgTextBox.Text);
+            engine.XyTileCount = DbConvert.ToInt32(XyTileCountTextBox.Text);
+            engine.SuppressBlankTile = DbConvert.ToBoolean(SuppressBlankTileCheck.Checked);
+            engine.FidFieldName = FidFieldTextBox.Text;
+            engine.GeomFieldName = GeomFieldTextBox.Text;
+            engine.StyleFieldName = StyleFieldTextBox.Text;
+            engine.DescFieldName = DescTextBox.Text;
+            engine.OutputFolder = OutPutFolderTextBox.Text;
         }
     }
 }

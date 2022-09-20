@@ -4,21 +4,13 @@ using System.IO;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Util;
-using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 
 namespace ozgurtek.framework.converter.winforms
 {
     public partial class FileUserControl : UserControl
     {
-        private const string Id = "gd_id";
-        private const string Geometry = "gd_geometry";
-        private const string Height = "gd_ext_height";
-        private const string Style = "gd_style";
-        private const string Description = "gd_description";
-
         public FileUserControl()
         {
             InitializeComponent();
@@ -73,9 +65,15 @@ namespace ozgurtek.framework.converter.winforms
         private void Export()
         {
             GdTrack track = new GdTrack();
+            track.ProgressChanged += ProgressChanged;
 
             string fileName = ConnectionStringText.Text;
             GdOgrDataSource dataSource = GdOgrDataSource.Open(fileName);
+
+            progressBar.Minimum = 1;
+            progressBar.Maximum = dataSource.TableCount;
+
+            int current = 1;
             IEnumerable<GdOgrTable> table = dataSource.GetTable();
             foreach (GdOgrTable ogrTable in table)
             {
@@ -83,37 +81,18 @@ namespace ozgurtek.framework.converter.winforms
                 Directory.CreateDirectory(path);
 
                 GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
-                engine.EpsgCode = DbConvert.ToInt32(outputUserControl.EpsgTextBox.Text);
-                engine.XyTileCount = DbConvert.ToInt32(outputUserControl.XyTileCountTextBox.Text);
-                engine.SuppressBlankTile = DbConvert.ToBoolean(outputUserControl.SuppressBlankTileCheck.Checked);
-                engine.FidFieldName = outputUserControl.FidFieldTextBox.Text;
-                engine.GeomFieldName = outputUserControl.GeomFieldTextBox.Text;
-                engine.StyleFieldName = outputUserControl.StyleFieldTextBox.Text;
+                outputUserControl.SetParameters(engine);
                 engine.OutputFolder = path;
-                
-                engine.Export(ogrTable, track);
+
+                engine.Export(ogrTable, null);
+                track.ReportProgress(current++);
             }
         }
 
-        private GdMemoryTable GetTable(GdOgrTable table)
+        private void ProgressChanged(object sender, double e)
         {
-            GdMemoryTable memTable = new GdMemoryTable();
-            memTable.Name = table.Name;
-            memTable.CreateField(new GdField(Id, GdDataType.Integer));
-            memTable.CreateField(new GdField(Geometry, GdDataType.Geometry));
-            //memTable.CreateField(new GdField(Height, GdDataType.Real));
-            //memTable.CreateField(new GdField(Style, GdDataType.Real));
-            //memTable.CreateField(new GdField(Description, GdDataType.Real));
-            
-            foreach (IGdRow row in table.Rows)
-            {   
-                GdRowBuffer buffer = new GdRowBuffer();
-                buffer.Put(Geometry, row.GetAsGeometry("gd_geom"));
-                buffer.Put(Id, row.GetAsInteger("gd_fid"));
-                memTable.Insert(buffer);
-            }
-
-            return memTable;
+            int c = DbConvert.ToInt32(e);
+            progressBar.Value = c;
         }
 
         private void CheckUi()

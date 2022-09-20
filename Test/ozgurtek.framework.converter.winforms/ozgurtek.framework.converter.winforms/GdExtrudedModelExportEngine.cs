@@ -27,6 +27,7 @@ namespace ozgurtek.framework.converter.winforms
         private string _geomFieldName;
         private string _extFieldName;
         private string _styleFieldName;
+        private string _descFieldName;
 
         public string OutputFolder
         {
@@ -74,6 +75,12 @@ namespace ozgurtek.framework.converter.winforms
         {
             get => _styleFieldName;
             set => _styleFieldName = value;
+        }
+
+        public string DescFieldName
+        {
+            get => _descFieldName;
+            set => _descFieldName = value;
         }
 
         public void Export(IGdTable table, IGdTrack track)
@@ -173,16 +180,16 @@ namespace ozgurtek.framework.converter.winforms
                     buffer.Put(GdGeometry, geometry);
 
                     //optional height
-                    if (!string.IsNullOrEmpty(ExtFieldName))
+                    if (!string.IsNullOrEmpty(ExtFieldName) && !row.IsNull(ExtFieldName))
                         buffer.Put(GdHeight, row.GetAsReal(ExtFieldName));
 
                     //optional style
-                    if (!string.IsNullOrEmpty(StyleFieldName))
+                    if (!string.IsNullOrEmpty(StyleFieldName) && !row.IsNull(StyleFieldName))
                         buffer.Put(GdStyle, row.GetAsString(StyleFieldName));
 
-                    ////optional description
-                    //if (!string.IsNullOrEmpty(Des))
-                    //    buffer.Put(Description, row.GetAsString(Description));
+                    //optional description
+                    if (!string.IsNullOrEmpty(DescFieldName) && !row.IsNull(DescFieldName))
+                        buffer.Put(GdDescription, row.GetAsString(DescFieldName));
 
                     memTable.Insert(buffer);
                 }

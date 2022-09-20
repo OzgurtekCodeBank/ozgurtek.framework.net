@@ -61,12 +61,10 @@ namespace ozgurtek.framework.converter.winforms
             GdSqlFilter filter = new GdSqlFilter(QueryTextBox.Text);
             GdPgTable table = dataSource.ExecuteSql("sql", filter);
 
-            //GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
-            //engine.Export(table, outputUserControl.OutPutFolderTextBox.Text,
-            //    DbConvert.ToInt32(outputUserControl.XyTileCountTextBox.Text),
-            //    DbConvert.ToInt32(outputUserControl.EpsgTextBox.Text),
-            //    DbConvert.ToBoolean(outputUserControl.SuppressBlankTileCheck.Checked),
-            //    track);
+            GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
+            outputUserControl.SetParameters(engine);
+            
+            engine.Export(table, track);
         }
 
         private void ProgressChanged(object sender, double e)

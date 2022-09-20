@@ -1,4 +1,6 @@
-﻿using GeoAPI.CoordinateSystems;
+﻿using System;
+using System.Text;
+using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Geodesy;
@@ -148,6 +150,23 @@ namespace ozgurtek.framework.driver.gdal
 
                 default:
                     return GdDataType.String;
+            }
+        }
+
+        public static string ToOgrString(string value)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(value))
+                    return null;
+
+                byte[] bytes = Encoding.Default.GetBytes(value);
+                string result = Encoding.UTF8.GetString(bytes);
+                return result;
+            }
+            catch
+            {
+                return value;
             }
         }
     }

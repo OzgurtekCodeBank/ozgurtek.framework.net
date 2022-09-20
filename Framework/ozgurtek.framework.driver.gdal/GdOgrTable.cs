@@ -18,10 +18,10 @@ namespace ozgurtek.framework.driver.gdal
         public GdOgrTable(Layer layer, string address)
         {
             _layer = layer;
-            Name = layer.GetName();
+            Name = GdOgrUtil.ToOgrString(layer.GetName());
             Address = address + ":" + Name;
-            KeyField = _layer.GetFIDColumn();
-            GeometryField = _layer.GetGeometryColumn();
+            KeyField = GdOgrUtil.ToOgrString(_layer.GetFIDColumn());
+            GeometryField = GdOgrUtil.ToOgrString(_layer.GetGeometryColumn());
             GeometryType = GdOgrUtil.GetGeometryType(_layer.GetGeomType());
         }
 
@@ -70,12 +70,6 @@ namespace ozgurtek.framework.driver.gdal
                         //attribute type
                         switch (fieldType)
                         {
-                            case FieldType.OFTDate:
-                            case FieldType.OFTDateTime:
-                            case FieldType.OFTTime:
-                                buffer.Put(fieldName, feature.GetFieldAsString(fieldName), GdDataType.String);
-                                break;
-
                             case FieldType.OFTInteger:
                                 buffer.Put(fieldName, feature.GetFieldAsInteger(fieldName), GdDataType.Integer);
                                 break;
@@ -89,7 +83,7 @@ namespace ozgurtek.framework.driver.gdal
                                 break;
 
                             default:
-                                buffer.Put(fieldName, feature.GetFieldAsString(fieldName), GdDataType.String);
+                                buffer.Put(fieldName, GdOgrUtil.ToOgrString(feature.GetFieldAsString(fieldName)), GdDataType.String);
                                 break;
                         }
                     }
@@ -155,7 +149,7 @@ namespace ozgurtek.framework.driver.gdal
                     FieldDefn ogrFieldDef = layerDefn.GetFieldDefn(i);
 
                     GdField field = new GdField();
-                    field.FieldName = ogrFieldDef.GetName();
+                    field.FieldName = GdOgrUtil.ToOgrString(ogrFieldDef.GetName());
                     field.FieldType = GdOgrUtil.GetDataType(ogrFieldDef.GetFieldType());
                     field.DefaultVal = ogrFieldDef.GetDefault();
                     field.NotNull = !DbConvert.ToBoolean(ogrFieldDef.IsNullable());
@@ -203,7 +197,9 @@ namespace ozgurtek.framework.driver.gdal
                 }
 
                 if (value.Envelope != null)
-                    _layer.SetSpatialFilterRect(value.Envelope.MinX, value.Envelope.MinY, value.Envelope.MaxX,
+                    _layer.SetSpatialFilterRect(value.Envelope.MinX, 
+                        value.Envelope.MinY, 
+                        value.Envelope.MaxX,
                         value.Envelope.MaxY);
 
                 if (value.Geometry != null)

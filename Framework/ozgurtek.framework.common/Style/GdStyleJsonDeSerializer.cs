@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.core.Style;
@@ -11,7 +12,7 @@ namespace ozgurtek.framework.common.Style
         {
             GdMemoryTable memoryTable = GdMemoryTable.LoadFromJson(value);
             if (memoryTable.Name == "PointStyle")
-                return ParsePointStyle(memoryTable);
+                return ParsePointStyle(value);
 
             if (memoryTable.Name == "PolygonStyle")
                 return ParsePolygonStyle(value);
@@ -59,8 +60,11 @@ namespace ozgurtek.framework.common.Style
             GdPointStyle style = new GdPointStyle();
             style.Stroke = ParseStroke(row.GetAsString("Stroke"));
             style.Fill = ParseFill(row.GetAsString("Fill"));
-            style.PointStleType = 
+            style.Size = (int) row.GetAsInteger("Size");
+            Enum.TryParse(row.GetAsString("Type"), out GdPointStyleType type);
+            style.PointStleType = type;
 
+            return style;
         }
 
         private IGdStroke ParseStroke(string value)
@@ -71,7 +75,7 @@ namespace ozgurtek.framework.common.Style
                 return null;
 
             GdStroke stroke = new GdStroke();
-            stroke.Width = (int)row.GetAsInteger("Width");
+            stroke.Width = (int) row.GetAsInteger("Width");
             stroke.Color = ParseColor(row.GetAsString("Color"));
 
             return stroke;
@@ -97,13 +101,12 @@ namespace ozgurtek.framework.common.Style
             IGdRow row = memoryTable.Rows.FirstOrDefault();
 
             GdColor color = new GdColor();
-            color.R = (byte)row.GetAsInteger("R");
-            color.G = (byte)row.GetAsInteger("G");
-            color.B = (byte)row.GetAsInteger("B");
-            color.A = (byte)row.GetAsInteger("A");
+            color.R = (byte) row.GetAsInteger("R");
+            color.G = (byte) row.GetAsInteger("G");
+            color.B = (byte) row.GetAsInteger("B");
+            color.A = (byte) row.GetAsInteger("A");
 
             return color;
         }
-
     }
 }

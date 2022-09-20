@@ -38,7 +38,7 @@ namespace ozgurtek.framework.common.Style
 
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
 
         private string Serialize(IGdLineStyle lineStyle)
@@ -51,7 +51,7 @@ namespace ozgurtek.framework.common.Style
             buffer.Put("Stroke", Serialize(lineStyle.Stroke));
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
 
         private string Serialize(IGdPolygonStyle polygonStyle)
@@ -62,11 +62,19 @@ namespace ozgurtek.framework.common.Style
             table.CreateField(new GdField("Fill", GdDataType.String));
 
             GdRowBuffer buffer = new GdRowBuffer();
-            buffer.Put("Stroke", Serialize(polygonStyle.Stroke));
-            buffer.Put("Fill", Serialize(polygonStyle.Fill));
+            if (polygonStyle.Stroke != null)
+                buffer.Put("Stroke", Serialize(polygonStyle.Stroke));
+            else
+                buffer.PutNull("Stroke");
+
+            if (polygonStyle.Fill != null)
+                buffer.Put("Fill", Serialize(polygonStyle.Fill));
+            else
+                buffer.PutNull("Fill");
+
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
 
         private string Serialize(IGdFill fill)
@@ -82,7 +90,7 @@ namespace ozgurtek.framework.common.Style
 
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
 
         private string Serialize(IGdStroke stroke)
@@ -97,7 +105,7 @@ namespace ozgurtek.framework.common.Style
             buffer.Put("Color", Serialize(stroke.Color));
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
 
         private string Serialize(GdColor color)
@@ -116,7 +124,7 @@ namespace ozgurtek.framework.common.Style
             buffer.Put("A", color.A);
             table.Insert(buffer);
 
-            return table.ToGeojson(GdGeoJsonSeralizeType.OnlyData);
+            return table.ToGeojson(GdGeoJsonSeralizeType.All);
         }
     }
 }

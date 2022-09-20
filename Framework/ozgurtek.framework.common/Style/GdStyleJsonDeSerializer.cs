@@ -44,8 +44,15 @@ namespace ozgurtek.framework.common.Style
                 return null;
 
             GdPolygonStyle style = new GdPolygonStyle();
-            style.Stroke = ParseStroke(row.GetAsString("Stroke"));
-            style.Fill = ParseFill(row.GetAsString("Fill"));
+            if (!row.IsNull("Stroke"))
+                style.Stroke = ParseStroke(row.GetAsString("Stroke"));
+            else
+                style.Stroke = null;
+
+            if (!row.IsNull("Fill"))
+                style.Fill = ParseFill(row.GetAsString("Fill"));
+            else
+                style.Fill = null;
 
             return style;
         }

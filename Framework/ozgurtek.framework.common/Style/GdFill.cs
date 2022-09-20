@@ -6,6 +6,7 @@ namespace ozgurtek.framework.common.Style
     public class GdFill : IGdFill
     {
         GdColor _color = new GdColor();
+        private byte[] _material;
 
         public GdFill()
         {
@@ -20,6 +21,12 @@ namespace ozgurtek.framework.common.Style
         {
             get => _color;
             set => _color = value;
+        }
+
+        public byte[] Material
+        {
+            get => _material;
+            set => _material = value;
         }
 
         public static GdFill Soft

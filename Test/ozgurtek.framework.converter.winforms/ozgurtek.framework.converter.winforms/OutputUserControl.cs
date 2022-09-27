@@ -69,6 +69,7 @@ namespace ozgurtek.framework.converter.winforms
             engine.StyleFieldName = StyleFieldTextBox.Text;
             engine.DescFieldName = DescTextBox.Text;
             engine.OutputFolder = OutPutFolderTextBox.Text;
+            engine.ExtFieldName = ExtFieldTextBox.Text;
         }
     }
 }

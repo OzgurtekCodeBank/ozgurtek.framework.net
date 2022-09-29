@@ -22,37 +22,37 @@ namespace ozgurtek.framework.common.Data
 
         public virtual void Put(string key, string value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.String);
         }
 
         public virtual void Put(string key, long value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Integer);
         }
 
         public virtual void Put(string key, double value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Real);
         }
 
         public virtual void Put(string key, byte[] value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Blob);
         }
 
         public virtual void Put(string key, Geometry value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Geometry);
         }
 
         public virtual void Put(string key, DateTime value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Date);
         }
 
         public virtual void Put(string key, bool value)
         {
-            AddOrReplace(key, value);
+            AddOrReplace(key, value, GdDataType.Boolean);
         }
 
         public virtual void PutNull(string key)
@@ -147,7 +147,7 @@ namespace ozgurtek.framework.common.Data
         public virtual void Put(string key, bool? value)
         {
             if (value.HasValue)
-                Put(key, value.Value);
+                Put(key, value.Value, GdDataType.Boolean);
             else
                 PutNull(key);
         }
@@ -155,7 +155,7 @@ namespace ozgurtek.framework.common.Data
         public virtual void Put(string key, DateTime? value)
         {
             if (value.HasValue)
-                Put(key, value.Value);
+                Put(key, value.Value, GdDataType.Date);
             else
                 PutNull(key);
         }
@@ -163,7 +163,7 @@ namespace ozgurtek.framework.common.Data
         public virtual void Put(string key, long? value)
         {
             if (value.HasValue)
-                Put(key, value.Value);
+                Put(key, value.Value, GdDataType.Integer);
             else
                 PutNull(key);
         }
@@ -171,7 +171,7 @@ namespace ozgurtek.framework.common.Data
         public virtual void Put(string key, double? value)
         {
             if (value.HasValue)
-                Put(key, value.Value);
+                Put(key, value.Value, GdDataType.Real);
             else
                 PutNull(key);
         }

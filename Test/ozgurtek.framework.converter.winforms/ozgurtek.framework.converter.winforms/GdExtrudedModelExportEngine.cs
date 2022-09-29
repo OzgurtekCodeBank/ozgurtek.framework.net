@@ -6,7 +6,6 @@ using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format;
 using ozgurtek.framework.common.Geodesy;
-using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.sqlite;
 
@@ -29,6 +28,7 @@ namespace ozgurtek.framework.converter.winforms
         private string _extFieldName;
         private string _styleFieldName;
         private string _descFieldName;
+        private double _tileSizeInMeter = -1;
 
         public string OutputFolder
         {
@@ -40,6 +40,12 @@ namespace ozgurtek.framework.converter.winforms
         {
             get => _xyTileCount;
             set => _xyTileCount = value;
+        }
+
+        public double TileSizeInMeter
+        {
+            get => _tileSizeInMeter;
+            set => _tileSizeInMeter = value;
         }
 
         public int EpsgCode
@@ -97,8 +103,8 @@ namespace ozgurtek.framework.converter.winforms
                 throw new Exception("Folder must be empty");
 
             //tile count
-            if (XyTileCount <= 0)
-                throw new Exception("XyTileCount Wrong");
+            if (XyTileCount <= 0 && TileSizeInMeter <= 0)
+                throw new Exception("XyTileCount or TileSize Wrong");
 
             //epsg code
             if (EpsgCode <= 0)
@@ -113,19 +119,26 @@ namespace ozgurtek.framework.converter.winforms
                 throw new Exception("GeomFieldName not exists");
 
             //divide 4326....
+            long xyTileCount = XyTileCount;
+            if (TileSizeInMeter > 0)
+            {
+                Envelope envelope = GdProjection.Project(table.Envelope, EpsgCode, 3857);
+                xyTileCount = (long)Math.Floor(envelope.Area / (TileSizeInMeter * TileSizeInMeter));
+            }
+
             table.GeometryField = GeomFieldName;
             Envelope project = GdProjection.Project(table.Envelope, EpsgCode, 4326);
-            List<GdTileIndex> wgsTileIndex = DivideByCount(project, XyTileCount);
+            IEnumerable<GdTileIndex> wgsTileIndex = DivideByCount(project, xyTileCount);
 
             //create json models...
-            CreateModels(table,wgsTileIndex, track);
+            CreateModels(table, wgsTileIndex, xyTileCount, track);
 
             //finish
             if (track != null)
                 track.ReportProgress(100);
         }
 
-        private void CreateModels(IGdTable table, List<GdTileIndex> tileIndex, IGdTrack track)
+        private void CreateModels(IGdTable table, IEnumerable<GdTileIndex> tileIndex, long tileCount, IGdTrack track)
         {
             //crete sqllite index file 
             string path = Path.Combine(OutputFolder, "index.sqlite");
@@ -204,16 +217,14 @@ namespace ozgurtek.framework.converter.winforms
                 File.WriteAllText(fullFileName, geojson);
 
                 if (track != null)
-                    track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileIndex.Count));
+                    track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileCount));
             }
 
             sqlLiteTable.CommitTransaction();
         }
 
-        public List<GdTileIndex> DivideByCount(Envelope viewport, long xyTileCount)
+        public IEnumerable<GdTileIndex> DivideByCount(Envelope viewport, long xyTileCount)
         {
-            List<GdTileIndex> worldArray = new List<GdTileIndex>();
-
             double xStep = viewport.Width / xyTileCount;
             double yStep = viewport.Height / xyTileCount;
 
@@ -226,11 +237,9 @@ namespace ozgurtek.framework.converter.winforms
                     Coordinate coordinateMax = new Coordinate(coordinateMin.X + xStep, coordinateMin.Y + yStep);
                     Envelope env = new Envelope(coordinateMin, coordinateMax);
                     index.Envelope = env;
-                    worldArray.Add(index);
+                    yield return index;
                 }
             }
-
-            return worldArray;
         }
 
         public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)

@@ -34,6 +34,7 @@ namespace ozgurtek.framework.converter.winforms
             StyleFieldTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "StyleFieldTextBox", ""));
             DescTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "DescTextBox", ""));
             SuppressBlankTileCheck.Checked = DbConvert.ToBoolean(key.GetValue(RegisteryPrefix + "SuppressBlankTileCheck", false));
+            TileTypeComboBox.SelectedIndex = DbConvert.ToInt32(key.GetValue(RegisteryPrefix + "TileTypeComboBox", 0));
         }
 
         public void Stop()
@@ -50,6 +51,7 @@ namespace ozgurtek.framework.converter.winforms
             key.SetValue(RegisteryPrefix + "StyleFieldTextBox", StyleFieldTextBox.Text);
             key.SetValue(RegisteryPrefix + "DescTextBox", DescTextBox.Text);
             key.SetValue(RegisteryPrefix + "SuppressBlankTileCheck", SuppressBlankTileCheck.Checked);
+            key.SetValue(RegisteryPrefix + "TileTypeComboBox", TileTypeComboBox.SelectedIndex);
         }
 
         private void folderButton_Click(object sender, EventArgs e)
@@ -62,7 +64,6 @@ namespace ozgurtek.framework.converter.winforms
         public void SetParameters(GdExtrudedModelExportEngine engine)
         {
             engine.EpsgCode = DbConvert.ToInt32(EpsgTextBox.Text);
-            engine.XyTileCount = DbConvert.ToInt32(XyTileCountTextBox.Text);
             engine.SuppressBlankTile = DbConvert.ToBoolean(SuppressBlankTileCheck.Checked);
             engine.FidFieldName = FidFieldTextBox.Text;
             engine.GeomFieldName = GeomFieldTextBox.Text;
@@ -70,6 +71,10 @@ namespace ozgurtek.framework.converter.winforms
             engine.DescFieldName = DescTextBox.Text;
             engine.OutputFolder = OutPutFolderTextBox.Text;
             engine.ExtFieldName = ExtFieldTextBox.Text;
+            if (TileTypeComboBox.SelectedIndex == 0)
+                engine.XyTileCount = DbConvert.ToInt32(XyTileCountTextBox.Text);
+            else
+                engine.TileSizeInMeter = DbConvert.ToDouble(XyTileCountTextBox.Text);
         }
     }
 }

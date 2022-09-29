@@ -30,6 +30,7 @@ namespace ozgurtek.framework.converter.winforms
         private void InitializeComponent()
         {
             this.OutputGroupBox = new System.Windows.Forms.GroupBox();
+            this.TileTypeComboBox = new System.Windows.Forms.ComboBox();
             this.SuppressBlankTileCheck = new System.Windows.Forms.CheckBox();
             this.folderButton = new System.Windows.Forms.Button();
             this.OutPutFolderTextBox = new System.Windows.Forms.TextBox();
@@ -47,12 +48,12 @@ namespace ozgurtek.framework.converter.winforms
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.OutputFolderLabel = new System.Windows.Forms.Label();
-            this.EntityPerPageLabel = new System.Windows.Forms.Label();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // OutputGroupBox
             // 
+            this.OutputGroupBox.Controls.Add(this.TileTypeComboBox);
             this.OutputGroupBox.Controls.Add(this.SuppressBlankTileCheck);
             this.OutputGroupBox.Controls.Add(this.folderButton);
             this.OutputGroupBox.Controls.Add(this.OutPutFolderTextBox);
@@ -70,13 +71,24 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputGroupBox.Controls.Add(this.label2);
             this.OutputGroupBox.Controls.Add(this.label1);
             this.OutputGroupBox.Controls.Add(this.OutputFolderLabel);
-            this.OutputGroupBox.Controls.Add(this.EntityPerPageLabel);
             this.OutputGroupBox.Location = new System.Drawing.Point(7, 10);
             this.OutputGroupBox.Name = "OutputGroupBox";
             this.OutputGroupBox.Size = new System.Drawing.Size(713, 249);
             this.OutputGroupBox.TabIndex = 8;
             this.OutputGroupBox.TabStop = false;
             this.OutputGroupBox.Text = "Output";
+            // 
+            // TileTypeComboBox
+            // 
+            this.TileTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.TileTypeComboBox.FormattingEnabled = true;
+            this.TileTypeComboBox.Items.AddRange(new object[] {
+            "XY Tile Count",
+            "Size In Meter"});
+            this.TileTypeComboBox.Location = new System.Drawing.Point(14, 29);
+            this.TileTypeComboBox.Name = "TileTypeComboBox";
+            this.TileTypeComboBox.Size = new System.Drawing.Size(99, 21);
+            this.TileTypeComboBox.TabIndex = 8;
             // 
             // SuppressBlankTileCheck
             // 
@@ -92,7 +104,7 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // folderButton
             // 
-            this.folderButton.Location = new System.Drawing.Point(76, 116);
+            this.folderButton.Location = new System.Drawing.Point(83, 116);
             this.folderButton.Name = "folderButton";
             this.folderButton.Size = new System.Drawing.Size(23, 23);
             this.folderButton.TabIndex = 2;
@@ -102,17 +114,17 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // OutPutFolderTextBox
             // 
-            this.OutPutFolderTextBox.Location = new System.Drawing.Point(101, 116);
+            this.OutPutFolderTextBox.Location = new System.Drawing.Point(119, 116);
             this.OutPutFolderTextBox.Multiline = true;
             this.OutPutFolderTextBox.Name = "OutPutFolderTextBox";
-            this.OutPutFolderTextBox.Size = new System.Drawing.Size(226, 62);
+            this.OutPutFolderTextBox.Size = new System.Drawing.Size(208, 62);
             this.OutPutFolderTextBox.TabIndex = 2;
             // 
             // EpsgTextBox
             // 
-            this.EpsgTextBox.Location = new System.Drawing.Point(101, 71);
+            this.EpsgTextBox.Location = new System.Drawing.Point(119, 71);
             this.EpsgTextBox.Name = "EpsgTextBox";
-            this.EpsgTextBox.Size = new System.Drawing.Size(226, 20);
+            this.EpsgTextBox.Size = new System.Drawing.Size(208, 20);
             this.EpsgTextBox.TabIndex = 1;
             // 
             // DescTextBox
@@ -179,9 +191,9 @@ namespace ozgurtek.framework.converter.winforms
             // 
             // XyTileCountTextBox
             // 
-            this.XyTileCountTextBox.Location = new System.Drawing.Point(100, 29);
+            this.XyTileCountTextBox.Location = new System.Drawing.Point(119, 29);
             this.XyTileCountTextBox.Name = "XyTileCountTextBox";
-            this.XyTileCountTextBox.Size = new System.Drawing.Size(227, 20);
+            this.XyTileCountTextBox.Size = new System.Drawing.Size(208, 20);
             this.XyTileCountTextBox.TabIndex = 0;
             this.XyTileCountTextBox.Text = "10";
             // 
@@ -197,7 +209,7 @@ namespace ozgurtek.framework.converter.winforms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(11, 71);
+            this.label2.Location = new System.Drawing.Point(14, 71);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(73, 13);
             this.label2.TabIndex = 0;
@@ -215,20 +227,11 @@ namespace ozgurtek.framework.converter.winforms
             // OutputFolderLabel
             // 
             this.OutputFolderLabel.AutoSize = true;
-            this.OutputFolderLabel.Location = new System.Drawing.Point(10, 119);
+            this.OutputFolderLabel.Location = new System.Drawing.Point(14, 119);
             this.OutputFolderLabel.Name = "OutputFolderLabel";
             this.OutputFolderLabel.Size = new System.Drawing.Size(68, 13);
             this.OutputFolderLabel.TabIndex = 0;
             this.OutputFolderLabel.Text = "Ouput Folder";
-            // 
-            // EntityPerPageLabel
-            // 
-            this.EntityPerPageLabel.AutoSize = true;
-            this.EntityPerPageLabel.Location = new System.Drawing.Point(10, 29);
-            this.EntityPerPageLabel.Name = "EntityPerPageLabel";
-            this.EntityPerPageLabel.Size = new System.Drawing.Size(72, 13);
-            this.EntityPerPageLabel.TabIndex = 0;
-            this.EntityPerPageLabel.Text = "XY Tile Count";
             // 
             // OutputUserControl
             // 
@@ -236,7 +239,7 @@ namespace ozgurtek.framework.converter.winforms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.OutputGroupBox);
             this.Name = "OutputUserControl";
-            this.Size = new System.Drawing.Size(732, 239);
+            this.Size = new System.Drawing.Size(732, 269);
             this.OutputGroupBox.ResumeLayout(false);
             this.OutputGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -249,7 +252,6 @@ namespace ozgurtek.framework.converter.winforms
         private System.Windows.Forms.Button folderButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label OutputFolderLabel;
-        private System.Windows.Forms.Label EntityPerPageLabel;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;
@@ -264,5 +266,6 @@ namespace ozgurtek.framework.converter.winforms
         internal System.Windows.Forms.CheckBox SuppressBlankTileCheck;
         internal System.Windows.Forms.TextBox DescTextBox;
         private System.Windows.Forms.Label label6;
+        internal System.Windows.Forms.ComboBox TileTypeComboBox;
     }
 }

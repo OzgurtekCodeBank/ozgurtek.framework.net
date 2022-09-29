@@ -66,6 +66,7 @@ namespace ozgurtek.framework.converter.winforms
             }
             catch (Exception exception)
             {
+                GdFileLogger.Current.LogException(exception);
                 MessageBox.Show(exception.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

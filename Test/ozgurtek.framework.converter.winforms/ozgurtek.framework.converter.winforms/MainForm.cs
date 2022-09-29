@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 using Geometry = NetTopologySuite.Geometries.Geometry;
@@ -53,6 +54,10 @@ namespace ozgurtek.framework.converter.winforms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            string strExeFilePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string strWorkPath = System.IO.Path.GetDirectoryName(strExeFilePath);
+            GdFileLogger.Current.LogFolder = strWorkPath;
+
             dbUserControl.Start();
             fileUserControl.Start();
         }

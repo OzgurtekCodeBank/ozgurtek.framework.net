@@ -39,7 +39,6 @@ namespace ozgurtek.framework.converter.winforms
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = "xml files (*.xml)|*.xml|kmz files (*.kmz)|*.kmz|kml files (*.kml)|*.kml|city gml  files 3.0(*.gml)|*.gml";
             DialogResult dialogResult = openFileDialog.ShowDialog();
             if (dialogResult != DialogResult.OK)
                 return;
@@ -99,7 +98,8 @@ namespace ozgurtek.framework.converter.winforms
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    GdFileLogger.Current.Log($"writting {ogrTable.Name} ....", LogType.Info);
+                    GdFileLogger.Current.LogException(e);
                 }
                 track.ReportProgress(current++);
             }

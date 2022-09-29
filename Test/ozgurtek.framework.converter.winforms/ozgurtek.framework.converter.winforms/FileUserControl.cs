@@ -39,12 +39,21 @@ namespace ozgurtek.framework.converter.winforms
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.RestoreDirectory = true;
-            openFileDialog.Filter = "kmz files (*.kmz)|*.kmz|kml files (*.kml)|*.kml|city gml  files 3.0(*.gml)|*.gml";
+            openFileDialog.Filter = "xml files (*.xml)|*.xml|kmz files (*.kmz)|*.kmz|kml files (*.kml)|*.kml|city gml  files 3.0(*.gml)|*.gml";
             DialogResult dialogResult = openFileDialog.ShowDialog();
             if (dialogResult != DialogResult.OK)
                 return;
 
             ConnectionStringText.Text = openFileDialog.FileName;
+        }
+
+        private void FolderButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
+                ConnectionStringText.Text = dialog.SelectedPath;
         }
 
         private void ExportButton_Click(object sender, EventArgs e)
@@ -80,11 +89,18 @@ namespace ozgurtek.framework.converter.winforms
                 string path = Path.Combine(outputUserControl.OutPutFolderTextBox.Text, ogrTable.Name);
                 Directory.CreateDirectory(path);
 
-                GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
-                outputUserControl.SetParameters(engine);
-                engine.OutputFolder = path;
+                try
+                {
+                    GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();
+                    outputUserControl.SetParameters(engine);
+                    engine.OutputFolder = path;
 
-                engine.Export(ogrTable, null);
+                    engine.Export(ogrTable, null);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
                 track.ReportProgress(current++);
             }
         }

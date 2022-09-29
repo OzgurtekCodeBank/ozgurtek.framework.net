@@ -105,7 +105,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutPutFolderTextBox.Location = new System.Drawing.Point(101, 116);
             this.OutPutFolderTextBox.Multiline = true;
             this.OutPutFolderTextBox.Name = "OutPutFolderTextBox";
-            this.OutPutFolderTextBox.Size = new System.Drawing.Size(226, 23);
+            this.OutPutFolderTextBox.Size = new System.Drawing.Size(226, 62);
             this.OutPutFolderTextBox.TabIndex = 2;
             // 
             // EpsgTextBox

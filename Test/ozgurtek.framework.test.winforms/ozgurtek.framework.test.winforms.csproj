@@ -79,6 +79,8 @@
     <Compile Include="UnitTest\Geodesy\GdLonLatTest.cs" />
     <Compile Include="UnitTest\Geodesy\GdVectorTest.cs" />
     <Compile Include="UnitTest\GdPgFtsBuilder.cs" />
+    <Compile Include="UnitTest\Style\LineStyleTest.cs" />
+    <Compile Include="UnitTest\Style\PointStyleTest.cs" />
     <Compile Include="UnitTest\Style\PolygonStyleTest.cs" />
     <Compile Include="UnitTest\Style\StyleColorDataRandomizer.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

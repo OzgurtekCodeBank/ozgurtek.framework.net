@@ -139,6 +139,9 @@ namespace ozgurtek.framework.converter.winforms
             long fileName = 0;
             foreach (GdTileIndex index in tileIndex)
             {
+                if (index.Envelope.Area <= 0)
+                    continue;
+
                 //search given table
                 Envelope envelope = GdProjection.Project(index.Envelope, 4326, EpsgCode);
                 table.GeometryFilter = new GdGeometryFilter(envelope);

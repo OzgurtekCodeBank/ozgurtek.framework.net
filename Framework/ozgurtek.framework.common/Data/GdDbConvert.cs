@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 using NetTopologySuite.IO;
+using NetTopologySuite.IO.GML2;
 using Newtonsoft.Json;
 using ozgurtek.framework.core.Data;
 
@@ -198,6 +199,15 @@ namespace ozgurtek.framework.common.Data
                 {
                     // ignored
                 }
+
+                try
+                {
+                    return FromGml(strVal);
+                }
+                catch(Exception e)
+                {
+                    // ignored
+                }
             }
 
             if (value is byte[] bytes)
@@ -328,6 +338,12 @@ namespace ozgurtek.framework.common.Data
         {
             WKBReader reader = new WKBReader();
             return reader.Read(bytes);
+        }
+
+        public static Geometry FromGml(string geometry)
+        {
+            GMLReader reader = new GMLReader();
+            return reader.Read(geometry);
         }
 
         public static Geometry FromWkt(string geometry)

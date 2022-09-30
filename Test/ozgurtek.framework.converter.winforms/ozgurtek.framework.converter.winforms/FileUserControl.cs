@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Util;
+using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 
 namespace ozgurtek.framework.converter.winforms
@@ -77,18 +78,29 @@ namespace ozgurtek.framework.converter.winforms
             track.ProgressChanged += ProgressChanged;
 
             string fileName = ConnectionStringText.Text;
-            GdOgrDataSource dataSource = GdOgrDataSource.Open(fileName);
+            FileInfo info = new FileInfo(fileName);
+
+            IEnumerable<IGdTable> tables;
+            if (info.Extension.Contains("citygml"))
+            {
+                CityGmlReader reader = new CityGmlReader();
+                tables = reader.Read(fileName);
+            }
+            else
+            {
+                GdOgrDataSource dataSource = GdOgrDataSource.Open(fileName);
+                tables = dataSource.GetTable();
+            }
 
             progressBar.Minimum = 1;
-            progressBar.Maximum = dataSource.TableCount;
+            progressBar.Maximum = new List<IGdTable>(tables).Count;
 
             int current = 1;
-            IEnumerable<GdOgrTable> table = dataSource.GetTable();
-            foreach (GdOgrTable ogrTable in table)
+            foreach (IGdTable ogrTable in tables)
             {
                 string path = Path.Combine(outputUserControl.OutPutFolderTextBox.Text, ogrTable.Name);
                 Directory.CreateDirectory(path);
-
+                
                 try
                 {
                     GdExtrudedModelExportEngine engine = new GdExtrudedModelExportEngine();

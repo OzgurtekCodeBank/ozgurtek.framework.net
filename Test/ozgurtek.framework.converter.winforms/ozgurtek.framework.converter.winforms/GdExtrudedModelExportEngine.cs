@@ -13,12 +13,6 @@ namespace ozgurtek.framework.converter.winforms
 {
     public class GdExtrudedModelExportEngine
     {
-        private const string GdId = "gd_id";
-        private const string GdGeometry = "gd_geometry";
-        private const string GdHeight = "gd_ext_height";
-        private const string GdStyle = "gd_style";
-        private const string GdDescription = "gd_description";
-
         private string _outputFolder;
         private long _xyTileCount = -1;
         private int _epsgCode = -1;
@@ -176,7 +170,7 @@ namespace ozgurtek.framework.converter.winforms
                 sqlLiteTable.Insert(sqlLiteBuffer);
 
                 //write json file
-                GdMemoryTable memTable = PrepareNewMemTable();
+                GdMemoryTable memTable = Util.PrepareNewMemTable();
                 foreach (IGdRow row in table.Rows)
                 {
                     if (row.IsNull(GeomFieldName))
@@ -188,25 +182,25 @@ namespace ozgurtek.framework.converter.winforms
                     GdRowBuffer buffer = new GdRowBuffer();
 
                     //id
-                    buffer.Put(GdId, row.GetAsInteger(FidFieldName));
+                    buffer.Put(Util.GdId, row.GetAsString(FidFieldName));
 
                     //geometry
                     Geometry geometry = row.GetAsGeometry(GeomFieldName);
                     geometry.SRID = EpsgCode;
                     geometry = GdProjection.Project(geometry, 4326);
-                    buffer.Put(GdGeometry, geometry);
+                    buffer.Put(Util.GdGeometry, geometry);
 
                     //optional height
                     if (!string.IsNullOrEmpty(ExtFieldName) && !row.IsNull(ExtFieldName))
-                        buffer.Put(GdHeight, row.GetAsReal(ExtFieldName));
+                        buffer.Put(Util.GdHeight, row.GetAsReal(ExtFieldName));
 
                     //optional style
                     if (!string.IsNullOrEmpty(StyleFieldName) && !row.IsNull(StyleFieldName))
-                        buffer.Put(GdStyle, row.GetAsString(StyleFieldName));
+                        buffer.Put(Util.GdStyle, row.GetAsString(StyleFieldName));
 
                     //optional description
                     if (!string.IsNullOrEmpty(DescFieldName) && !row.IsNull(DescFieldName))
-                        buffer.Put(GdDescription, row.GetAsString(DescFieldName));
+                        buffer.Put(Util.GdDescription, row.GetAsString(DescFieldName));
 
                     memTable.Insert(buffer);
                 }
@@ -265,17 +259,6 @@ namespace ozgurtek.framework.converter.winforms
             }
 
             return worldArray;
-        }
-
-        private GdMemoryTable PrepareNewMemTable()
-        {
-            GdMemoryTable memTable = new GdMemoryTable();
-            memTable.CreateField(new GdField(GdId, GdDataType.Integer));
-            memTable.CreateField(new GdField(GdGeometry, GdDataType.Geometry));
-            memTable.CreateField(new GdField(GdHeight, GdDataType.Real));
-            memTable.CreateField(new GdField(GdStyle, GdDataType.Real));
-            memTable.CreateField(new GdField(GdDescription, GdDataType.Real));
-            return memTable;
         }
     }
 }

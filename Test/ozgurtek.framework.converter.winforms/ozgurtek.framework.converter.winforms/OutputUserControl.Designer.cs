@@ -48,6 +48,8 @@ namespace ozgurtek.framework.converter.winforms
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.OutputFolderLabel = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.GroundHeightTextBox = new System.Windows.Forms.TextBox();
             this.OutputGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,6 +59,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputGroupBox.Controls.Add(this.SuppressBlankTileCheck);
             this.OutputGroupBox.Controls.Add(this.folderButton);
             this.OutputGroupBox.Controls.Add(this.OutPutFolderTextBox);
+            this.OutputGroupBox.Controls.Add(this.GroundHeightTextBox);
             this.OutputGroupBox.Controls.Add(this.EpsgTextBox);
             this.OutputGroupBox.Controls.Add(this.DescTextBox);
             this.OutputGroupBox.Controls.Add(this.StyleFieldTextBox);
@@ -67,6 +70,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputGroupBox.Controls.Add(this.FidFieldTextBox);
             this.OutputGroupBox.Controls.Add(this.label4);
             this.OutputGroupBox.Controls.Add(this.XyTileCountTextBox);
+            this.OutputGroupBox.Controls.Add(this.label7);
             this.OutputGroupBox.Controls.Add(this.label3);
             this.OutputGroupBox.Controls.Add(this.label2);
             this.OutputGroupBox.Controls.Add(this.label1);
@@ -95,7 +99,7 @@ namespace ozgurtek.framework.converter.winforms
             this.SuppressBlankTileCheck.AutoSize = true;
             this.SuppressBlankTileCheck.Checked = true;
             this.SuppressBlankTileCheck.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.SuppressBlankTileCheck.Location = new System.Drawing.Point(101, 199);
+            this.SuppressBlankTileCheck.Location = new System.Drawing.Point(549, 229);
             this.SuppressBlankTileCheck.Name = "SuppressBlankTileCheck";
             this.SuppressBlankTileCheck.Size = new System.Drawing.Size(120, 17);
             this.SuppressBlankTileCheck.TabIndex = 7;
@@ -117,7 +121,7 @@ namespace ozgurtek.framework.converter.winforms
             this.OutPutFolderTextBox.Location = new System.Drawing.Point(119, 116);
             this.OutPutFolderTextBox.Multiline = true;
             this.OutPutFolderTextBox.Name = "OutPutFolderTextBox";
-            this.OutPutFolderTextBox.Size = new System.Drawing.Size(208, 62);
+            this.OutPutFolderTextBox.Size = new System.Drawing.Size(208, 55);
             this.OutPutFolderTextBox.TabIndex = 2;
             // 
             // EpsgTextBox
@@ -233,6 +237,22 @@ namespace ozgurtek.framework.converter.winforms
             this.OutputFolderLabel.TabIndex = 0;
             this.OutputFolderLabel.Text = "Ouput Folder";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(14, 196);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(76, 13);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "Ground Height";
+            // 
+            // GroundHeightTextBox
+            // 
+            this.GroundHeightTextBox.Location = new System.Drawing.Point(119, 196);
+            this.GroundHeightTextBox.Name = "GroundHeightTextBox";
+            this.GroundHeightTextBox.Size = new System.Drawing.Size(208, 20);
+            this.GroundHeightTextBox.TabIndex = 1;
+            // 
             // OutputUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,5 +287,7 @@ namespace ozgurtek.framework.converter.winforms
         internal System.Windows.Forms.TextBox DescTextBox;
         private System.Windows.Forms.Label label6;
         internal System.Windows.Forms.ComboBox TileTypeComboBox;
+        internal System.Windows.Forms.TextBox GroundHeightTextBox;
+        private System.Windows.Forms.Label label7;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using ozgurtek.framework.common.Data;
@@ -22,8 +23,7 @@ namespace ozgurtek.framework.converter.winforms
 
         public void Start()
         {
-            RegistryKey key =
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+            RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             
             XyTileCountTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "XyTileCountTextBox", ""));
             EpsgTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "EpsgTextBox", ""));
@@ -35,12 +35,12 @@ namespace ozgurtek.framework.converter.winforms
             DescTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "DescTextBox", ""));
             SuppressBlankTileCheck.Checked = DbConvert.ToBoolean(key.GetValue(RegisteryPrefix + "SuppressBlankTileCheck", false));
             TileTypeComboBox.SelectedIndex = DbConvert.ToInt32(key.GetValue(RegisteryPrefix + "TileTypeComboBox", 0));
+            GroundHeightTextBox.Text = DbConvert.ToString(key.GetValue(RegisteryPrefix + "GroundHeightTextBox", 0));
         }
 
         public void Stop()
         {
-            RegistryKey key =
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+            RegistryKey key = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             
             key.SetValue(RegisteryPrefix + "XyTileCountTextBox", XyTileCountTextBox.Text);
             key.SetValue(RegisteryPrefix + "EpsgTextBox", EpsgTextBox.Text);
@@ -52,6 +52,7 @@ namespace ozgurtek.framework.converter.winforms
             key.SetValue(RegisteryPrefix + "DescTextBox", DescTextBox.Text);
             key.SetValue(RegisteryPrefix + "SuppressBlankTileCheck", SuppressBlankTileCheck.Checked);
             key.SetValue(RegisteryPrefix + "TileTypeComboBox", TileTypeComboBox.SelectedIndex);
+            key.SetValue(RegisteryPrefix + "GroundHeightTextBox", GroundHeightTextBox.Text);
         }
 
         private void folderButton_Click(object sender, EventArgs e)
@@ -65,12 +66,14 @@ namespace ozgurtek.framework.converter.winforms
         {
             engine.EpsgCode = DbConvert.ToInt32(EpsgTextBox.Text);
             engine.SuppressBlankTile = DbConvert.ToBoolean(SuppressBlankTileCheck.Checked);
+            engine.GroundHeight = double.Parse(GroundHeightTextBox.Text, CultureInfo.InvariantCulture);
             engine.FidFieldName = FidFieldTextBox.Text;
             engine.GeomFieldName = GeomFieldTextBox.Text;
             engine.StyleFieldName = StyleFieldTextBox.Text;
             engine.DescFieldName = DescTextBox.Text;
             engine.OutputFolder = OutPutFolderTextBox.Text;
             engine.ExtFieldName = ExtFieldTextBox.Text;
+            
             if (TileTypeComboBox.SelectedIndex == 0)
                 engine.XyTileCount = DbConvert.ToInt32(XyTileCountTextBox.Text);
             else

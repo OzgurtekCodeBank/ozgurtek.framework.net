@@ -17,6 +17,7 @@ namespace ozgurtek.framework.converter.winforms
         private long _xyTileCount = -1;
         private int _epsgCode = -1;
         private bool _suppressBlankTile = true;
+        private double _groundHeight;
         private string _fidFieldName;
         private string _geomFieldName;
         private string _extFieldName;
@@ -52,6 +53,12 @@ namespace ozgurtek.framework.converter.winforms
         {
             get => _suppressBlankTile;
             set => _suppressBlankTile = value;
+        }
+
+        public double GroundHeight
+        {
+            get => _groundHeight;
+            set => _groundHeight = value;
         }
 
         public string FidFieldName
@@ -117,7 +124,7 @@ namespace ozgurtek.framework.converter.winforms
             if (TileSizeInMeter > 0)
             {
                 Envelope envelope = GdProjection.Project(table.Envelope, EpsgCode, 3857);
-                xyTileCount = (long)Math.Floor(envelope.Area / (TileSizeInMeter * TileSizeInMeter));
+                xyTileCount = (long) Math.Floor(envelope.Area / (TileSizeInMeter * TileSizeInMeter));
             }
 
             table.GeometryField = GeomFieldName;
@@ -186,6 +193,8 @@ namespace ozgurtek.framework.converter.winforms
 
                     //geometry
                     Geometry geometry = row.GetAsGeometry(GeomFieldName);
+                    geometry = geometry.Copy();
+                    geometry.Apply(new Mtf(_groundHeight));
                     geometry.SRID = EpsgCode;
                     geometry = GdProjection.Project(geometry, 4326);
                     buffer.Put(Util.GdGeometry, geometry);
@@ -259,6 +268,32 @@ namespace ozgurtek.framework.converter.winforms
             }
 
             return worldArray;
+        }
+    }
+
+    internal sealed class Mtf : ICoordinateSequenceFilter
+    {
+        private readonly double _ground;
+
+        public Mtf(double ground)
+        {
+            _ground = ground;
+        }
+
+        public bool Done
+        {
+            get { return false; }
+        }
+
+        public bool GeometryChanged
+        {
+            get { return true; }
+        }
+
+        public void Filter(CoordinateSequence seq, int i)
+        {
+            double z = seq.GetZ(i);
+            seq.SetZ(i, z - _ground);
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using NetTopologySuite.Geometries;
@@ -122,9 +125,32 @@ namespace ozgurtek.framework.converter.winforms
             return null;
         }
 
-        private byte[] Crop(string id, string imageFile, string coordinates)
+        private byte[] Crop(string id, string imageFile, string textureCoordinate)
         {
-            return null;
+            string[] textureCoordArray = textureCoordinate.Split(' ');
+
+            PointF[] pointArray = new PointF[4];
+            Bitmap originalTexturebm = (Bitmap)Image.FromFile(imageFile);
+            for (int i = 0; i < textureCoordArray.Length / 2; i++)
+            {
+                pointArray[i].X = float.Parse(textureCoordArray[i * 2], CultureInfo.InvariantCulture.NumberFormat) * originalTexturebm.Width;
+                pointArray[i].Y = (1 - float.Parse(textureCoordArray[i * 2 + 1], CultureInfo.InvariantCulture.NumberFormat)) * originalTexturebm.Height;
+            }
+
+            int seperatedTextureWidth = (int)(pointArray.Max(p => p.X) - pointArray.Min(p => p.X));
+            int seperatedTextureHeight = (int)(pointArray.Max(p => p.Y) - pointArray.Min(p => p.Y));
+            Bitmap seperatedTexturebm = new Bitmap(seperatedTextureWidth, seperatedTextureHeight);
+
+            GraphicsPath gp = new GraphicsPath();
+            gp.AddPolygon(pointArray);
+            using (Graphics G = Graphics.FromImage(seperatedTexturebm))
+            {
+                G.Clip = new Region(gp);
+                G.DrawImage(originalTexturebm, 0, 0);
+                seperatedTexturebm.(@"d:\3_8_0_test.jpg");
+            }
+
+            gp.Dispose();
         }
     }
 }

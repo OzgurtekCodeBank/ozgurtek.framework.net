@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Xml;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format;
+using ozgurtek.framework.common.Style;
 using ozgurtek.framework.core.Data;
 
 namespace ozgurtek.framework.converter.winforms
@@ -16,93 +18,113 @@ namespace ozgurtek.framework.converter.winforms
 
             GdMemoryTable memTable = Util.PrepareNewMemTable();
             memTable.Name = "Building";
-            FillGeom(filePath, memTable);
-            FillMaterial(filePath, memTable);
+            Read(filePath, memTable);
 
             list.Add(memTable);
 
             return list;
         }
 
-        private void FillGeom(string filePath, GdMemoryTable memoryTable)
+        private void Read(string filePath, GdMemoryTable memoryTable)
         {
             XmlReader xmlReader = XmlReader.Create(filePath);
             while (xmlReader.Read())
             {
-                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:LinearRing")
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:LinearRing") //each triangle
                 {
                     GdRowBuffer buffer = new GdRowBuffer();
-                    string attribute = xmlReader.GetAttribute("gml:id");
-                    buffer.Put(Util.GdId, attribute);
+                    
+                    //id
+                    string id = xmlReader.GetAttribute("gml:id");
+                    buffer.Put(Util.GdId, id);
 
-                    while (xmlReader.Read())
-                    {
-                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:posList")
-                        {
-                            string coords = xmlReader.ReadInnerXml();
-                            string[] strings = coords.Split(' ');
+                    //geometry
+                    Geometry geometry = GetGeometry(xmlReader);
+                    buffer.Put(Util.GdGeometry, geometry);
+                    
+                    //material
+                    byte[] material = GetMaterial(filePath, id);
+                    GdPolygonStyle polygonStyle = new GdPolygonStyle();
+                    polygonStyle.Stroke = null;
+                    GdFill fill = new GdFill();
+                    fill.Material = material;
+                    polygonStyle.Fill = fill;
+                    //GdStyleJsonSerializer serializer = new GdStyleJsonSerializer();
+                    //string serialize = serializer.Serialize(polygonStyle);
 
-                            List<Coordinate> coordinates = new List<Coordinate>();
-                            for (int i = 0; i < strings.Length - 1; i += 3)
-                            {
-                                CoordinateZ coordinate = new CoordinateZ(
-                                    double.Parse(strings[i], CultureInfo.InvariantCulture),
-                                    double.Parse(strings[i + 1], CultureInfo.InvariantCulture));
+                    //buffer.Put("gd_style", serialize);
 
-                                coordinate.Z = double.Parse(strings[i + 2], CultureInfo.InvariantCulture);
-                                coordinates.Add(coordinate);
-                            }
-
-                            LinearRing ring = new LinearRing(coordinates.ToArray());
-                            Polygon polygon = new Polygon(ring);
-
-                            buffer.Put(Util.GdGeometry, polygon);
-                            memoryTable.Insert(buffer);
-                        }
-                    }
+                    memoryTable.Insert(buffer);
                 }
             }
         }
 
-
-        private void FillMaterial(string filePath, GdMemoryTable memoryTable)
+        private Geometry GetGeometry(XmlReader xmlReader)
         {
-            XmlReader xmlReader = XmlReader.Create(filePath);
             while (xmlReader.Read())
             {
-                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:LinearRing")
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:posList")
                 {
-                    GdRowBuffer buffer = new GdRowBuffer();
-                    string attribute = xmlReader.GetAttribute("gml:id");
-                    buffer.Put(Util.GdId, attribute);
+                    string coords = xmlReader.ReadInnerXml();
+                    string[] strings = coords.Split(' ');
 
+                    List<Coordinate> coordinates = new List<Coordinate>();
+                    for (int i = 0; i < strings.Length - 1; i += 3)
+                    {
+                        CoordinateZ coordinate = new CoordinateZ(
+                            double.Parse(strings[i], CultureInfo.InvariantCulture),
+                            double.Parse(strings[i + 1], CultureInfo.InvariantCulture));
+
+                        coordinate.Z = double.Parse(strings[i + 2], CultureInfo.InvariantCulture);
+                        coordinates.Add(coordinate);
+                    }
+
+                    LinearRing ring = new LinearRing(coordinates.ToArray());
+                    Polygon polygon = new Polygon(ring);
+                    return polygon;
+                }
+            }
+
+            return null;
+        }
+
+
+        private byte[] GetMaterial(string filePath, string tag)
+        {
+            XmlReader xmlReader = XmlReader.Create(filePath);
+
+            while (xmlReader.Read())
+            {
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "app:ParameterizedTexture")
+                {
                     while (xmlReader.Read())
                     {
-                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:posList")
+                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "app:imageURI")
                         {
-                            string coords = xmlReader.ReadInnerXml();
-                            string[] strings = coords.Split(' ');
-
-                            List<Coordinate> coordinates = new List<Coordinate>();
-                            for (int i = 0; i < strings.Length - 1; i += 3)
+                            string imageFile = xmlReader.ReadInnerXml();
+                            while (xmlReader.Read())
                             {
-                                CoordinateZ coordinate = new CoordinateZ(
-                                    double.Parse(strings[i], CultureInfo.InvariantCulture),
-                                    double.Parse(strings[i + 1], CultureInfo.InvariantCulture));
-
-                                coordinate.Z = double.Parse(strings[i + 2], CultureInfo.InvariantCulture);
-                                coordinates.Add(coordinate);
+                                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "app:textureCoordinates")
+                                {
+                                    string id = xmlReader.GetAttribute("ring");
+                                    if (tag.Equals(id))
+                                    {
+                                        string coordinates = xmlReader.ReadInnerXml();
+                                        return Crop(id, imageFile, coordinates);
+                                    }
+                                }
                             }
-
-                            LinearRing ring = new LinearRing(coordinates.ToArray());
-                            Polygon polygon = new Polygon(ring);
-
-                            buffer.Put(Util.GdGeometry, polygon);
-                            memoryTable.Insert(buffer);
                         }
                     }
                 }
             }
+
+            return null;
+        }
+
+        private byte[] Crop(string id, string imageFile, string coordinates)
+        {
+            return null;
         }
     }
 }

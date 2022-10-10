@@ -21,7 +21,7 @@ namespace ozgurtek.framework.converter.winforms
         public void Start()
         {
             RegistryKey key =
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+                Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             
             ConnectionStringText.Text = DbConvert.ToString(key.GetValue("file_connection_string", ""));
             outputUserControl.Start();
@@ -30,7 +30,7 @@ namespace ozgurtek.framework.converter.winforms
         public void End()
         {
             RegistryKey key =
-                Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
+                Registry.CurrentUser.CreateSubKey(@"SOFTWARE\ozgurtek.framework.converter.winforms");
             key.SetValue("file_connection_string", ConnectionStringText.Text);
             
             outputUserControl.Stop();
@@ -96,9 +96,9 @@ namespace ozgurtek.framework.converter.winforms
             progressBar.Maximum = new List<IGdTable>(tables).Count;
 
             int current = 1;
-            foreach (IGdTable ogrTable in tables)
+            foreach (IGdTable table in tables)
             {
-                string path = Path.Combine(outputUserControl.OutPutFolderTextBox.Text, ogrTable.Name);
+                string path = Path.Combine(outputUserControl.OutPutFolderTextBox.Text, table.Name);
                 Directory.CreateDirectory(path);
                 
                 try
@@ -107,11 +107,11 @@ namespace ozgurtek.framework.converter.winforms
                     outputUserControl.SetParameters(engine);
                     engine.OutputFolder = path;
 
-                    engine.Export(ogrTable, null);
+                    engine.Export(table, null);
                 }
                 catch (Exception e)
                 {
-                    GdFileLogger.Current.Log($"writting {ogrTable.Name} ....", LogType.Info);
+                    GdFileLogger.Current.Log($"writting {table.Name} ....", LogType.Info);
                     GdFileLogger.Current.LogException(e);
                 }
                 track.ReportProgress(current++);

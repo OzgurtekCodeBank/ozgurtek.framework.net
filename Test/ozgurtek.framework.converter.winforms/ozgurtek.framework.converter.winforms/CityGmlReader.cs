@@ -16,8 +16,16 @@ namespace ozgurtek.framework.converter.winforms
 
             GdMemoryTable memTable = Util.PrepareNewMemTable();
             memTable.Name = "Building";
+            FillGeom(filePath, memTable);
+            FillMaterial(filePath, memTable);
+
             list.Add(memTable);
 
+            return list;
+        }
+
+        private void FillGeom(string filePath, GdMemoryTable memoryTable)
+        {
             XmlReader xmlReader = XmlReader.Create(filePath);
             while (xmlReader.Read())
             {
@@ -49,13 +57,52 @@ namespace ozgurtek.framework.converter.winforms
                             Polygon polygon = new Polygon(ring);
 
                             buffer.Put(Util.GdGeometry, polygon);
-                            memTable.Insert(buffer);
+                            memoryTable.Insert(buffer);
                         }
                     }
                 }
             }
+        }
 
-            return list;
+
+        private void FillMaterial(string filePath, GdMemoryTable memoryTable)
+        {
+            XmlReader xmlReader = XmlReader.Create(filePath);
+            while (xmlReader.Read())
+            {
+                if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:LinearRing")
+                {
+                    GdRowBuffer buffer = new GdRowBuffer();
+                    string attribute = xmlReader.GetAttribute("gml:id");
+                    buffer.Put(Util.GdId, attribute);
+
+                    while (xmlReader.Read())
+                    {
+                        if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "gml:posList")
+                        {
+                            string coords = xmlReader.ReadInnerXml();
+                            string[] strings = coords.Split(' ');
+
+                            List<Coordinate> coordinates = new List<Coordinate>();
+                            for (int i = 0; i < strings.Length - 1; i += 3)
+                            {
+                                CoordinateZ coordinate = new CoordinateZ(
+                                    double.Parse(strings[i], CultureInfo.InvariantCulture),
+                                    double.Parse(strings[i + 1], CultureInfo.InvariantCulture));
+
+                                coordinate.Z = double.Parse(strings[i + 2], CultureInfo.InvariantCulture);
+                                coordinates.Add(coordinate);
+                            }
+
+                            LinearRing ring = new LinearRing(coordinates.ToArray());
+                            Polygon polygon = new Polygon(ring);
+
+                            buffer.Put(Util.GdGeometry, polygon);
+                            memoryTable.Insert(buffer);
+                        }
+                    }
+                }
+            }
         }
     }
 }

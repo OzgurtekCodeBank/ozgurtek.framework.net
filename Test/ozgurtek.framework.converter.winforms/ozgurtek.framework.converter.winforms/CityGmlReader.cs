@@ -1,14 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using System.Xml;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format;
-using ozgurtek.framework.common.Style;
 using ozgurtek.framework.core.Data;
 
 namespace ozgurtek.framework.converter.winforms
@@ -46,16 +41,9 @@ namespace ozgurtek.framework.converter.winforms
                     buffer.Put(Util.GdGeometry, geometry);
                     
                     //material
-                    byte[] material = GetMaterial(filePath, id);
-                    GdPolygonStyle polygonStyle = new GdPolygonStyle();
-                    polygonStyle.Stroke = null;
-                    GdFill fill = new GdFill();
-                    fill.Material = material;
-                    polygonStyle.Fill = fill;
-                    //GdStyleJsonSerializer serializer = new GdStyleJsonSerializer();
-                    //string serialize = serializer.Serialize(polygonStyle);
-
-                    //buffer.Put("gd_style", serialize);
+                    Texture material = GetMaterial(filePath, id);
+                    buffer.Put(Util.GdStyle, material.File);
+                    buffer.Put(Util.GdTextureCoords, material.Coords);
 
                     memoryTable.Insert(buffer);
                 }
@@ -92,7 +80,7 @@ namespace ozgurtek.framework.converter.winforms
         }
 
 
-        private byte[] GetMaterial(string filePath, string tag)
+        private Texture GetMaterial(string filePath, string tag)
         {
             XmlReader xmlReader = XmlReader.Create(filePath);
 
@@ -113,7 +101,10 @@ namespace ozgurtek.framework.converter.winforms
                                     if (tag.Equals(id))
                                     {
                                         string coordinates = xmlReader.ReadInnerXml();
-                                        return Crop(id, imageFile, coordinates);
+                                        Texture texture = new Texture();
+                                        texture.File = imageFile;
+                                        texture.Coords = coordinates;
+                                        return texture;
                                     }
                                 }
                             }
@@ -124,33 +115,12 @@ namespace ozgurtek.framework.converter.winforms
 
             return null;
         }
-
-        private byte[] Crop(string id, string imageFile, string textureCoordinate)
-        {
-            string[] textureCoordArray = textureCoordinate.Split(' ');
-
-            PointF[] pointArray = new PointF[4];
-            Bitmap originalTexturebm = (Bitmap)Image.FromFile(imageFile);
-            for (int i = 0; i < textureCoordArray.Length / 2; i++)
-            {
-                pointArray[i].X = float.Parse(textureCoordArray[i * 2], CultureInfo.InvariantCulture.NumberFormat) * originalTexturebm.Width;
-                pointArray[i].Y = (1 - float.Parse(textureCoordArray[i * 2 + 1], CultureInfo.InvariantCulture.NumberFormat)) * originalTexturebm.Height;
-            }
-
-            int seperatedTextureWidth = (int)(pointArray.Max(p => p.X) - pointArray.Min(p => p.X));
-            int seperatedTextureHeight = (int)(pointArray.Max(p => p.Y) - pointArray.Min(p => p.Y));
-            Bitmap seperatedTexturebm = new Bitmap(seperatedTextureWidth, seperatedTextureHeight);
-
-            GraphicsPath gp = new GraphicsPath();
-            gp.AddPolygon(pointArray);
-            using (Graphics G = Graphics.FromImage(seperatedTexturebm))
-            {
-                G.Clip = new Region(gp);
-                G.DrawImage(originalTexturebm, 0, 0);
-                seperatedTexturebm.(@"d:\3_8_0_test.jpg");
-            }
-
-            gp.Dispose();
-        }
     }
+
+    public class Texture
+    {
+        public string Coords;
+        public string File;
+    }
+
 }

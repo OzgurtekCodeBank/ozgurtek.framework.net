@@ -10,6 +10,7 @@ namespace ozgurtek.framework.converter.winforms
         public const string GdGeometry = "gd_geometry";
         public const string GdHeight = "gd_ext_height";
         public const string GdStyle = "gd_style";
+        public const string GdTextureCoords = "gd_texture_coords";
         public const string GdDescription = "gd_description";
 
         public static GdMemoryTable PrepareNewMemTable()
@@ -18,7 +19,8 @@ namespace ozgurtek.framework.converter.winforms
             memTable.CreateField(new GdField(GdId, GdDataType.String));
             memTable.CreateField(new GdField(GdGeometry, GdDataType.Geometry));
             memTable.CreateField(new GdField(GdHeight, GdDataType.Real));
-            memTable.CreateField(new GdField(GdStyle, GdDataType.Real));
+            memTable.CreateField(new GdField(GdStyle, GdDataType.String));
+            memTable.CreateField(new GdField(GdTextureCoords, GdDataType.String));
             memTable.CreateField(new GdField(GdDescription, GdDataType.Real));
             return memTable;
         }

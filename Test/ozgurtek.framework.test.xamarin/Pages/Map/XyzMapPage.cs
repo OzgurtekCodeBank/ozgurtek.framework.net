@@ -1,5 +1,8 @@
 ﻿using NetTopologySuite.Geometries;
+using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
+using ozgurtek.framework.common.Data.Format.Wmst;
 using ozgurtek.framework.common.Geodesy;
+using ozgurtek.framework.common.Mapping;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.test.xamarin.Managers;
 using ozgurtek.framework.ui.controls.xamarin.Pages;
@@ -43,7 +46,20 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             _map.BackColor = GdColor.Gray;
 
             _map.LayerCollection.Add(GdApp.Instance.Data.GetBaseMap("GoogleMap"));
-            _map.LayerCollection.Add(GdApp.Instance.Data.GetXyzMap());
+            
+            GdWmtsMap map = new GdWmtsMap("https://kbs.konya.bel.tr/kbscache/service/wmts");
+            map.Name = "basemap";
+            map.Format = "image/gif";
+            GdGoogleMapsTileMatrixSet gdGoogleMapsTileMatrixSet = new GdGoogleMapsTileMatrixSet();
+            gdGoogleMapsTileMatrixSet.Name = "EPSG:900913";
+            map.TileMatrixSet = gdGoogleMapsTileMatrixSet;
+            map.Srid = 900913;
+            map.HttpDownloadInfo.UseDiskCache = true;
+            map.HttpDownloadInfo.UseMemoryCache = true;
+            map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
+            GdTileLayer tileLayer = new GdTileLayer(map, map.Name);
+
+            _map.LayerCollection.Add(tileLayer);
         }
     }
 }

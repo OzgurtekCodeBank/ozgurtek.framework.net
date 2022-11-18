@@ -36,7 +36,7 @@ namespace ozgurtek.framework.common.Data.Format.Wmst
                                    "&style={2}" +
                                    "&format={3}" +
                                    "&tileMatrixSet={4}" +
-                                   "&tileMatrix={5}" +
+                                   "&tileMatrix={4}:{5}" +
                                    "&TileRow={6}" +
                                    "&TileCol={7}";
                                   

@@ -122,9 +122,11 @@ namespace ozgurtek.framework.driver.postgres
 
         public override IDbConnection GetConnection()
         {
-            NpgsqlConnection connection = new NpgsqlConnection(CsBuilder.ConnectionString);
+            NpgsqlDataSourceBuilder dataSourceBuilder = new NpgsqlDataSourceBuilder(CsBuilder.ConnectionString);
+            dataSourceBuilder.UseNetTopologySuite();
+            NpgsqlDataSource dataSource = dataSourceBuilder.Build();
+            NpgsqlConnection connection = dataSource.CreateConnection();
             connection.Open();
-            connection.TypeMapper.UseNetTopologySuite();
             return connection;
         }
 

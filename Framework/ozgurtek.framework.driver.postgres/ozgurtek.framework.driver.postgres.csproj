@@ -12,11 +12,12 @@
     <FileVersion>2.0.57.0</FileVersion>
     <Description>postgres driver</Description>
     <Company>http://www.otekyazilim.com/</Company>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NetTopologySuite.IO.PostGis" Version="2.1.0" />
-    <PackageReference Include="Npgsql" Version="6.0.7" />
-    <PackageReference Include="Npgsql.NetTopologySuite" Version="6.0.7" />
+    <PackageReference Include="Npgsql" Version="7.0.0" />
+    <PackageReference Include="Npgsql.NetTopologySuite" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ozgurtek.framework.common\ozgurtek.framework.common.csproj" />

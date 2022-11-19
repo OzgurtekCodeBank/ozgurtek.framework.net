@@ -20,7 +20,10 @@ namespace ozgurtek.framework.common.Mapping
         {
             if (_client == null)
             {
-                _client = new HttpClient();
+                HttpClientHandler handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                _client = new HttpClient(handler);
                 _client.Timeout = TimeSpan.FromMilliseconds(DownloadInfo.HttpConnectTimeOut);
                 _client.DefaultRequestHeaders.Add("User-Agent", DownloadInfo.UserAgent);
                 

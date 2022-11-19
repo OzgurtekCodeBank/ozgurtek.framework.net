@@ -11,11 +11,11 @@ using Xamarin.Forms;
 
 namespace ozgurtek.framework.test.xamarin.Pages.Map
 {
-    public class XyzMapPage : GdPage
+    public class WmtsMapPage : GdPage
     {
         private readonly GdSkMap _map;
 
-        public XyzMapPage()
+        public WmtsMapPage()
         {
             StackLayout mainLayout = new StackLayout();
             mainLayout.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -47,22 +47,9 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
             _map.LayerCollection.Add(GdApp.Instance.Data.GetBaseMap("GoogleMap"));
 
-            //GdWmtsMap map = new GdWmtsMap("https://kbs.konya.bel.tr/kbscache/service/wmts");
-            //map.Name = "basemap";
-            //map.Format = "image/gif";
-            //GdGoogleMapsTileMatrixSet gdGoogleMapsTileMatrixSet = new GdGoogleMapsTileMatrixSet();
-            //gdGoogleMapsTileMatrixSet.Name = "EPSG:900913";
-            //map.TileMatrixSet = gdGoogleMapsTileMatrixSet;
-            //map.Srid = 900913;
-            //map.HttpDownloadInfo.UseDiskCache = true;
-            //map.HttpDownloadInfo.UseMemoryCache = true;
-            //map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
-            //GdTileLayer tileLayer = new GdTileLayer(map, map.Name);
-
-
-            GdWmtsMap map = new GdWmtsMap("http://185.122.200.110:8080/geoserver/gwc/service/wmts");
-            map.Name = "konya_ibs:itf_istasyonlar";
-            map.Format = "image/png";
+            GdWmtsMap map = new GdWmtsMap("https://kbs.konya.bel.tr/kbscache/service/wmts");
+            map.Name = "basemap";
+            map.Format = "image/gif";
             GdGoogleMapsTileMatrixSet gdGoogleMapsTileMatrixSet = new GdGoogleMapsTileMatrixSet();
             gdGoogleMapsTileMatrixSet.Name = "EPSG:900913";
             map.TileMatrixSet = gdGoogleMapsTileMatrixSet;
@@ -71,8 +58,20 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
             map.HttpDownloadInfo.UseMemoryCache = true;
             map.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
             GdTileLayer tileLayer = new GdTileLayer(map, map.Name);
-
             _map.LayerCollection.Add(tileLayer);
+
+            GdWmtsMap wmtsMap = new GdWmtsMap("http://185.122.200.110:8080/geoserver/gwc/service/wmts");
+            wmtsMap.Name = "konya_ibs:itf_istasyonlar";
+            wmtsMap.Format = "image/png";
+            GdGoogleMapsTileMatrixSet mapTileMatrixSet = new GdGoogleMapsTileMatrixSet();
+            mapTileMatrixSet.Name = "EPSG:900913";
+            wmtsMap.TileMatrixSet = mapTileMatrixSet;
+            wmtsMap.Srid = 900913;
+            wmtsMap.HttpDownloadInfo.UseDiskCache = true;
+            wmtsMap.HttpDownloadInfo.UseMemoryCache = true;
+            wmtsMap.HttpDownloadInfo.DiskCacheFolder = GdApp.Instance.Settings.CacheFolder;
+            GdTileLayer gdTileLayer = new GdTileLayer(wmtsMap, wmtsMap.Name);
+            _map.LayerCollection.Add(gdTileLayer);
         }
     }
 }

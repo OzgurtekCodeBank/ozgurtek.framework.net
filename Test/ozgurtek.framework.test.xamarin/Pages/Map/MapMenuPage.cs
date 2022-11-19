@@ -39,14 +39,14 @@ namespace ozgurtek.framework.test.xamarin.Pages.Map
 
             //xyz map
             GdLabel xyzLabel = new GdLabel();
-            xyzLabel.Text = "XYZ Map";
-            _viewBox.AddItem("XYZ Map", xyzLabel);
+            xyzLabel.Text = "Wmts Map";
+            _viewBox.AddItem("Wmts Map", xyzLabel);
             xyzLabel.Gesture.Tapped += GestureOnTapped;
         }
 
         private void GestureOnTapped(object sender, EventArgs e)
         {
-            XyzMapPage page = new XyzMapPage();
+            WmtsMapPage page = new WmtsMapPage();
             page.ShowPage(null);
         }
 

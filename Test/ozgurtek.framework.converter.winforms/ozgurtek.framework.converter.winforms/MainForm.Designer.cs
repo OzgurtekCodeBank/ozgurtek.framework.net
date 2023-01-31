@@ -37,16 +37,20 @@ namespace ozgurtek.framework.converter.winforms
             this.dbUserControl = new ozgurtek.framework.converter.winforms.DbUserControl();
             this.aboutTabPage = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
+            this.appSpecTabPage = new System.Windows.Forms.TabPage();
+            this.appSpesific1 = new ozgurtek.framework.converter.winforms.AppSpesific();
             this.tabControl.SuspendLayout();
             this.fileTabPage.SuspendLayout();
             this.dbTabPage.SuspendLayout();
             this.aboutTabPage.SuspendLayout();
+            this.appSpecTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.fileTabPage);
             this.tabControl.Controls.Add(this.dbTabPage);
+            this.tabControl.Controls.Add(this.appSpecTabPage);
             this.tabControl.Controls.Add(this.aboutTabPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -113,6 +117,25 @@ namespace ozgurtek.framework.converter.winforms
             this.label1.TabIndex = 0;
             this.label1.Text = "Model Creator 15.09.2022 17:50";
             // 
+            // appSpecTabPage
+            // 
+            this.appSpecTabPage.Controls.Add(this.appSpesific1);
+            this.appSpecTabPage.Location = new System.Drawing.Point(4, 22);
+            this.appSpecTabPage.Name = "appSpecTabPage";
+            this.appSpecTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.appSpecTabPage.Size = new System.Drawing.Size(769, 612);
+            this.appSpecTabPage.TabIndex = 3;
+            this.appSpecTabPage.Text = "App";
+            this.appSpecTabPage.UseVisualStyleBackColor = true;
+            // 
+            // appSpesific1
+            // 
+            this.appSpesific1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.appSpesific1.Location = new System.Drawing.Point(3, 3);
+            this.appSpesific1.Name = "appSpesific1";
+            this.appSpesific1.Size = new System.Drawing.Size(763, 606);
+            this.appSpesific1.TabIndex = 0;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -131,6 +154,7 @@ namespace ozgurtek.framework.converter.winforms
             this.dbTabPage.ResumeLayout(false);
             this.aboutTabPage.ResumeLayout(false);
             this.aboutTabPage.PerformLayout();
+            this.appSpecTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -144,6 +168,8 @@ namespace ozgurtek.framework.converter.winforms
         private DbUserControl dbUserControl;
         private System.Windows.Forms.TabPage aboutTabPage;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage appSpecTabPage;
+        private AppSpesific appSpesific1;
     }
 }
 

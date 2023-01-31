@@ -81,7 +81,7 @@ namespace ozgurtek.framework.converter.winforms
             FileInfo info = new FileInfo(fileName);
 
             IEnumerable<IGdTable> tables;
-            if (info.Extension.Contains("citygml"))
+            if (info.Extension.Contains("citygml") || info.Extension.Contains("gml"))
             {
                 CityGmlReader reader = new CityGmlReader();
                 tables = reader.Read(fileName);

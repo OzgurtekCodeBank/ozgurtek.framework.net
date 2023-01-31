@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Xml;
+using Microsoft.IdentityModel.Tokens;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format;
@@ -34,6 +35,8 @@ namespace ozgurtek.framework.converter.winforms
                     
                     //id
                     string id = xmlReader.GetAttribute("gml:id");
+                    if(id.IsNullOrEmpty())
+                        continue;
                     buffer.Put(Util.GdId, id);
 
                     //geometry
@@ -41,7 +44,7 @@ namespace ozgurtek.framework.converter.winforms
                     buffer.Put(Util.GdGeometry, geometry);
                     
                     //material
-                    Texture material = GetMaterial(filePath, id);
+                    Texture material = GetMaterialV2(filePath, id);
                     buffer.Put(Util.GdStyle, material.File);
                     buffer.Put(Util.GdTextureCoords, material.Coords);
 
@@ -110,6 +113,39 @@ namespace ozgurtek.framework.converter.winforms
                             }
                         }
                     }
+                }
+            }
+
+            return null;
+        }
+        private Texture GetMaterialV2(string filePath, string tag)
+        {
+            ////mobilya özel
+            //tag = "#" + tag;
+            ////mobilya özel
+
+            XmlDocument xmldoc = new XmlDocument();
+            xmldoc.Load(filePath);
+            XmlNodeList xmlnodeList = xmldoc.GetElementsByTagName("app:textureCoordinates");
+
+            foreach (XmlNode xmlnode in xmlnodeList)
+            {
+                string id = xmlnode.Attributes["ring"].Value;
+                if (tag.Equals(id))
+                {
+                    string coordinates = xmlnode.InnerText;
+                    Texture texture = new Texture();
+                    texture.Coords = coordinates;
+
+                    foreach (XmlNode imageNode in xmlnode.ParentNode.ParentNode.ParentNode.ChildNodes)
+                    {
+                        if (imageNode.Name == "app:imageURI")
+                        {
+                            texture.File = imageNode.InnerText;
+                        }
+                    }
+
+                    return texture;
                 }
             }
 

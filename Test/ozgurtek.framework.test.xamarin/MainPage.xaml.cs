@@ -10,6 +10,7 @@ namespace ozgurtek.framework.test.xamarin
     public partial class MainPage : ContentPage
     {
         private GdViewBox _viewBox;
+
         public MainPage()
         {
             InitializeComponent();
@@ -32,11 +33,23 @@ namespace ozgurtek.framework.test.xamarin
             selectPage.Text = "Click to see select page samples...";
             _viewBox.AddItem("Select Page", selectPage);
             selectPage.Gesture.Tapped += SelectPageGestureOnTapped;
+
+            //dark mode page
+            GdLabel darkModePage = new GdLabel();
+            darkModePage.Text = "Click to see dark mode samples...";
+            _viewBox.AddItem("Dark Mode Page", darkModePage);
+            darkModePage.Gesture.Tapped += DarkModePageGestureOnTapped;
         }
 
         private void SelectPageGestureOnTapped(object sender, EventArgs e)
         {
             GdSelectPageSample1 sample1 = new GdSelectPageSample1();
+            sample1.ShowPage(null);
+        }
+
+        private void DarkModePageGestureOnTapped(object sender, EventArgs e)
+        {
+            GdDarkModePageSample sample1 = new GdDarkModePageSample();
             sample1.ShowPage(null);
         }
 

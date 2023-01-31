@@ -96,6 +96,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSpesific.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="AppSpesific.Designer.cs">
+      <DependentUpon>AppSpesific.cs</DependentUpon>
+    </Compile>
     <Compile Include="CityGmlReader.cs" />
     <Compile Include="DbUserControl.cs">
       <SubType>UserControl</SubType>
@@ -126,6 +132,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
+    <EmbeddedResource Include="AppSpesific.resx">
+      <DependentUpon>AppSpesific.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DbUserControl.resx">
       <DependentUpon>DbUserControl.cs</DependentUpon>
     </EmbeddedResource>

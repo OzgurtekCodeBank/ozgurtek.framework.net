@@ -198,6 +198,7 @@ namespace ozgurtek.framework.converter.winforms
                     geometry.SRID = EpsgCode;
                     geometry = GdProjection.Project(geometry, 4326);
                     buffer.Put(Util.GdGeometry, geometry);
+                    //buffer.Put("gd_texture_coords", row.GetAsString("gd_texture_coords"));
 
                     //optional height
                     if (!string.IsNullOrEmpty(ExtFieldName) && !row.IsNull(ExtFieldName))
@@ -220,13 +221,13 @@ namespace ozgurtek.framework.converter.winforms
                 File.WriteAllText(fullFileName, geojson);
 
                 if (track != null)
-                    track.ReportProgress(DbConvert.ToDouble(fileName * 100 / tileCount));
+                    track.ReportProgress(DbConvert.ToDouble(fileName * 100 / fileName));
             }
 
             sqlLiteTable.CommitTransaction();
         }
 
-        public IEnumerable<GdTileIndex> DivideByCount(Envelope viewport, long xyTileCount)
+        private IEnumerable<GdTileIndex> DivideByCount(Envelope viewport, long xyTileCount)
         {
             double xStep = viewport.Width / xyTileCount;
             double yStep = viewport.Height / xyTileCount;
@@ -245,7 +246,7 @@ namespace ozgurtek.framework.converter.winforms
             }
         }
 
-        public List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
+        private List<GdTileIndex> Divide(Envelope viewport, double tileWidth, double tileHeight)
         {
             List<GdTileIndex> worldArray = new List<GdTileIndex>();
 

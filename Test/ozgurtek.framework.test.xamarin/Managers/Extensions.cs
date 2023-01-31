@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Timers;
 using NetTopologySuite.Geometries;
 using ozgurtek.framework.common;
@@ -26,6 +27,8 @@ namespace ozgurtek.framework.test.xamarin.Managers
                 else
                     page.Tags["InitParam"] = initParam;
 
+                SetDarkMode(page.LogicalChildren);
+
                 await PopupNavigation.Instance.PushAsync(page, false);
             }
             catch (Exception e)
@@ -35,6 +38,39 @@ namespace ozgurtek.framework.test.xamarin.Managers
             finally
             {
                 await PopupNavigation.Instance.RemovePageAsync(loadingPopup);
+            }
+        }
+
+        public static void SetDarkMode(ReadOnlyCollection<Element> elements)
+        {
+            foreach (Element el in elements)
+            {
+                if (el is Layout inputView)
+                {
+                    inputView.SetAppThemeColor(Xamarin.Forms.Layout.BackgroundColorProperty, Color.White, Color.Black);
+                }
+
+                if (el is View layout)
+                {
+                    layout.SetAppThemeColor(View.BackgroundColorProperty, Color.White, Color.Black);
+                }
+
+                if (el is InputView input)
+                {
+                    input.SetAppThemeColor(InputView.TextColorProperty, Color.Black, Color.White);
+                }
+
+                if (el is Label label)
+                {
+                    label.SetAppThemeColor(Label.TextColorProperty, Color.Black, Color.White);
+                }
+
+                if (el is Frame frame)
+                {
+                    frame.SetAppThemeColor(Frame.BorderColorProperty, Color.Black, Color.White);
+                }
+
+                SetDarkMode(el.LogicalChildren);
             }
         }
 

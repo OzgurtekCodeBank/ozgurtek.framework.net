@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="ozgurtek.framework.core.Data.IGdDbTable">
+    <Position X="3.25" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAEAEBIAAAACAAAAAAAQAAAAAAAAAAAAEAAAAAgAA=</HashCode>
+      <FileName>Data\IGdDbTable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdField">
+    <Position X="13.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAABAAAAAAAAAAAAAAAAAAgCgAAAAAAAAAhAAgAA=</HashCode>
+      <FileName>Data\IGdField.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdFilter">
+    <Position X="15.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAACAAABAQAAAAAAAAAAIAACABEAAA=</HashCode>
+      <FileName>Data\IGdFilter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdGeometryFilter">
+    <Position X="17" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAoAA=</HashCode>
+      <FileName>Data\IGdGeometryFilter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdParamater">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAQAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Data\IGdParamater.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdRow">
+    <Position X="5.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAIQAAQAAAEAAAAIAIQIAAAAAAAAA=</HashCode>
+      <FileName>Data\IGdRow.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdRowBuffer">
+    <Position X="7.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAEgAAAIQABBAAAEAAAAIAIQIAAAABAAAg=</HashCode>
+      <FileName>Data\IGdRowBuffer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdSchema" Collapsed="true">
+    <Position X="11" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAAQAAAAAAAgAA=</HashCode>
+      <FileName>Data\IGdSchema.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdTable">
+    <Position X="1.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQgAEAAAAggAEiWAAIAAAUEAAEgEAAGAAAAAAAAChA=</HashCode>
+      <FileName>Data\IGdTable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdTileMap">
+    <Position X="12.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAoAAAAECAAAAAAAQCAApgAAIAACAAAAAAAAA=</HashCode>
+      <FileName>Data\IGdTileMap.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdTileMatrix">
+    <Position X="15.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAIACQIAAAACAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Data\IGdTileMatrix.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdTileMatrixSet">
+    <Position X="13.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAACAAAAAAAQAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\IGdTileMatrixSet.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Data.IGdWmsMap">
+    <Position X="11" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAECAAAAAAAQAAAogAAKCBCAAAACAAAA=</HashCode>
+      <FileName>Data\IGdWmsMap.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ozgurtek.framework.core.Data.GdDataType">
+    <Position X="5.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAQAAAAAAQAAAACAAAAAAAgABAAAAAAAAgAA=</HashCode>
+      <FileName>Data\GdDataType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ozgurtek.framework.core.Data.GdGeometryType">
+    <Position X="7.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAABACA=</HashCode>
+      <FileName>Data\GdGeometryType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="ozgurtek.framework.core.Data.GdSpatialRelation">
+    <Position X="9.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAgAAAAAAAIABAAAAAAAAAAAARCIA=</HashCode>
+      <FileName>Data\GdSpatialRelation.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

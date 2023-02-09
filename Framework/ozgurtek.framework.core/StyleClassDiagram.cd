@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Interface Name="ozgurtek.framework.core.Style.IGdFill">
+    <Position X="16" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Style\IGdFill.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdImageStyle">
+    <Position X="9.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdImageStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdLineStyle">
+    <Position X="5.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdLineStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdPointStyle">
+    <Position X="7.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAgAAAAAAAgACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdPointStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdPolygonStyle">
+    <Position X="12" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdPolygonStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdStroke">
+    <Position X="15" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Style\IGdStroke.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdStyle">
+    <Position X="9.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAIAIABAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Style.IGdTextStyle">
+    <Position X="14.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAgACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Style\IGdTextStyle.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ozgurtek.framework.core.Style.GdPointStyleType">
+    <Position X="14.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Style\GdPointStyleType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

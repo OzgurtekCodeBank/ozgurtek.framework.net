@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ozgurtek.framework.core.Mapping.GdLayerEventArgs">
+    <Position X="5.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAEAA=</HashCode>
+      <FileName>Mapping\GdLayerEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdFeatureLayer" Collapsed="true">
+    <Position X="3.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\IGdFeatureLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdLabeledLayer">
+    <Position X="7.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Mapping\IGdLabeledLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdLayer" Collapsed="true">
+    <Position X="3.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Mapping\IGdLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdLayerCollection">
+    <Position X="13.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEIAAEAAIAAABIgACAAABARAAAAAAAAACAAAAABUAAA=</HashCode>
+      <FileName>Mapping\IGdLayerCollection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdMap">
+    <Position X="3.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAgAAAAQAEAAAAAAgAAAAAAAAAAAAAABAAAAABAAA=</HashCode>
+      <FileName>Mapping\IGdMap.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdMapController">
+    <Position X="1.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAIEACAAAAgAAAABAAEAAAAAAAFAAAAAAgAA=</HashCode>
+      <FileName>Mapping\IGdMapController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdMarker">
+    <Position X="9.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Mapping\IGdMarker.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdRenderContext">
+    <Position X="11.5" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAEAAAAAAAAAAAAAAAAAAAIAEAAAAAIAII=</HashCode>
+      <FileName>Mapping\IGdRenderContext.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdRenderer">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBAAAAAAAAA=</HashCode>
+      <FileName>Mapping\IGdRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdTileLayer" Collapsed="true">
+    <Position X="5.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAA=</HashCode>
+      <FileName>Mapping\IGdTileLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdViewport">
+    <Position X="10" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAABAAAAAABAIAAAAAAAAhAAAAIAAAAAAAAEA=</HashCode>
+      <FileName>Mapping\IGdViewport.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ozgurtek.framework.core.Mapping.IGdWmsLayer" Collapsed="true">
+    <Position X="1.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mapping\IGdWmsLayer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="ozgurtek.framework.core.Mapping.GdRenderMode">
+    <Position X="8.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAA=</HashCode>
+      <FileName>Mapping\GdRenderMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

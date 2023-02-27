@@ -70,7 +70,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             GdField field = new GdField();
             field.FieldName = "int_field";
             field.FieldType = GdDataType.Integer;
-            field.PrimaryKey = true;
+            //field.PrimaryKey = true;
             field.NotNull = true;
             table.CreateField(field);
 

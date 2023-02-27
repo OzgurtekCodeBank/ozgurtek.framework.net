@@ -129,7 +129,7 @@ namespace ozgurtek.framework.driver.postgres
                         result.NpgsqlDbType = NpgsqlDbType.Boolean;
                         break;
                     case GdDataType.Date:
-                        result.NpgsqlDbType = NpgsqlDbType.Date;
+                        result.NpgsqlDbType = NpgsqlDbType.Timestamp;
                         break;
                     case GdDataType.Integer:
                         result.NpgsqlDbType = NpgsqlDbType.Integer;

@@ -19,7 +19,7 @@ namespace ozgurtek.framework.driver.sqlserver
 
         public static GdMsSqlDataSource Open(string source)
         {
-            SqlServerTypes.Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
+            Utilities.LoadNativeAssemblies(AppDomain.CurrentDomain.BaseDirectory);
             return new GdMsSqlDataSource(source);
         }
 

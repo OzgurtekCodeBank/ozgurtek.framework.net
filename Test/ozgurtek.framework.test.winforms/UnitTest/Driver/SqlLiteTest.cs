@@ -12,7 +12,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             get
             {
                 //please look data folder
-                return @"C:\Users\eniso\Desktop\Work\TestData\unit_test.sqlite";
+                return @"C:\data\work\unittest\unit_test.sqlite";
             }
         }
 

@@ -13,7 +13,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             get
             {
                 //please look data folder
-                return "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\Users\\eniso\\Desktop\\work\\testdata\\unit_test.mdb";
+                return "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=C:\\data\\work\\unittest\\unit_test.mdb";
             }
         }
 

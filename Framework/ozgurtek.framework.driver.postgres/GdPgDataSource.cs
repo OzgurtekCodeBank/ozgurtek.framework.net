@@ -79,17 +79,25 @@ namespace ozgurtek.framework.driver.postgres
             }
         }
 
-        //todo: enis buradan shema geçince hata atıyor...
         public GdPgTable GetTable(string name)
         {
-            string searchPath = string.Empty;
-            if (!string.IsNullOrEmpty(CsBuilder.SearchPath))
-                searchPath = $"table_schema='{CsBuilder.SearchPath}' and";
+            string searchPath = CsBuilder.SearchPath;
+            string tableName = name;
+
+            string[] strings = name.Split('.');
+            if (strings.Length == 2)
+            {
+                searchPath = strings[0].Trim();
+                tableName = strings[1].Trim();
+            }
+
+            if (!string.IsNullOrEmpty(searchPath))
+                searchPath = $"table_schema='{searchPath}' and";
 
             string sql = $"Select table_name From INFORMATION_SCHEMA.tables " +
                          $"Where table_catalog='{CsBuilder.Database}' and {searchPath} " +
                          $"table_name Not In ('spatial_ref_sys', 'geography_columns', 'geometry_columns', 'raster_columns', 'raster_overviews') and " +
-                         $"table_type In ('BASE TABLE', 'VIEW') and table_name = '{name}'";
+                         $"table_type In ('BASE TABLE', 'VIEW') and table_name = '{tableName}'";
 
             object value = ExecuteScalar(sql);
             if (value == null)

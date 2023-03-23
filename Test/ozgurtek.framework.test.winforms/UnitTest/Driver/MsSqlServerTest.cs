@@ -9,7 +9,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     {
         private readonly string _ds = "185.122.200.110";
         private readonly string _user = "sa";
-        private readonly string _pass = "3Es4Emim5cH7HLzohUpR";
+        private readonly string _pass = "qg10QQ4ClcAf5ej";
         private readonly string _catalog = "UNIT_TEST";
 
         private string ConnectionString

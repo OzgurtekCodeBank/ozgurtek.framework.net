@@ -79,19 +79,10 @@ namespace ozgurtek.framework.driver.postgres
             }
         }
 
+        //todo: enis buradan shema geçince hata atıyor...
         public GdPgTable GetTable(string name)
         {
             string searchPath = string.Empty;
-            string tableName = string.Empty;
-
-            tableName = name
-            string[] strings = name.Split('.');
-            if (strings.Length == 2)
-            {
-                searchPath = strings[0].Trim();
-                tableName = strings[1].Trim();
-            }
-
             if (!string.IsNullOrEmpty(CsBuilder.SearchPath))
                 searchPath = $"table_schema='{CsBuilder.SearchPath}' and";
 
@@ -133,7 +124,7 @@ namespace ozgurtek.framework.driver.postgres
         public override IDbConnection GetConnection()
         {
             NpgsqlDataSourceBuilder dataSourceBuilder = new NpgsqlDataSourceBuilder(CsBuilder.ConnectionString);
-            //dataSourceBuilder.UseNetTopologySuite();
+            dataSourceBuilder.UseNetTopologySuite();
             NpgsqlDataSource dataSource = dataSourceBuilder.Build();
             NpgsqlConnection connection = dataSource.CreateConnection();
             connection.Open();

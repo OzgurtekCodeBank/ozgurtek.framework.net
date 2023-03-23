@@ -1,3 +1,4 @@
 Date insert ederken zamaný yazmýyor.
 paket güncellemeleri.
 skiasharpmap'de çizgiyi sürekli kapatýyor.
+postgres'de shema yazýlýnca hata atýyor.

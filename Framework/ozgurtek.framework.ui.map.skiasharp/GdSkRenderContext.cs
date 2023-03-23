@@ -49,6 +49,7 @@ namespace ozgurtek.framework.ui.map.skiasharp
                 polygon = (Polygon)GdProjection.Project(polygon, _viewport.Srid);
 
             SKPath path = CreatePath(polygon.ExteriorRing.Coordinates);
+            path.Close();
 
             if (fill != null && fill.Color.A > 0)
             {
@@ -187,7 +188,7 @@ namespace ozgurtek.framework.ui.map.skiasharp
             path.MoveTo(points[0]);
             for (int i = 1; i < points.Count; i++)
                 path.LineTo(points[i]);
-            path.Close();
+            //path.Close();
 
             return path;
         }

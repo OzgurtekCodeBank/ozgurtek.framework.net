@@ -10,14 +10,14 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         private readonly string _ds = "185.122.200.110";
         private readonly string _user = "postgres";
         private readonly string _pass = "AZe2IcyGt6yEewyZ";
-        private readonly string _database = "unit_test";
+        private readonly string _database = "mersin_ibs";
 
         private string ConnectionString
         {
             get
             {
                 return $"User ID = {_user}; " +
-                       "Search Path=public; " +
+                       //"Search Path=itfaiye; " +
                        $"Password={_pass};" +
                        $"Host={_ds};" +
                        "Port=5432;" +

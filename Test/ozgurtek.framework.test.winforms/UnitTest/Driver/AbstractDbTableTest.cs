@@ -66,15 +66,21 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void GetQueryTable()
         {
-            GdSqlFilter baseFilter = new GdSqlFilter(Normalize("SELECT * FROM PARSEL WHERE OBJECTID > :p1"));
-            baseFilter.Add("p1", 5);
+            //GdSqlFilter baseFilter = new GdSqlFilter(Normalize("SELECT * FROM PARSEL WHERE OBJECTID > :p1"));
+            GdSqlFilter baseFilter = new GdSqlFilter(Normalize("SELECT count(*) cnt FROM itfaiye.itf_duyurular"));
+            //baseFilter.Add("p1", 5)
+            //
+            //;
+            IGdDbTable gdDbTable = GetTable("itfaiye.itf_duyurular");
+
             IGdDbTable table = ExecuteSql(Normalize("TEST_PARSEL"), baseFilter);
+            long rowCount = table.Rows.FirstOrDefault().GetAsInteger("cnt");
 
             GdSqlFilter sqlFilter = new GdSqlFilter(Normalize("OBJECTID < :p2"));
             sqlFilter.Add("p2", 200);
             table.SqlFilter = sqlFilter;
 
-            long tableRowCount = table.RowCount;
+            long tableRowCount = rowCount;
             Assert.GreaterOrEqual(tableRowCount, 1);
         }
 

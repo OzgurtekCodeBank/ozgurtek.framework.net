@@ -102,6 +102,9 @@ namespace ozgurtek.framework.driver.gdal
                 Environment.SetEnvironmentVariable("GEOTIFF_CSV", gdalData);
                 Gdal.SetConfigOption("GEOTIFF_CSV", gdalData);
 
+                Environment.SetEnvironmentVariable("GML_SKIP_CORRUPTED_FEATURES", "YES");
+                Gdal.SetConfigOption("GML_SKIP_CORRUPTED_FEATURES", "YES");
+
                 string projSharePath = Path.Combine(gdalPath, "share");
                 Environment.SetEnvironmentVariable("PROJ_LIB", projSharePath);
                 Gdal.SetConfigOption("PROJ_LIB", projSharePath);

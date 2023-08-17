@@ -145,7 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GDAL.Plugins">
-      <Version>3.6.2</Version>
+      <Version>3.7.1</Version>
     </PackageReference>
     <PackageReference Include="JetBrains.dotMemoryUnit">
       <Version>3.2.20220510</Version>
@@ -169,7 +169,7 @@
       <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="Npgsql.NetTopologySuite">
-      <Version>7.0.2</Version>
+      <Version>7.0.4</Version>
     </PackageReference>
     <PackageReference Include="NUnit">
       <Version>3.13.3</Version>
@@ -181,13 +181,13 @@
       <Version>1.8.116</Version>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3">
-      <Version>2.1.4</Version>
+      <Version>2.1.5</Version>
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.bundle_green">
-      <Version>2.1.4</Version>
+      <Version>2.1.5</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>7.0.2</Version>
+      <Version>7.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

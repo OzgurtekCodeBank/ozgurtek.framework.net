@@ -55,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="old_implementation\GtxGdalDriver.rar" />
+    <None Include="old_implementation\GtxOgrDriver.rar" />
+    <None Include="old_implementation\GtxOsGeoDriver.rar" />
     <None Include="ozgurtek.framework.driver.gdal.nuspec" />
   </ItemGroup>
   <ItemGroup>
@@ -84,5 +87,6 @@
       <Version>6.0.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

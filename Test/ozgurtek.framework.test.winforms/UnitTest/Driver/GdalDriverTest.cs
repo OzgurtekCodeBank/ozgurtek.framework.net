@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using ozgurtek.framework.driver.gdal;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     [TestFixture]
     public class GdalDriverTest
     {
-        private string _path = @"C:\data\work\unittest\unit_test_1.tif";
+        private string _inputPath1 = @"C:\data\work\unittest\unit_test_1.tif";
+        private string _inputPath2 = @"C:\data\work\unittest\unit_test_2.ecw";
+        private string _outputPath = @"C:\\Users\\eniso\\Desktop\\";
 
         [Test]
         public void DriverTest()
@@ -28,30 +31,52 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void OpenTest()
         {
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_path);
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Dataset dataset = dataSource.GdalDataSource;
         }
 
         [Test]
         public void EnvelopeTest()
         {
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_path);
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Envelope envelope = dataSource.Envelope;
         }
 
         [Test]
         public void ProjectionTest()
         {
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_path);
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             string projectionString = dataSource.ProjectionString;
         }
 
         [Test]
         public void GeoTransformTest()
         {
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_path);
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Coordinate unProject = dataSource.UnProject(579075.6, 4187474.6);
             double readPixel = dataSource.ReadBand(1, (int)unProject.X, (int)unProject.Y);
+        }
+
+        [Test]
+        public void ReadRaster()
+        {
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath2);
+            Size size = new Size(200, 200);
+            Rectangle source = new Rectangle(dataSource.RasterWidth / 2, dataSource.RasterHeight / 2, 200, 200);
+            Bitmap bitmap = dataSource.ReadRaster(source, size);
+            bitmap.Save(_outputPath + Guid.NewGuid() + ".png");
+        }
+
+        [Test]
+        public void ReadRaster2()
+        {
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath2);
+            Size size = new Size(200, 200);
+            Coordinate p1 = new Coordinate(28.26752, 39.28045);
+            Coordinate p2 = new Coordinate(28.27903, 39.28789);
+            Envelope envelope = new Envelope(p1, p2);
+            Bitmap bitmap = dataSource.ReadRaster(envelope, size);
+            bitmap.Save(_outputPath + Guid.NewGuid() + ".png");
         }
 
         [Test]
@@ -62,9 +87,8 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             liteTable.CreateField(new GdField("x", GdDataType.Real));
             liteTable.CreateField(new GdField("y", GdDataType.Real));
             liteTable.CreateField(new GdField("height", GdDataType.Real));
-            liteTable.CreateField(new GdField("str", GdDataType.Real));
 
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_path);
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             int w = dataSource.RasterWidth;
             int h = dataSource.RasterHeight;
 
@@ -75,6 +99,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 for (int j = 0; j < h; j += density)
                 {
                     double pixelVal = dataSource.ReadBand(1, i, j);
+                    if (pixelVal < 0)
+                        continue;
+
                     Coordinate coordinate = dataSource.Project(i, j);
                     Coordinate project = GdProjection.Project(coordinate, 5253, 4326);
                     Point point = new Point(project);
@@ -85,11 +112,11 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                     buffer.Put("x", project.X);
                     buffer.Put("y", project.Y);
                     buffer.Put("height", pixelVal);
-                    buffer.Put("str", $"{coordinate.X}-{coordinate.Y}-{pixelVal}");
                     liteTable.Insert(buffer);
                 }
             }
             sqlLiteDataSource.CommitTransaction();
+            dataSource.Dispose();
         }
 
     }

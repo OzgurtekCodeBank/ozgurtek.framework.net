@@ -60,6 +60,7 @@
     <Compile Include="UnitTest\Driver\AbstractDbTableTest.cs" />
     <Compile Include="UnitTest\Driver\AbstractTableTest.cs" />
     <Compile Include="UnitTest\Driver\DbMemTableTest.cs" />
+    <Compile Include="UnitTest\Driver\GdalDriverTest.cs" />
     <Compile Include="UnitTest\Driver\MediaDataSourceTest.cs" />
     <Compile Include="UnitTest\Driver\MemTableTest.cs" />
     <Compile Include="UnitTest\Driver\OgrDriverTest.cs" />

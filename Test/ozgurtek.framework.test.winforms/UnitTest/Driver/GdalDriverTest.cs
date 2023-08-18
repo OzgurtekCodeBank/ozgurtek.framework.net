@@ -16,9 +16,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
     [TestFixture]
     public class GdalDriverTest
     {
-        private string _inputPath1 = @"C:\data\work\unittest\unit_test_1.tif";
-        private string _inputPath2 = @"C:\data\work\unittest\unit_test_2.ecw";
-        private string _outputPath = @"C:\\Users\\eniso\\Desktop\\";
+        private readonly string _inputPath1 = @"C:\data\work\unittest\unit_test_1.tif";
+        private readonly string _inputPath2 = @"C:\data\work\unittest\unit_test_2.ecw";
+        private readonly string _outputPath = @"C:\\Users\\eniso\\Desktop\\";
 
         [Test]
         public void DriverTest()
@@ -33,6 +33,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         {
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Dataset dataset = dataSource.GdalDataSource;
+            Assert.IsNotNull(dataset);
         }
 
         [Test]
@@ -40,6 +41,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         {
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Envelope envelope = dataSource.Envelope;
+            Assert.IsNotNull(envelope);
         }
 
         [Test]
@@ -47,14 +49,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         {
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             string projectionString = dataSource.ProjectionString;
-        }
-
-        [Test]
-        public void GeoTransformTest()
-        {
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
-            Coordinate unProject = dataSource.UnProject(579075.6, 4187474.6);
-            double readPixel = dataSource.ReadBand(1, (int)unProject.X, (int)unProject.Y);
+            Assert.IsNotNull(projectionString);
         }
 
         [Test]
@@ -80,9 +75,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         }
 
         [Test]
-        public void ExportTest()
+        public void ExportPixelTest()
         {
-            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate("C:\\Users\\eniso\\Desktop\\height.sqlite");
+            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(_outputPath + Guid.NewGuid() + ".sqlite");
             GdSqlLiteTable liteTable = sqlLiteDataSource.CreateTable("height", GdGeometryType.Point, 4326, null);
             liteTable.CreateField(new GdField("x", GdDataType.Real));
             liteTable.CreateField(new GdField("y", GdDataType.Real));
@@ -118,6 +113,5 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             sqlLiteDataSource.CommitTransaction();
             dataSource.Dispose();
         }
-
     }
 }

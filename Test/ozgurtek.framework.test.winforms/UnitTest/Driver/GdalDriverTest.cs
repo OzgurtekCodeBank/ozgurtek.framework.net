@@ -34,6 +34,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Dataset dataset = dataSource.GdalDataSource;
             Assert.IsNotNull(dataset);
+            dataSource.Dispose();
         }
 
         [Test]
@@ -42,6 +43,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             Envelope envelope = dataSource.Envelope;
             Assert.IsNotNull(envelope);
+            dataSource.Dispose();
         }
 
         [Test]
@@ -50,6 +52,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             GdGdalDataSource dataSource = GdGdalDataSource.Open(_inputPath1);
             string projectionString = dataSource.ProjectionString;
             Assert.IsNotNull(projectionString);
+            dataSource.Dispose();
         }
 
         [Test]
@@ -60,6 +63,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Rectangle source = new Rectangle(dataSource.RasterWidth / 2, dataSource.RasterHeight / 2, 200, 200);
             Bitmap bitmap = dataSource.ReadRaster(source, size);
             bitmap.Save(_outputPath + Guid.NewGuid() + ".png");
+            dataSource.Dispose();
         }
 
         [Test]
@@ -72,6 +76,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Envelope envelope = new Envelope(p1, p2);
             Bitmap bitmap = dataSource.ReadRaster(envelope, size);
             bitmap.Save(_outputPath + Guid.NewGuid() + ".png");
+            dataSource.Dispose();
         }
 
         [Test]

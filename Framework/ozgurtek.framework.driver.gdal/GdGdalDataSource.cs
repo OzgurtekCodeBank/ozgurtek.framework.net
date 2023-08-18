@@ -154,13 +154,19 @@ namespace ozgurtek.framework.driver.gdal
             get { return _ds.RasterCount; }
         }
 
+        /// <summary>
+        /// reads raster
+        /// </summary>
+        /// <param name="bounds">in pixel</param>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public Bitmap ReadRaster(Rectangle bounds, Size size)
         {
             int rasterCount = _ds.RasterCount;
             if (rasterCount == 0)
                 return null;
 
-            int[] bandMap = new[] { 0, 0, 0, 0 };
+            int[] bandMap = { 0, 0, 0, 0 };
             int bandCount = 1;
             bool hasAlpha = false;
             bool isIndexed = false;

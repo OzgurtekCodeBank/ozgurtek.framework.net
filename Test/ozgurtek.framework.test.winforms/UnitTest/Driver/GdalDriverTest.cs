@@ -98,7 +98,11 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             {
                 for (int j = 0; j < h; j += density)
                 {
-                    double pixelVal = dataSource.ReadBand(1, i, j);
+                    double[] pixelVals = dataSource.ReadBand(1, i, j, new Size(1, 1));
+                    if (pixelVals.Length == 0)
+                        continue;
+
+                    double pixelVal = pixelVals[0];
                     if (pixelVal < 0)
                         continue;
 

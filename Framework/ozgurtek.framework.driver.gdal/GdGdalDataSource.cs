@@ -531,12 +531,12 @@ namespace ozgurtek.framework.driver.gdal
             return ReadRaster(bounds, size);
         }
 
-        public double ReadBand(int bandid, int pixelX, int pixelY)
+        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size)
         {
-            double[] bOne = new double[1];
+            double[] bOne = new double[size.Width * size.Height];
             Band band = _ds.GetRasterBand(bandid);
-            band.ReadRaster(pixelX, pixelY, 1, 1, bOne, 1, 1, 0, 0);
-            return bOne[0];
+            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, size.Width, size.Height, 0, 0);
+            return bOne;
         }
 
         private Rectangle UnProject(Envelope envelope)

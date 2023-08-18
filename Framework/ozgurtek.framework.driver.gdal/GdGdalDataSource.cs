@@ -6,7 +6,6 @@ using OSGeo.OSR;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-
 namespace ozgurtek.framework.driver.gdal
 {
     public class GdGdalDataSource
@@ -79,6 +78,12 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
+        /// <summary>
+        /// convert pixel to geo
+        /// </summary>
+        /// <param name="x">pixel</param>
+        /// <param name="y">pixel</param>
+        /// <returns>geo coordinate</returns>
         public Coordinate Project(int x, int y)
         {
             double[] gt = GeoTransform;
@@ -88,6 +93,12 @@ namespace ozgurtek.framework.driver.gdal
             return result;
         }
 
+        /// <summary>
+        /// convert geo to pixel
+        /// </summary>
+        /// <param name="x">geo</param>
+        /// <param name="y">geo</param>
+        /// <returns>pixel</returns>
         public Coordinate UnProject(double x, double y)
         {
             double[] mgt = GeoTransform;
@@ -507,6 +518,14 @@ namespace ozgurtek.framework.driver.gdal
         {
             Rectangle bounds = UnProject(envelope);
             return ReadRaster(bounds, size);
+        }
+
+        public double ReadBand(int bandid, int pixelX, int pixelY)
+        {
+            double[] bOne = new double[1];
+            Band band = _ds.GetRasterBand(bandid);
+            band.ReadRaster(pixelX, pixelY, 1, 1, bOne, 1, 1, 0, 0);
+            return bOne[0];
         }
 
         private Rectangle UnProject(Envelope envelope)

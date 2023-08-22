@@ -83,6 +83,7 @@
     <Compile Include="UnitTest\Style\PointStyleTest.cs" />
     <Compile Include="UnitTest\Style\PolygonStyleTest.cs" />
     <Compile Include="UnitTest\Style\StyleColorDataRandomizer.cs" />
+    <Compile Include="UnitTest\Util\TileMatrixSetTest.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -7,7 +7,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 {
     public class PostgresTest : AbstractDbTableTest
     {
-        private readonly string _ds = "185.122.200.110";
+        private readonly string _ds = "185.198.74.165";
         private readonly string _user = "postgres";
         private readonly string _pass = "qg10QQ4ClcAf5ej";
         private readonly string _database = "unit_test";

@@ -498,5 +498,20 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             long tableRowCount = table.RowCount;
             Assert.GreaterOrEqual(tableRowCount, 0);
         }
+
+        /// <summary>
+        /// FTS sorgusu...
+        /// </summary>
+        [Test]
+        public void UpdateRowButNoGeomTest()
+        {
+            IGdDbTable dbTable = GetTable("temp");
+            dbTable.KeyField = "objectid";
+            
+            GdRowBuffer buffer = new GdRowBuffer();
+            buffer.Put("objectid", 1);
+            buffer.Put("str_field", "test_update_2222");
+            dbTable.Update(buffer);
+        }
     }
 }

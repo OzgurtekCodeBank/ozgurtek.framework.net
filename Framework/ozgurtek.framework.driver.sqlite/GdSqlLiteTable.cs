@@ -343,7 +343,7 @@ namespace ozgurtek.framework.driver.sqlite
             int maxId = _connection.ExecuteScalar<int>(sql);
 
             //insert index...
-            if (!string.IsNullOrWhiteSpace(GeometryField) && !row.IsNull(GeometryField))
+            if (!string.IsNullOrWhiteSpace(GeometryField) && BufferHasGeometryField(row) && !row.IsNull(GeometryField))
             {
                 Geometry geometry = row.GetAsGeometry(GeometryField);
                 geometry = GdProjection.Project(geometry, Srid);
@@ -391,7 +391,7 @@ namespace ozgurtek.framework.driver.sqlite
             OnRowChanged("update", row);
 
             //update index...
-            if (!string.IsNullOrWhiteSpace(GeometryField) && !row.IsNull(GeometryField) &&
+            if (!string.IsNullOrWhiteSpace(GeometryField) && BufferHasGeometryField(row) && !row.IsNull(GeometryField) &&
                 !string.IsNullOrWhiteSpace(KeyField) && !row.IsNull(KeyField))
             {
                 Geometry geometry = row.GetAsGeometry(GeometryField);
@@ -408,6 +408,17 @@ namespace ozgurtek.framework.driver.sqlite
             }
 
             return result;
+        }
+
+        private bool BufferHasGeometryField(IGdRowBuffer buffer)
+        {
+            foreach (IGdParamater paramater in buffer.Paramaters)
+            {
+                if (paramater.Name.Equals(GeometryField, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
         }
 
         //todo: index tablosu
@@ -464,8 +475,6 @@ namespace ozgurtek.framework.driver.sqlite
         {
             return GdMemoryTable.LoadFromTable(this).ToDataTable();
         }
-
-       
 
         public IGdTable Clone()
         {

@@ -12,7 +12,7 @@
     <Description>cross platform map(windows, ios, android, macos)</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.Views.Forms" Version="2.88.5" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ozgurtek.framework.common\ozgurtek.framework.common.csproj" />

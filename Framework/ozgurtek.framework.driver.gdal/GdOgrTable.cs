@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
+using ozgurtek.framework.common.Data.Format.Wmts;
 using ozgurtek.framework.core.Data;
 using Envelope = NetTopologySuite.Geometries.Envelope;
 using Layer = OSGeo.OGR.Layer;
@@ -211,6 +215,79 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
+        public override bool CanEditField
+        {
+            get { return true; }
+        }
+
+        public override void CreateField(IGdField field)
+        {
+            FieldType fieldType = GdOgrUtil.GetDataType(field.FieldType);
+            FieldDefn defn = new FieldDefn(field.FieldName, fieldType);
+            _layer.CreateField(defn, 0);
+        }
+
+        public override void DeleteField(IGdField field)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override long Insert(IGdRowBuffer row)
+        {
+            FeatureDefn featureDefn = new FeatureDefn("");
+            foreach (IGdParamater paramater in row.Paramaters)
+            {
+                if (paramater.Name.Equals(GeometryField, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                GdDataType? type = paramater.DataType ?? GdDataType.String;
+                FieldType fieldType = GdOgrUtil.GetDataType(type.Value);
+                FieldDefn defn = new FieldDefn(paramater.Name, fieldType);
+                featureDefn.AddFieldDefn(defn);
+            }
+
+            Feature feature = new Feature(featureDefn);
+            foreach (IGdParamater paramater in row.Paramaters)
+            {
+                if (paramater.Name.Equals(GeometryField, StringComparison.OrdinalIgnoreCase))
+                {
+                    NetTopologySuite.Geometries.Geometry geom = row.GetAsGeometry(paramater.Name);
+                    Geometry wkb = Geometry.CreateFromWkb(geom.ToBinary());
+                    feature.SetGeometryDirectly(wkb);
+                    continue;
+                }
+
+                GdDataType? type = paramater.DataType ?? GdDataType.String;
+                switch (type)
+                {
+                    case GdDataType.Boolean:
+                        feature.SetField(paramater.Name, row.GetAsInteger(paramater.Name));
+                        break;
+                    case GdDataType.Real:
+                        feature.SetField(paramater.Name, row.GetAsReal(paramater.Name));
+                        break;
+                    case GdDataType.String:
+                        feature.SetField(paramater.Name, row.GetAsString(paramater.Name));
+                        break;
+                    case GdDataType.Integer:
+                        feature.SetField(paramater.Name, row.GetAsInteger(paramater.Name));
+                        break;
+                    case GdDataType.Blob:
+                        feature.SetFieldBinaryFromHexString(paramater.Name, row.GetAsString(paramater.Name));
+                        break;
+                    case GdDataType.Geometry:
+                        byte[] bytes = DbConvert.ToWkb(row.GetAsGeometry(paramater.Name));
+                        feature.SetFieldBinaryFromHexString(paramater.Name, DbConvert.ToString(bytes));
+                        break;
+                    case GdDataType.Date:
+                        DateTime dt = DbConvert.ToDateTime(paramater.Value);
+                        feature.SetField(paramater.Name, dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0);
+                        break;
+                }
+            }
+            return _layer.CreateFeature(feature);
+        }
+
         public string ProjectionString
         {
             get
@@ -232,6 +309,11 @@ namespace ozgurtek.framework.driver.gdal
                 _attributeFilter = value;
                 _layer.SetAttributeFilter(value);
             }
+        }
+
+        public void Save()
+        {
+            _layer.SyncToDisk();
         }
     }
 }

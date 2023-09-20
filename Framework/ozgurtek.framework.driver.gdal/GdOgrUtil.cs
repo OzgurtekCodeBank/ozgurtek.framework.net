@@ -153,6 +153,31 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
+        internal static FieldType GetDataType(GdDataType fieldType)
+        {
+            switch (fieldType)
+            {
+                case GdDataType.Integer:
+                case GdDataType.Boolean:
+                    return FieldType.OFTInteger;
+
+                case GdDataType.Real:
+                    return FieldType.OFTReal;
+
+                case GdDataType.String:
+                    return FieldType.OFTString;
+
+                case GdDataType.Date:
+                    return FieldType.OFTDateTime;
+
+                case GdDataType.Blob:
+                case GdDataType.Geometry:
+                    return FieldType.OFTBinary;
+            }
+
+            throw new Exception("Can not convert GdDataType to OgrDataType");
+        }
+
         public static string ToOgrString(string value)
         {
             try

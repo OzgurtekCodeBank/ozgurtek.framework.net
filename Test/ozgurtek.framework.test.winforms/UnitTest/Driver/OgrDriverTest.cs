@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using NetTopologySuite.Geometries;
 using NUnit.Framework;
+using ozgurtek.framework.common.Data;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
 
 namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 {
     [TestFixture]
-    public class OgrDriverTest
+    public class OgrDriverTest : AbstractTableTest
     {
-        private string _path = @"C:\Users\eniso\Desktop\work\testdata\shp\";
+        private string _path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\ogr_test_data_folder";
 
         //private string _source = @"C:\Users\eniso\Desktop\work\testdata\shp\mahalle.shp";
         //private string _source = @"WFS:http://185.122.200.110:8080/geoserver/dhmi/wfs?service=WFS";
@@ -113,6 +114,59 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.GreaterOrEqual(geomsString.Count, 1);
         }
 
+        [Test]
+        public void CreateDataTest()
+        {
+            CrateTestDir();
+
+            List<Tuple<string,string>> drivers = new List<Tuple<string, string>>();
+
+            drivers.Add(new Tuple<string, string>("ESRI Shapefile", ".shp"));
+            drivers.Add(new Tuple<string, string>("MapInfo File", ".tab"));
+            drivers.Add(new Tuple<string, string>("CSV", ".csv"));
+            drivers.Add(new Tuple<string, string>("GML", ".gml"));
+            drivers.Add(new Tuple<string, string>("KML", ".kml"));
+            drivers.Add(new Tuple<string, string>("GeoJSON", ".json"));
+            drivers.Add(new Tuple<string, string>("GPKG", ".gpkg"));
+            drivers.Add(new Tuple<string, string>("SQLite", ".sqLite"));
+
+            foreach (Tuple<string, string> driverName in drivers)
+            {
+                string file = Path.Combine(_path, Guid.NewGuid() + driverName.Item2);
+                
+                GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
+                
+                GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
+                ogrTable.GeometryField = "geom_field";
+
+                ogrTable.CreateField(new GdField("str_field", GdDataType.String));
+                //ogrTable.CreateField(new GdField("blob_field", GdDataType.Blob));
+                ogrTable.CreateField(new GdField("date_field", GdDataType.Date));
+                ogrTable.CreateField(new GdField("bool_field", GdDataType.Boolean));
+                //ogrTable.CreateField(new GdField("geom_field", GdDataType.Geometry));
+                ogrTable.CreateField(new GdField("real_field", GdDataType.Real));
+                ogrTable.CreateField(new GdField("int_field", GdDataType.Integer));
+
+                GdRowBuffer buffer = new GdRowBuffer();
+                buffer.Put("str_field", Guid.NewGuid().ToString());
+                buffer.Put("date_field", GetDateTime());
+                buffer.Put("bool_field", GetBoolean());
+                buffer.Put("real_field", GetDouble());
+                buffer.Put("int_field", GetInt());
+                buffer.Put("geom_field", GetGeoemetry());
+
+                ogrTable.Insert(buffer);
+                ogrTable.Save();
+            }
+
+            
+        }
+
+        private void CrateTestDir()
+        {
+            if (!Directory.Exists(_path))
+                Directory.CreateDirectory(_path);
+        }
 
         private IEnumerable<IGdTable> GetTable()
         {

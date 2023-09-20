@@ -500,7 +500,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         }
 
         /// <summary>
-        /// FTS sorgusu...
+        /// geometrik bir tabloyu geometry olmadan update etmek
         /// </summary>
         [Test]
         public void UpdateRowButNoGeomTest()

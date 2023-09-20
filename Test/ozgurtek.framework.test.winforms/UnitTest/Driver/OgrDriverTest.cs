@@ -158,8 +158,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 ogrTable.Insert(buffer);
                 ogrTable.Save();
             }
-
-            
         }
 
         private void CrateTestDir()

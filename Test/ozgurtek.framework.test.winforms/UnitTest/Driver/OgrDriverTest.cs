@@ -137,7 +137,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
                 
                 GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
-                ogrTable.GeometryField = "geom_field";
 
                 ogrTable.CreateField(new GdField("str_field", GdDataType.String));
                 //ogrTable.CreateField(new GdField("blob_field", GdDataType.Blob));
@@ -147,13 +146,13 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 ogrTable.CreateField(new GdField("real_field", GdDataType.Real));
                 ogrTable.CreateField(new GdField("int_field", GdDataType.Integer));
 
-                GdRowBuffer buffer = new GdRowBuffer();
+                GdOgrRowBuffer buffer = new GdOgrRowBuffer();
                 buffer.Put("str_field", Guid.NewGuid().ToString());
                 buffer.Put("date_field", GetDateTime());
                 buffer.Put("bool_field", GetBoolean());
                 buffer.Put("real_field", GetDouble());
                 buffer.Put("int_field", GetInt());
-                buffer.Put("geom_field", GetGeoemetry());
+                buffer.SetGeometryDirectly(GetGeoemetry());
 
                 ogrTable.Insert(buffer);
                 ogrTable.Save();

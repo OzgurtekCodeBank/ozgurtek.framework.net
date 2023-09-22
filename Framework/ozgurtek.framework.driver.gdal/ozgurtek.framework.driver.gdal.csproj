@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GdGdalDataSource.cs" />
+    <Compile Include="GdOgrRowBuffer.cs" />
     <Compile Include="GdOgrUtil.cs" />
     <Compile Include="GdOgrDataSource.cs" />
     <Compile Include="GdOgrTable.cs" />

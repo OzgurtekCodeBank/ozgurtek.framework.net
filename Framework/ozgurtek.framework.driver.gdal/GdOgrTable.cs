@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Data.Format.Wmts;
 using ozgurtek.framework.core.Data;
 using Envelope = NetTopologySuite.Geometries.Envelope;
 using Layer = OSGeo.OGR.Layer;
@@ -220,6 +217,14 @@ namespace ozgurtek.framework.driver.gdal
             get { return true; }
         }
 
+        public override bool CanEditRow
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override void CreateField(IGdField field)
         {
             FieldType fieldType = GdOgrUtil.GetDataType(field.FieldType);
@@ -229,63 +234,33 @@ namespace ozgurtek.framework.driver.gdal
 
         public override void DeleteField(IGdField field)
         {
-            throw new NotImplementedException();
+            List<IGdField> fields = new List<IGdField>(Schema.Fields);
+            for (int i = 0; i < fields.Count; i++)
+            {
+                if (field.FieldName.Equals(fields[i].FieldName))
+                {
+                    _layer.DeleteField(i);
+                    return;
+                }
+            }
+            throw new Exception("Field not found");
         }
 
         public override long Insert(IGdRowBuffer row)
         {
-            FeatureDefn featureDefn = new FeatureDefn("");
-            foreach (IGdParamater paramater in row.Paramaters)
-            {
-                if (paramater.Name.Equals(GeometryField, StringComparison.OrdinalIgnoreCase))
-                    continue;
+            Feature ogrFeature = GetOgrFeature(row);
+            return _layer.CreateFeature(ogrFeature);
+        }
 
-                GdDataType? type = paramater.DataType ?? GdDataType.String;
-                FieldType fieldType = GdOgrUtil.GetDataType(type.Value);
-                FieldDefn defn = new FieldDefn(paramater.Name, fieldType);
-                featureDefn.AddFieldDefn(defn);
-            }
+        public override long Update(IGdRowBuffer row)
+        {
+            Feature ogrFeature = GetOgrFeature(row);
+            return _layer.UpsertFeature(ogrFeature);
+        }
 
-            Feature feature = new Feature(featureDefn);
-            foreach (IGdParamater paramater in row.Paramaters)
-            {
-                if (paramater.Name.Equals(GeometryField, StringComparison.OrdinalIgnoreCase))
-                {
-                    NetTopologySuite.Geometries.Geometry geom = row.GetAsGeometry(paramater.Name);
-                    Geometry wkb = Geometry.CreateFromWkb(geom.ToBinary());
-                    feature.SetGeometryDirectly(wkb);
-                    continue;
-                }
-
-                GdDataType? type = paramater.DataType ?? GdDataType.String;
-                switch (type)
-                {
-                    case GdDataType.Boolean:
-                        feature.SetField(paramater.Name, row.GetAsInteger(paramater.Name));
-                        break;
-                    case GdDataType.Real:
-                        feature.SetField(paramater.Name, row.GetAsReal(paramater.Name));
-                        break;
-                    case GdDataType.String:
-                        feature.SetField(paramater.Name, row.GetAsString(paramater.Name));
-                        break;
-                    case GdDataType.Integer:
-                        feature.SetField(paramater.Name, row.GetAsInteger(paramater.Name));
-                        break;
-                    case GdDataType.Blob:
-                        feature.SetFieldBinaryFromHexString(paramater.Name, row.GetAsString(paramater.Name));
-                        break;
-                    case GdDataType.Geometry:
-                        byte[] bytes = DbConvert.ToWkb(row.GetAsGeometry(paramater.Name));
-                        feature.SetFieldBinaryFromHexString(paramater.Name, DbConvert.ToString(bytes));
-                        break;
-                    case GdDataType.Date:
-                        DateTime dt = DbConvert.ToDateTime(paramater.Value);
-                        feature.SetField(paramater.Name, dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0);
-                        break;
-                }
-            }
-            return _layer.CreateFeature(feature);
+        public override long Delete(long id)
+        {
+            return _layer.DeleteFeature(id);
         }
 
         public string ProjectionString
@@ -314,6 +289,105 @@ namespace ozgurtek.framework.driver.gdal
         public void Save()
         {
             _layer.SyncToDisk();
+        }
+
+        public void Dispose()
+        {
+            _layer.Dispose();
+        }
+
+        public void StartTransaction()
+        {
+            _layer.StartTransaction();
+        }
+
+        public void CommitTransaction()
+        {
+            _layer.CommitTransaction();
+        }
+
+        public void RollbackTransaction()
+        {
+            _layer.RollbackTransaction();
+        }
+
+        public Layer OgrLayer
+        {
+            get { return _layer; }
+        }
+
+        private Feature GetOgrFeature(IGdRowBuffer row)
+        {
+            if (!(row is GdOgrRowBuffer ogrRowBuffer))
+                throw new Exception("Use GdOgrRowBuffer class...");
+
+            FeatureDefn featureDefn = new FeatureDefn("");
+            foreach (IGdParamater paramater in ogrRowBuffer.Paramaters)
+            {
+                GdDataType? type = paramater.DataType ?? GdDataType.String;
+                FieldType fieldType = GdOgrUtil.GetDataType(type.Value);
+                FieldDefn defn = new FieldDefn(paramater.Name, fieldType);
+                featureDefn.AddFieldDefn(defn);
+            }
+
+            Feature feature = new Feature(featureDefn);
+
+            //geometry directly
+            NetTopologySuite.Geometries.Geometry geometryDirectly = ogrRowBuffer.GetGeometryDirectly();
+            if (geometryDirectly != null)
+            {
+                Geometry wkb = Geometry.CreateFromWkb(geometryDirectly.ToBinary());
+                feature.SetGeometryDirectly(wkb);
+            }
+
+            //featureid directly
+            long? featureIdDirectly = ogrRowBuffer.GetFeatureIdDirectly();
+            if (featureIdDirectly.HasValue)
+                feature.SetFID(featureIdDirectly.Value);
+
+            //style string directly
+            string styleStringDirectly = ogrRowBuffer.GetStyleStringDirectly();
+            if (string.IsNullOrWhiteSpace(styleStringDirectly))
+                feature.SetStyleString(styleStringDirectly);
+
+            foreach (IGdParamater paramater in ogrRowBuffer.Paramaters)
+            {
+                if (ogrRowBuffer.IsNull(paramater.Name))
+                {
+                    feature.SetFieldNull(paramater.Name);
+                    continue;
+                }
+
+                GdDataType? type = paramater.DataType ?? GdDataType.String;
+                switch (type)
+                {
+                    case GdDataType.Boolean:
+                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsInteger(paramater.Name));
+                        break;
+                    case GdDataType.Real:
+                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsReal(paramater.Name));
+                        break;
+                    case GdDataType.String:
+                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsString(paramater.Name));
+                        break;
+                    case GdDataType.Integer:
+                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsInteger(paramater.Name));
+                        break;
+                    case GdDataType.Blob:
+                        feature.SetFieldBinaryFromHexString(paramater.Name, ogrRowBuffer.GetAsString(paramater.Name));
+                        break;
+                    case GdDataType.Geometry:
+                        Geometry wkb = Geometry.CreateFromWkb(ogrRowBuffer.GetAsGeometry(paramater.Name).ToBinary());
+                        feature.SetGeomField(paramater.Name, wkb);
+                        break;
+                    case GdDataType.Date:
+                        DateTime dt = DbConvert.ToDateTime(paramater.Value);
+                        feature.SetField(paramater.Name, dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0);
+                        break;
+                }
+            }
+
+            return feature;
         }
     }
 }

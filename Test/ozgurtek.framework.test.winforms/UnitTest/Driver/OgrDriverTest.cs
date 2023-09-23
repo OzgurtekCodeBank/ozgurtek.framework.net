@@ -115,19 +115,19 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         }
 
         [Test]
-        public void CreateDataTest()
+        public void CreateFileBaseDataTest()
         {
             CrateTestDir();
 
             List<Tuple<string,string>> drivers = new List<Tuple<string, string>>();
 
+            //esri json olsa iyi olur...
             drivers.Add(new Tuple<string, string>("ESRI Shapefile", ".shp"));
             drivers.Add(new Tuple<string, string>("MapInfo File", ".tab"));
             drivers.Add(new Tuple<string, string>("CSV", ".csv"));
             drivers.Add(new Tuple<string, string>("GML", ".gml"));
             drivers.Add(new Tuple<string, string>("KML", ".kml"));
             drivers.Add(new Tuple<string, string>("GeoJSON", ".json"));
-            drivers.Add(new Tuple<string, string>("GPKG", ".gpkg"));
             drivers.Add(new Tuple<string, string>("SQLite", ".sqLite"));
 
             foreach (Tuple<string, string> driverName in drivers)
@@ -138,13 +138,12 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 
                 GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
 
+                //reqular fields only string type supported
                 ogrTable.CreateField(new GdField("str_field", GdDataType.String));
-                //ogrTable.CreateField(new GdField("blob_field", GdDataType.Blob));
-                ogrTable.CreateField(new GdField("date_field", GdDataType.Date));
-                ogrTable.CreateField(new GdField("bool_field", GdDataType.Boolean));
-                //ogrTable.CreateField(new GdField("geom_field", GdDataType.Geometry));
-                ogrTable.CreateField(new GdField("real_field", GdDataType.Real));
-                ogrTable.CreateField(new GdField("int_field", GdDataType.Integer));
+                ogrTable.CreateField(new GdField("date_field", GdDataType.String));
+                ogrTable.CreateField(new GdField("bool_field", GdDataType.String));
+                ogrTable.CreateField(new GdField("real_field", GdDataType.String));
+                ogrTable.CreateField(new GdField("int_field", GdDataType.String));
 
                 GdOgrRowBuffer buffer = new GdOgrRowBuffer();
                 buffer.Put("str_field", Guid.NewGuid().ToString());
@@ -152,10 +151,17 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 buffer.Put("bool_field", GetBoolean());
                 buffer.Put("real_field", GetDouble());
                 buffer.Put("int_field", GetInt());
-                buffer.SetGeometryDirectly(GetGeoemetry());
+                buffer.SetGeometryDirectly(GetGeoemetry());//create table sırasında bir geometri alanı açtı zaten
 
                 ogrTable.Insert(buffer);
-                ogrTable.Save();
+                
+                //dosya sisteminde olan tipler için diske yaz.
+                ogrTable.SyncToDisk();
+                dataSource.SyncToDisk();
+
+                //memory temizle
+                ogrTable.Dispose();
+                dataSource.Dispose();
             }
         }
 

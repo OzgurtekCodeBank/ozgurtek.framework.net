@@ -132,7 +132,7 @@ namespace ozgurtek.framework.driver.gdal
             SpatialReference spatialReference = GdOgrUtil.GetSpatialReference(srid);
             wkbGeometryType wkbGeometryType = GdOgrUtil.GetGeometryType(geometryType, allowMultigeom);
             Layer layer = _ogrDs.CreateLayer(name, spatialReference, wkbGeometryType, options);
-            return new GdOgrTable(layer, _connectionString);
+            return new GdOgrTable(layer, _connectionString, allowMultigeom);
         }
 
         public int DeleteTable(int index)
@@ -140,7 +140,7 @@ namespace ozgurtek.framework.driver.gdal
             return _ogrDs.DeleteLayer(index);
         }
 
-        public int SyncToDisck()
+        public int SyncToDisk()
         {
             return _ogrDs.SyncToDisk();
         }

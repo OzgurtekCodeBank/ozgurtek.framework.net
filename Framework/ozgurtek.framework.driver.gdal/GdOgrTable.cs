@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
+using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using Envelope = NetTopologySuite.Geometries.Envelope;
 using Layer = OSGeo.OGR.Layer;
@@ -12,13 +14,15 @@ namespace ozgurtek.framework.driver.gdal
     public class GdOgrTable : GdAbstractTable
     {
         private readonly Layer _layer;
+        private readonly bool _allowMultigeom;
         private IGdSchema _schema;
         private string _attributeFilter;
         private IGdGeometryFilter _geometryFilter;
 
-        public GdOgrTable(Layer layer, string address)
+        public GdOgrTable(Layer layer, string address, bool allowMultigeom = false)
         {
             _layer = layer;
+            _allowMultigeom = allowMultigeom;
             Name = GdOgrUtil.ToOgrString(layer.GetName());
             Address = address + ":" + Name;
             KeyField = GdOgrUtil.ToOgrString(_layer.GetFIDColumn());
@@ -84,7 +88,8 @@ namespace ozgurtek.framework.driver.gdal
                                 break;
 
                             default:
-                                buffer.Put(fieldName, GdOgrUtil.ToOgrString(feature.GetFieldAsString(fieldName)), GdDataType.String);
+                                buffer.Put(fieldName, GdOgrUtil.ToOgrString(feature.GetFieldAsString(fieldName)),
+                                    GdDataType.String);
                                 break;
                         }
                     }
@@ -148,7 +153,6 @@ namespace ozgurtek.framework.driver.gdal
                 for (int i = 0; i < fieldCount; i++)
                 {
                     FieldDefn ogrFieldDef = layerDefn.GetFieldDefn(i);
-
                     GdField field = new GdField();
                     field.FieldName = GdOgrUtil.ToOgrString(ogrFieldDef.GetName());
                     field.FieldType = GdOgrUtil.GetDataType(ogrFieldDef.GetFieldType());
@@ -198,8 +202,8 @@ namespace ozgurtek.framework.driver.gdal
                 }
 
                 if (value.Envelope != null)
-                    _layer.SetSpatialFilterRect(value.Envelope.MinX, 
-                        value.Envelope.MinY, 
+                    _layer.SetSpatialFilterRect(value.Envelope.MinX,
+                        value.Envelope.MinY,
                         value.Envelope.MaxX,
                         value.Envelope.MaxY);
 
@@ -219,16 +223,18 @@ namespace ozgurtek.framework.driver.gdal
 
         public override bool CanEditRow
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
 
         public override void CreateField(IGdField field)
         {
-            FieldType fieldType = GdOgrUtil.GetDataType(field.FieldType);
-            FieldDefn defn = new FieldDefn(field.FieldName, fieldType);
+            if (field.FieldType == GdDataType.Geometry)
+                throw new NotSupportedException("Geometry field not supported use GdOgrRowBuffer.SetGeometryDirectly()");
+
+            if (field.FieldType != GdDataType.String)
+                throw new Exception("Only string field supported...");
+
+            FieldDefn defn = new FieldDefn(field.FieldName, FieldType.OFTString);
             _layer.CreateField(defn, 0);
         }
 
@@ -243,6 +249,7 @@ namespace ozgurtek.framework.driver.gdal
                     return;
                 }
             }
+
             throw new Exception("Field not found");
         }
 
@@ -286,7 +293,7 @@ namespace ozgurtek.framework.driver.gdal
             }
         }
 
-        public void Save()
+        public void SyncToDisk()
         {
             _layer.SyncToDisk();
         }
@@ -321,13 +328,21 @@ namespace ozgurtek.framework.driver.gdal
             if (!(row is GdOgrRowBuffer ogrRowBuffer))
                 throw new Exception("Use GdOgrRowBuffer class...");
 
+            List<Tuple<string, string>> values = new List<Tuple<string, string>>();
+            
+            //create feature defination
             FeatureDefn featureDefn = new FeatureDefn("");
             foreach (IGdParamater paramater in ogrRowBuffer.Paramaters)
             {
-                GdDataType? type = paramater.DataType ?? GdDataType.String;
-                FieldType fieldType = GdOgrUtil.GetDataType(type.Value);
-                FieldDefn defn = new FieldDefn(paramater.Name, fieldType);
+                if (paramater.Value is NetTopologySuite.Geometries.Geometry)
+                    throw new NotSupportedException("Geometry parameter not supported use GdOgrRowBuffer.SetGeometryDirectly()");
+
+                //always string type
+                FieldDefn defn = new FieldDefn(paramater.Name, FieldType.OFTString);
                 featureDefn.AddFieldDefn(defn);
+
+                string val = DbConvert.ToString(paramater.Value);
+                values.Add(new Tuple<string, string>(paramater.Name, val));
             }
 
             Feature feature = new Feature(featureDefn);
@@ -337,7 +352,7 @@ namespace ozgurtek.framework.driver.gdal
             if (geometryDirectly != null)
             {
                 Geometry wkb = Geometry.CreateFromWkb(geometryDirectly.ToBinary());
-                feature.SetGeometryDirectly(wkb);
+                feature.SetGeometry(wkb);
             }
 
             //featureid directly
@@ -350,41 +365,19 @@ namespace ozgurtek.framework.driver.gdal
             if (string.IsNullOrWhiteSpace(styleStringDirectly))
                 feature.SetStyleString(styleStringDirectly);
 
-            foreach (IGdParamater paramater in ogrRowBuffer.Paramaters)
+            //set fature's field
+            foreach (Tuple<string, string> tuple in values)
             {
-                if (ogrRowBuffer.IsNull(paramater.Name))
+                string fieldName = tuple.Item1;
+                string value = tuple.Item2;
+
+                if (value == null)
                 {
-                    feature.SetFieldNull(paramater.Name);
+                    feature.SetFieldNull(fieldName);
                     continue;
                 }
 
-                GdDataType? type = paramater.DataType ?? GdDataType.String;
-                switch (type)
-                {
-                    case GdDataType.Boolean:
-                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsInteger(paramater.Name));
-                        break;
-                    case GdDataType.Real:
-                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsReal(paramater.Name));
-                        break;
-                    case GdDataType.String:
-                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsString(paramater.Name));
-                        break;
-                    case GdDataType.Integer:
-                        feature.SetField(paramater.Name, ogrRowBuffer.GetAsInteger(paramater.Name));
-                        break;
-                    case GdDataType.Blob:
-                        feature.SetFieldBinaryFromHexString(paramater.Name, ogrRowBuffer.GetAsString(paramater.Name));
-                        break;
-                    case GdDataType.Geometry:
-                        Geometry wkb = Geometry.CreateFromWkb(ogrRowBuffer.GetAsGeometry(paramater.Name).ToBinary());
-                        feature.SetGeomField(paramater.Name, wkb);
-                        break;
-                    case GdDataType.Date:
-                        DateTime dt = DbConvert.ToDateTime(paramater.Value);
-                        feature.SetField(paramater.Name, dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, dt.Second, 0);
-                        break;
-                }
+                feature.SetField(fieldName, value);
             }
 
             return feature;

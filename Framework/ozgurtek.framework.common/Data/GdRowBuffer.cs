@@ -184,13 +184,13 @@ namespace ozgurtek.framework.common.Data
                 Row.Add(key, new GdParameter(key, value, dataType));
         }
 
-        //todo: enis bu kötü
+        //todo: enis bu kötü kaldırılmalı
         internal virtual void Put(string key, object value)
         {
             AddOrReplace(key, value);
         }
 
-        //todo: enis bu kötü
+        //todo: enis bu kötü kaldırılmalı
         internal virtual IGdParamater Get(string key)
         {
             return Row[key];

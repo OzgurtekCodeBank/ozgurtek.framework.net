@@ -171,8 +171,10 @@ namespace ozgurtek.framework.driver.gdal
                     return FieldType.OFTDateTime;
 
                 case GdDataType.Blob:
-                case GdDataType.Geometry:
                     return FieldType.OFTBinary;
+                
+                case GdDataType.Geometry:
+                    throw new Exception("Use Geometry Defination");
             }
 
             throw new Exception("Can not convert GdDataType to OgrDataType");

@@ -84,7 +84,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void GetSchema()
         {
-            IGdTable table = GetTable(Normalize("public.PARSEL"));
+            IGdTable table = GetTable(Normalize("PARSEL"));
 
             List<string> fields = new List<string>();
             IGdSchema schema = table.Schema;

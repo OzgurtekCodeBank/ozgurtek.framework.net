@@ -114,6 +114,12 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             Assert.GreaterOrEqual(geomsString.Count, 1);
         }
 
+
+        /// <summary>
+        /// Bu test dosya tipli veri kaynaklarına yazar.
+        /// Öznitelik girlebilir.
+        /// Sadece string alanı açma ile sınırlandırıldı.
+        /// </summary>
         [Test]
         public void CreateFileBaseDataTest()
         {
@@ -129,6 +135,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             drivers.Add(new Tuple<string, string>("KML", ".kml"));
             drivers.Add(new Tuple<string, string>("GeoJSON", ".json"));
             drivers.Add(new Tuple<string, string>("SQLite", ".sqLite"));
+            drivers.Add(new Tuple<string, string>("XLSX", ".xlsx"));
 
             foreach (Tuple<string, string> driverName in drivers)
             {
@@ -155,6 +162,44 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 
                 ogrTable.Insert(buffer);
                 
+                //dosya sisteminde olan tipler için diske yaz.
+                ogrTable.SyncToDisk();
+                dataSource.SyncToDisk();
+
+                //memory temizle
+                ogrTable.Dispose();
+                dataSource.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// bu test attribute alamaya sadece geometry olan dosya tipli sürücüler içindir
+        /// </summary>
+        [Test]
+        public void CreateFileBaseButNoAttiributeDataTest()
+        {
+            CrateTestDir();
+
+            List<Tuple<string, string>> drivers = new List<Tuple<string, string>>();
+
+            drivers.Add(new Tuple<string, string>("DGN", ".dgn"));
+            drivers.Add(new Tuple<string, string>("GPX", ".gpx"));
+            drivers.Add(new Tuple<string, string>("DXF", ".dxf"));
+
+            foreach (Tuple<string, string> driverName in drivers)
+            {
+                string file = Path.Combine(_path, Guid.NewGuid() + driverName.Item2);
+
+                GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
+
+                GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
+
+                GdOgrRowBuffer buffer = new GdOgrRowBuffer();
+                buffer.SetFeatureIdDirectly(1);
+                buffer.SetGeometryDirectly(GetGeoemetry());//create table sırasında bir geometri alanı açtı zaten
+
+                ogrTable.Insert(buffer);
+
                 //dosya sisteminde olan tipler için diske yaz.
                 ogrTable.SyncToDisk();
                 dataSource.SyncToDisk();

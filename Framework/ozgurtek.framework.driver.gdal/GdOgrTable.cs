@@ -352,7 +352,7 @@ namespace ozgurtek.framework.driver.gdal
             if (geometryDirectly != null)
             {
                 Geometry wkb = Geometry.CreateFromWkb(geometryDirectly.ToBinary());
-                feature.SetGeometry(wkb);
+                feature.SetGeometryDirectly(wkb);
             }
 
             //featureid directly

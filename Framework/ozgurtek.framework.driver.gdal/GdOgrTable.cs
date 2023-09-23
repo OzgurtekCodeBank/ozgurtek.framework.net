@@ -229,7 +229,7 @@ namespace ozgurtek.framework.driver.gdal
         public override void CreateField(IGdField field)
         {
             if (field.FieldType == GdDataType.Geometry)
-                throw new NotSupportedException("Geometry field not supported use GdOgrRowBuffer.SetGeometryDirectly()");
+                throw new NotSupportedException("Geometry type not supported use GdOgrRowBuffer.SetGeometryDirectly()");
 
             if (field.FieldType != GdDataType.String)
                 throw new Exception("Only string field supported...");
@@ -326,7 +326,7 @@ namespace ozgurtek.framework.driver.gdal
         private Feature GetOgrFeature(IGdRowBuffer row)
         {
             if (!(row is GdOgrRowBuffer ogrRowBuffer))
-                throw new Exception("Use GdOgrRowBuffer class...");
+                throw new NotSupportedException("Use GdOgrRowBuffer class...");
 
             List<Tuple<string, string>> values = new List<Tuple<string, string>>();
             
@@ -337,14 +337,18 @@ namespace ozgurtek.framework.driver.gdal
                 if (paramater.Value is NetTopologySuite.Geometries.Geometry)
                     throw new NotSupportedException("Geometry parameter not supported use GdOgrRowBuffer.SetGeometryDirectly()");
 
-                //always string type
+                if (!DbConvert.IsDbNull(paramater.Value) && !(paramater.Value is string))
+                    throw new NotSupportedException("Only string values supported");
+
+                //accept only string  type
                 FieldDefn defn = new FieldDefn(paramater.Name, FieldType.OFTString);
                 featureDefn.AddFieldDefn(defn);
 
-                string val = DbConvert.ToString(paramater.Value);
-                values.Add(new Tuple<string, string>(paramater.Name, val));
+                values.Add(DbConvert.IsDbNull(paramater.Value)
+                    ? new Tuple<string, string>(paramater.Name, null)
+                    : new Tuple<string, string>(paramater.Name, paramater.Value.ToString()));
             }
-
+            
             Feature feature = new Feature(featureDefn);
 
             //geometry directly
@@ -379,7 +383,7 @@ namespace ozgurtek.framework.driver.gdal
 
                 feature.SetField(fieldName, value);
             }
-
+            
             return feature;
         }
     }

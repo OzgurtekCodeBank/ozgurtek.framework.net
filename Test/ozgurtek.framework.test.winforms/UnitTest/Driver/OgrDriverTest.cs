@@ -151,13 +151,15 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 ogrTable.CreateField(new GdField("bool_field", GdDataType.String));
                 ogrTable.CreateField(new GdField("real_field", GdDataType.String));
                 ogrTable.CreateField(new GdField("int_field", GdDataType.String));
+                ogrTable.CreateField(new GdField("str_field2", GdDataType.String));
 
                 GdOgrRowBuffer buffer = new GdOgrRowBuffer();
                 buffer.Put("str_field", Guid.NewGuid().ToString());
-                buffer.Put("date_field", GetDateTime());
-                buffer.Put("bool_field", GetBoolean());
-                buffer.Put("real_field", GetDouble());
-                buffer.Put("int_field", GetInt());
+                buffer.Put("date_field", GetDateTime().ToString());
+                buffer.Put("bool_field", GetBoolean().ToString());
+                buffer.Put("real_field", GetDouble().ToString());
+                buffer.Put("int_field", GetInt().ToString());
+                buffer.PutNull("str_field2");
                 buffer.SetGeometryDirectly(GetGeoemetry());//create table sırasında bir geometri alanı açtı zaten
 
                 ogrTable.Insert(buffer);

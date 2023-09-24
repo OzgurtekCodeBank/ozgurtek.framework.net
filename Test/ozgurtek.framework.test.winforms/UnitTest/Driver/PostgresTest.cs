@@ -21,6 +21,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                        $"Password={_pass};" +
                        $"Host={_ds};" +
                        "Port=5432;" +
+                       "Pooling=false;" +
                        $"Database={_database};" +
                        "ApplicationName=test";
             }

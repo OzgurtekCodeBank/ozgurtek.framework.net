@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using GeoAPI.CoordinateSystems;
 using NetTopologySuite.Geometries;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
@@ -125,7 +128,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         {
             CrateTestDir();
 
-            List<Tuple<string,string>> drivers = new List<Tuple<string, string>>();
+            List<Tuple<string, string>> drivers = new List<Tuple<string, string>>();
 
             //esri json olsa iyi olur...
             drivers.Add(new Tuple<string, string>("ESRI Shapefile", ".shp"));
@@ -140,9 +143,9 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             foreach (Tuple<string, string> driverName in drivers)
             {
                 string file = Path.Combine(_path, Guid.NewGuid() + driverName.Item2);
-                
+
                 GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
-                
+
                 GdOgrTable ogrTable = dataSource.CreateTable("layer1", GdGeometryType.Polygon, 4326, null);
 
                 //reqular fields only string type supported
@@ -160,10 +163,10 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 buffer.Put("real_field", GetDouble().ToString());
                 buffer.Put("int_field", GetInt().ToString());
                 buffer.PutNull("str_field2");
-                buffer.SetGeometryDirectly(GetGeoemetry());//create table sırasında bir geometri alanı açtı zaten
+                buffer.SetGeometryDirectly(GetGeoemetry()); //create table sırasında bir geometri alanı açtı zaten
 
                 ogrTable.Insert(buffer);
-                
+
                 //dosya sisteminde olan tipler için diske yaz.
                 ogrTable.SyncToDisk();
                 dataSource.SyncToDisk();
@@ -198,7 +201,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 
                 GdOgrRowBuffer buffer = new GdOgrRowBuffer();
                 buffer.SetFeatureIdDirectly(1);
-                buffer.SetGeometryDirectly(GetGeoemetry());//create table sırasında bir geometri alanı açtı zaten
+                buffer.SetGeometryDirectly(GetGeoemetry()); //create table sırasında bir geometri alanı açtı zaten
 
                 ogrTable.Insert(buffer);
 
@@ -210,6 +213,97 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 ogrTable.Dispose();
                 dataSource.Dispose();
             }
+        }
+
+        [Test]
+        public void ExporttoTest()
+        {
+            CrateTestDir();
+
+            List<Tuple<string, string>> drivers = new List<Tuple<string, string>>();
+
+            drivers.Add(new Tuple<string, string>("ESRI Shapefile", ".shp"));
+            drivers.Add(new Tuple<string, string>("MapInfo File", ".tab"));
+            drivers.Add(new Tuple<string, string>("CSV", ".csv"));
+            drivers.Add(new Tuple<string, string>("GML", ".gml"));
+            drivers.Add(new Tuple<string, string>("KML", ".kml"));
+            drivers.Add(new Tuple<string, string>("GeoJSON", ".json"));
+            drivers.Add(new Tuple<string, string>("SQLite", ".sqLite"));
+            drivers.Add(new Tuple<string, string>("XLSX", ".xlsx"));
+
+            PostgresTest test = new PostgresTest();
+
+            foreach (Tuple<string, string> driverName in drivers)
+            {
+                IEnumerable<IGdDbTable> dbTables = test.GetTable();
+
+                foreach (IGdDbTable dbTable in dbTables)
+                {
+                    //create ogr table
+                    string file = Path.Combine(_path, dbTable.Name + driverName.Item2);
+                    GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
+
+                    GdOgrTable ogrTable;
+                    if (string.IsNullOrWhiteSpace(dbTable.GeometryField))
+                        ogrTable = dataSource.CreateTable(dbTable.Name, null, null, null);
+                    else
+                        ogrTable = dataSource.CreateTable(dbTable.Name, dbTable.GeometryType, dbTable.Srid, null, false);
+
+                    //create field
+                    int usage = 1;
+                    Dictionary<string, IGdField> fieldsDictionary = new Dictionary<string, IGdField>();
+                    foreach (IGdField field in dbTable.Schema.Fields)
+                    {
+                        string fieldName = field.FieldName;
+                        if (fieldName.Length > 8)//shape driverı field isimlerini 8 karakterden fazla alamıyor...
+                        {
+                            fieldName = fieldName.Substring(0, Math.Min(fieldName.Length, 7));
+                            if (fieldsDictionary.ContainsKey(fieldName))
+                                fieldName += usage++;
+                        }
+
+                        fieldsDictionary.Add(fieldName, field);
+                        ogrTable.CreateField(new GdField(fieldName, GdDataType.String));
+                    }
+
+                    //copy attribute
+                    foreach (IGdRow row in dbTable.Rows)
+                    {
+                        GdOgrRowBuffer ogrRowBuffer = new GdOgrRowBuffer();
+                        foreach (KeyValuePair<string, IGdField> keyValuePair in fieldsDictionary)
+                        {
+                            string asString = row.GetAsString(keyValuePair.Value.FieldName);
+                            
+                            if (string.IsNullOrWhiteSpace(asString))
+                                ogrRowBuffer.PutNull(keyValuePair.Key);
+                            else
+                                ogrRowBuffer.Put(keyValuePair.Key, asString);
+                        }
+
+                        //geometry
+                        if (!string.IsNullOrWhiteSpace(dbTable.GeometryField))
+                        {
+                            Geometry geometry = row.GetAsGeometry(dbTable.GeometryField);
+                            ogrRowBuffer.SetGeometryDirectly(geometry);
+                        }
+
+                        ogrTable.Insert(ogrRowBuffer);
+                    }
+
+                    //dosya sisteminde olan tipler için diske yaz.
+                    ogrTable.SyncToDisk();
+                    dataSource.SyncToDisk();
+
+                    //memory temizle
+                    ogrTable.Dispose();
+                    dataSource.Dispose();
+                }
+            }
+        }
+
+        private string Normalize(List<Tuple<string, string>>field, string s, int size)
+        {
+            return s.Substring(0, Math.Min(s.Length, size));
         }
 
         private void CrateTestDir()

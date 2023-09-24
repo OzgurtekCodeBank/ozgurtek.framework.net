@@ -24,7 +24,7 @@ namespace ozgurtek.framework.driver.gdal
                     case GdGeometryType.Polygon:
                         return wkbGeometryType.wkbPolygon;
                     case GdGeometryType.Point:
-                        return wkbGeometryType.wkbMultiPoint;
+                        return wkbGeometryType.wkbPoint;
                     default:
                         return wkbGeometryType.wkbUnknown;
                 }

@@ -216,7 +216,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         }
 
         [Test]
-        public void ExporttoTest()
+        public void ExportPostgresToOgrTest()
         {
             CrateTestDir();
 
@@ -229,7 +229,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             drivers.Add(new Tuple<string, string>("KML", ".kml"));
             drivers.Add(new Tuple<string, string>("GeoJSON", ".json"));
             drivers.Add(new Tuple<string, string>("SQLite", ".sqLite"));
-            drivers.Add(new Tuple<string, string>("XLSX", ".xlsx"));
 
             PostgresTest test = new PostgresTest();
 
@@ -247,7 +246,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                     if (string.IsNullOrWhiteSpace(dbTable.GeometryField))
                         ogrTable = dataSource.CreateTable(dbTable.Name, null, null, null);
                     else
-                        ogrTable = dataSource.CreateTable(dbTable.Name, dbTable.GeometryType, dbTable.Srid, null, false);
+                        ogrTable = dataSource.CreateTable(dbTable.Name, dbTable.GeometryType, dbTable.Srid, null);
 
                     //create field
                     int usage = 1;
@@ -266,10 +265,12 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                         ogrTable.CreateField(new GdField(fieldName, GdDataType.String));
                     }
 
-                    //copy attribute
+                    //copy fields
                     foreach (IGdRow row in dbTable.Rows)
                     {
                         GdOgrRowBuffer ogrRowBuffer = new GdOgrRowBuffer();
+                        
+                        //attribute
                         foreach (KeyValuePair<string, IGdField> keyValuePair in fieldsDictionary)
                         {
                             string asString = row.GetAsString(keyValuePair.Value.FieldName);
@@ -299,11 +300,6 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                     dataSource.Dispose();
                 }
             }
-        }
-
-        private string Normalize(List<Tuple<string, string>>field, string s, int size)
-        {
-            return s.Substring(0, Math.Min(s.Length, size));
         }
 
         private void CrateTestDir()

@@ -69,6 +69,7 @@ namespace ozgurtek.framework.driver.gdal
                         if (feature.IsFieldNull(fieldName))
                         {
                             buffer.PutNull(fieldName);
+                            feature.Dispose();
                             continue;
                         }
 
@@ -133,6 +134,9 @@ namespace ozgurtek.framework.driver.gdal
                     {
                         buffer.Put("gd_style", styleString, GdDataType.String);
                     }
+
+                    //celan ogr feature..
+                    feature.Dispose();
 
                     yield return buffer;
                 }
@@ -256,13 +260,17 @@ namespace ozgurtek.framework.driver.gdal
         public override long Insert(IGdRowBuffer row)
         {
             Feature ogrFeature = GetOgrFeature(row);
-            return _layer.CreateFeature(ogrFeature);
+            int result = _layer.CreateFeature(ogrFeature);
+            ogrFeature.Dispose();
+            return result;
         }
 
         public override long Update(IGdRowBuffer row)
         {
             Feature ogrFeature = GetOgrFeature(row);
-            return _layer.UpsertFeature(ogrFeature);
+            int result = _layer.UpsertFeature(ogrFeature);
+            ogrFeature.Dispose();
+            return result;
         }
 
         public override long Delete(long id)
@@ -369,7 +377,7 @@ namespace ozgurtek.framework.driver.gdal
             if (string.IsNullOrWhiteSpace(styleStringDirectly))
                 feature.SetStyleString(styleStringDirectly);
 
-            //set fature's field
+            //set fature's field only string field accepted
             foreach (Tuple<string, string> tuple in values)
             {
                 string fieldName = tuple.Item1;

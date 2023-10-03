@@ -239,67 +239,78 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
                 foreach (IGdDbTable dbTable in dbTables)
                 {
                     //create ogr table
-                    string file = Path.Combine(_path, dbTable.Name + driverName.Item2);
-                    GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName.Item1, file, null);
+                    string folder = Path.Combine(_path, driverName.Item1, dbTable.Name);
+                    if (!Directory.Exists(folder))
+                        Directory.CreateDirectory(folder);
 
-                    GdOgrTable ogrTable;
-                    if (string.IsNullOrWhiteSpace(dbTable.GeometryField))
-                        ogrTable = dataSource.CreateTable(dbTable.Name, null, null, null);
-                    else
-                        ogrTable = dataSource.CreateTable(dbTable.Name, dbTable.GeometryType, dbTable.Srid, null);
-
-                    //create field
-                    int usage = 1;
-                    Dictionary<string, IGdField> fieldsDictionary = new Dictionary<string, IGdField>();
-                    foreach (IGdField field in dbTable.Schema.Fields)
-                    {
-                        string fieldName = field.FieldName;
-                        if (fieldName.Length > 8)//shape driverı field isimlerini 8 karakterden fazla alamıyor...
-                        {
-                            fieldName = fieldName.Substring(0, Math.Min(fieldName.Length, 7));
-                            if (fieldsDictionary.ContainsKey(fieldName))
-                                fieldName += usage++;
-                        }
-
-                        fieldsDictionary.Add(fieldName, field);
-                        ogrTable.CreateField(new GdField(fieldName, GdDataType.String));
-                    }
-
-                    //copy fields
-                    foreach (IGdRow row in dbTable.Rows)
-                    {
-                        GdOgrRowBuffer ogrRowBuffer = new GdOgrRowBuffer();
-                        
-                        //attribute
-                        foreach (KeyValuePair<string, IGdField> keyValuePair in fieldsDictionary)
-                        {
-                            string asString = row.GetAsString(keyValuePair.Value.FieldName);
-                            
-                            if (string.IsNullOrWhiteSpace(asString))
-                                ogrRowBuffer.PutNull(keyValuePair.Key);
-                            else
-                                ogrRowBuffer.Put(keyValuePair.Key, asString);
-                        }
-
-                        //geometry
-                        if (!string.IsNullOrWhiteSpace(dbTable.GeometryField))
-                        {
-                            Geometry geometry = row.GetAsGeometry(dbTable.GeometryField);
-                            ogrRowBuffer.SetGeometryDirectly(geometry);
-                        }
-
-                        ogrTable.Insert(ogrRowBuffer);
-                    }
-
-                    //dosya sisteminde olan tipler için diske yaz.
-                    ogrTable.SyncToDisk();
-                    dataSource.SyncToDisk();
-
-                    //memory temizle
-                    ogrTable.Dispose();
-                    dataSource.Dispose();
+                    string fileName = dbTable.Name + driverName.Item2;
+                    string fullFileName = Path.Combine(folder,  fileName);
+                    Save(dbTable, driverName.Item1, fullFileName);
                 }
             }
+        }
+
+        private void Save(IGdDbTable table, string driverName, string outputFileName)
+        {
+            //create ogr table
+            GdOgrDataSource dataSource = GdOgrDataSource.Create(driverName, outputFileName, null);
+
+            GdOgrTable ogrTable;
+            if (string.IsNullOrWhiteSpace(table.GeometryField))
+                ogrTable = dataSource.CreateTable(table.Name, null, null, null);
+            else
+                ogrTable = dataSource.CreateTable(table.Name, table.GeometryType, table.Srid, null);
+
+            //create field
+            int usage = 1;
+            Dictionary<string, IGdField> fieldsDictionary = new Dictionary<string, IGdField>();
+            foreach (IGdField field in table.Schema.Fields)
+            {
+                string fieldName = field.FieldName;
+                if (fieldName.Length > 8)//shape driverı field isimlerini 8 karakterden fazla alamıyor...
+                {
+                    fieldName = fieldName.Substring(0, Math.Min(fieldName.Length, 7));
+                    if (fieldsDictionary.ContainsKey(fieldName))
+                        fieldName += usage++;
+                }
+
+                fieldsDictionary.Add(fieldName, field);
+                ogrTable.CreateField(new GdField(fieldName, GdDataType.String));
+            }
+
+            //copy fields
+            foreach (IGdRow row in table.Rows)
+            {
+                GdOgrRowBuffer ogrRowBuffer = new GdOgrRowBuffer();
+
+                //attribute
+                foreach (KeyValuePair<string, IGdField> keyValuePair in fieldsDictionary)
+                {
+                    string asString = row.GetAsString(keyValuePair.Value.FieldName);
+
+                    if (string.IsNullOrWhiteSpace(asString))
+                        ogrRowBuffer.PutNull(keyValuePair.Key);
+                    else
+                        ogrRowBuffer.Put(keyValuePair.Key, asString);
+                }
+
+                //geometry
+                if (!string.IsNullOrWhiteSpace(table.GeometryField))
+                {
+                    Geometry geometry = row.GetAsGeometry(table.GeometryField);
+                    ogrRowBuffer.SetGeometryDirectly(geometry);
+                }
+
+                ogrTable.Insert(ogrRowBuffer);
+            }
+
+            //dosya sisteminde olan tipler için diske yaz.
+            ogrTable.SyncToDisk();
+            dataSource.SyncToDisk();
+
+            //memory temizle
+            ogrTable.Dispose();
+            dataSource.Dispose();
         }
 
         private void CrateTestDir()

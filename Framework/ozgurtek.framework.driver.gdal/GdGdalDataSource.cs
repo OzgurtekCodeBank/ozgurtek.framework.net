@@ -539,6 +539,14 @@ namespace ozgurtek.framework.driver.gdal
             return bOne;
         }
 
+        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size, Size bufferSize)
+        {
+            double[] bOne = new double[bufferSize.Width * bufferSize.Height];
+            Band band = _ds.GetRasterBand(bandid);
+            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, bufferSize.Width, bufferSize.Height, 0, 0);
+            return bOne;
+        }
+
         private Rectangle UnProject(Envelope envelope)
         {
             Coordinate p1 = UnProject(envelope.MinX, envelope.MinY);

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using GeoAPI.CoordinateSystems;
 using NetTopologySuite.Geometries;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using ozgurtek.framework.common.Data;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;

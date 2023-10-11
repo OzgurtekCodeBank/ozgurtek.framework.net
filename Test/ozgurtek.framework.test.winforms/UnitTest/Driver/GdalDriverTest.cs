@@ -86,7 +86,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         public void ReadRaster3()
         {
             GdTileIndex index = new GdTileIndex(293, 196, 9);
-            Size requestSize = new Size(65, 65);
+            Size requestImageSize = new Size(65, 65);
 
             //tile'ın geometrisini buluyoruz...
             GdGoogleMapsTileMatrixSet set = new GdGoogleMapsTileMatrixSet();
@@ -104,8 +104,10 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             int dy = (int)Math.Abs(llPx.Y - urPx.Y);
             Size pxSize = new Size(dx, dy);
 
-            double[] readBand = dataSource.ReadBand(1, (int)llPx.X, (int)urPx.Y, pxSize, requestSize);
+            double[] readBand = dataSource.ReadBand(1, (int)llPx.X, (int)urPx.Y, pxSize, requestImageSize);
             dataSource.Dispose();
+
+            Assert.IsNotNull(readBand);
         }
 
         [Test]

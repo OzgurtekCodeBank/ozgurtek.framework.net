@@ -3,8 +3,6 @@ using NUnit.Framework;
 using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
-using ozgurtek.framework.driver.gdal;
-using System.Collections.Generic;
 
 namespace ozgurtek.framework.test.winforms.UnitTest.Util
 {

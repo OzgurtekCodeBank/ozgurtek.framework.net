@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GeoAPI.CoordinateSystems;
 using OSGeo.OGR;
 using OSGeo.OSR;
 using ozgurtek.framework.common.Data;
-using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using Envelope = NetTopologySuite.Geometries.Envelope;
 using Layer = OSGeo.OGR.Layer;
@@ -69,7 +67,6 @@ namespace ozgurtek.framework.driver.gdal
                         if (feature.IsFieldNull(fieldName))
                         {
                             buffer.PutNull(fieldName);
-                            feature.Dispose();
                             continue;
                         }
 
@@ -134,9 +131,6 @@ namespace ozgurtek.framework.driver.gdal
                     {
                         buffer.Put("gd_style", styleString, GdDataType.String);
                     }
-
-                    //celan ogr feature..
-                    feature.Dispose();
 
                     yield return buffer;
                 }

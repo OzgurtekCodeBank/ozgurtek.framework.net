@@ -18,6 +18,8 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         //private string _source = @"WFS:http://185.122.200.110:8080/geoserver/dhmi/wfs?service=WFS";
         //private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.gml";
         private string _source = @"C:\Users\eniso\Desktop\work\testdata\test.kmz";
+        private string _source1 = @"C:\data\work\unittest\alanya\feature_donukluk\donukluk.shp";
+        private string _source2 = @"C:\data\work\unittest\alanya\feature_foodprint\data_orjinal.shp";
 
         [Test]
         public void DriverTest()
@@ -40,7 +42,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
         [Test]
         public void TableCountTest()
         {
-            GdOgrDataSource dataSource = GdOgrDataSource.Open(_source);
+            GdOgrDataSource dataSource = GdOgrDataSource.Open(_source1);
             Assert.GreaterOrEqual(dataSource.TableCount, 1);
         }
 
@@ -310,6 +312,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
             dataSource.Dispose();
         }
 
+
         private void CrateTestDir()
         {
             if (!Directory.Exists(_path))
@@ -318,7 +321,7 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 
         private IEnumerable<IGdTable> GetTable()
         {
-            GdOgrDataSource dataSource = GdOgrDataSource.Open(_source);
+            GdOgrDataSource dataSource = GdOgrDataSource.Open(_source2);
             return dataSource.GetTable();
         }
 

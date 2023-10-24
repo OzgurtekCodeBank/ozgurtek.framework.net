@@ -1,5 +1,7 @@
 -------------2.0.65---------------------------
 -Gdal driverýnda band okuma fonksiyounu deðiþti
+-paketler deðiþti
+-gdal driverýnda row okumada hata düzeltildi.
 
 -------------2.0.64---------------------------
 - Gdal driverýna yazma özelliði eklendi.

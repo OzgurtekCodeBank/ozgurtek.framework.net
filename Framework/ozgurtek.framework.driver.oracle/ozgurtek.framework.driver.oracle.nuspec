@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
 	<metadata>
 		<id>ozgurtek.framework.driver.oracle</id>
-		<version>2.0.64</version>
+		<version>2.0.65</version>
 		<title>http://www.otekyazilim.com/</title>
 		<authors>http://www.otekyazilim.com/</authors>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,7 +13,7 @@
 		<releaseNotes>oracle driver</releaseNotes>
 		<copyright>http://www.otekyazilim.com/</copyright>
 		<dependencies>
-			<dependency id="ozgurtek.framework.common" version="2.0.64" />
+			<dependency id="ozgurtek.framework.common" version="2.0.65" />
 		</dependencies>
 	</metadata>
 </package>

@@ -4,7 +4,6 @@ using ozgurtek.framework.driver.gdal;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using NetTopologySuite.Geometries;
 using OSGeo.GDAL;
 using ozgurtek.framework.common.Data;
@@ -14,8 +13,6 @@ using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.sqlite;
 using Point = NetTopologySuite.Geometries.Point;
 using ozgurtek.framework.common.Util;
-using ozgurtek.framework.driver.postgres;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace ozgurtek.framework.test.winforms.UnitTest.Driver
 {

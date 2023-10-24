@@ -531,19 +531,19 @@ namespace ozgurtek.framework.driver.gdal
             return ReadRaster(bounds, size);
         }
 
-        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size)
+        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size, int pixelScale = 0, int lineSpace =0)
         {
             double[] bOne = new double[size.Width * size.Height];
             Band band = _ds.GetRasterBand(bandid);
-            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, size.Width, size.Height, 0, 0);
+            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, size.Width, size.Height, pixelScale, lineSpace);
             return bOne;
         }
 
-        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size, Size bufferSize)
+        public double[] ReadBand(int bandid, int offsetX, int offsetY, Size size, Size bufferSize, int pixelScale = 0, int lineSpace = 0)
         {
             double[] bOne = new double[bufferSize.Width * bufferSize.Height];
             Band band = _ds.GetRasterBand(bandid);
-            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, bufferSize.Width, bufferSize.Height, 0, 0);
+            band.ReadRaster(offsetX, offsetY, size.Width, size.Height, bOne, bufferSize.Width, bufferSize.Height, pixelScale, lineSpace);
             return bOne;
         }
 

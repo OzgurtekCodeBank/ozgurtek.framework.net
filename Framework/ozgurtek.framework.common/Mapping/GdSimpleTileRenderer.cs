@@ -32,7 +32,7 @@ namespace ozgurtek.framework.common.Mapping
             List<DownloadObject> result = new List<DownloadObject>();
             Envelope envelope = GdProjection.Project(world, viewport.Srid, _layer.TileMap.Srid);
             int zoomlevel = tileMap.GetAppropriateZoomLevel(display, envelope);
-            List<GdTileIndex> areaTileList = tileMap.GetAreaTileList(envelope, zoomlevel);
+            IEnumerable<GdTileIndex> areaTileList = tileMap.GetAreaTileList(envelope, zoomlevel);
             foreach (GdTileIndex tileIndex in areaTileList)
             {
                 tileIndex.Z = zoomlevel;

@@ -102,7 +102,7 @@ namespace ozgurtek.framework.common.Util
             return (long)((tileMaxCol - tileMinCol + 1) * (tileMaxRow - tileMinRow + 1));
         }
 
-        public List<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true)
+        public IEnumerable<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true)
         {
             double metersPerUnit = 1;
             ICoordinateSystem coordinateSystem = GdProjection.GetCrs(_matrixSet.Srid);
@@ -132,24 +132,25 @@ namespace ozgurtek.framework.common.Util
             if (tileMinRow < 0) tileMinRow = 0;
             if (tileMaxRow >= matrix.MatrixHeight) tileMaxRow = matrix.MatrixHeight - 1;
 
-            List<GdTileIndex> ret = new List<GdTileIndex>();
+            //List<GdTileIndex> ret = new List<GdTileIndex>();
             for (long col = tileMinCol; col <= tileMaxCol; col++)
             {
                 for (long row = tileMinRow; row <= tileMaxRow; row++)
                 {
                     GdTileIndex p = new GdTileIndex(Math.Abs(col), Math.Abs(row));
                     p.Z = zoomLevel;
-                    if (!ret.Contains(p))
-                    {
-                        ret.Add(p);
-                    }
+                    //if (!ret.Contains(p))
+                    //{
+                    //    ret.Add(p);
+                    //}
+                    yield return p;
                 }
             }
 
-            if (centerBase)
-                ret = SortByDistance(ret);
+            //if (centerBase)
+            //    ret = SortByDistance(ret);
 
-            return ret;
+            //return ret;
         }
 
         public Polygon GetGeometry(GdTileIndex index)

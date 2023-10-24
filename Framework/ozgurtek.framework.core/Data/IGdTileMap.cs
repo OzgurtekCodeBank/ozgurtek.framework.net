@@ -46,7 +46,7 @@ namespace ozgurtek.framework.core.Data
         /// <param name="padding"></param>
         /// <param name="centerBase"></param>
         /// <returns></returns>
-        List<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true);
+        IEnumerable<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true);
 
         /// <summary>
         /// 

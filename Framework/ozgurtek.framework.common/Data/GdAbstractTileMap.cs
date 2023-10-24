@@ -20,7 +20,7 @@ namespace ozgurtek.framework.common.Data
             return calculator.CalAreaTileCount(envelope, zoomLevel, padding);
         }
 
-        public List<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true)
+        public IEnumerable<GdTileIndex> GetAreaTileList(Envelope envelope, int zoomLevel, int padding = 0, bool centerBase = true)
         {
             GdTileMatrixCalculator calculator = new GdTileMatrixCalculator(TileMatrixSet);
             return calculator.GetAreaTileList(envelope, zoomLevel, padding, centerBase);

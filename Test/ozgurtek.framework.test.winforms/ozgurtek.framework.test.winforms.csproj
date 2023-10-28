@@ -146,6 +146,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="BruTile">
+      <Version>5.0.6</Version>
+    </PackageReference>
     <PackageReference Include="GDAL.Plugins">
       <Version>3.7.2</Version>
     </PackageReference>

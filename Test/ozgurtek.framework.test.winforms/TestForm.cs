@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using BruTile;
+using BruTile.Predefined;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
 using ozgurtek.framework.common;
+using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
 using ozgurtek.framework.common.Geodesy;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
+using ozgurtek.framework.driver.sqlite;
 using Envelope = NetTopologySuite.Geometries.Envelope;
+using Point = NetTopologySuite.Geometries.Point;
 
 namespace ozgurtek.framework.test.winforms
 {
@@ -38,124 +44,117 @@ namespace ozgurtek.framework.test.winforms
 
             string source = "C:\\TURKEY_DTED\\turkey_DTED.tif";
             GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
-            WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
+            // WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
         }
 
+        //3101644  4551846
+        //3107602  4555601
         private void button2_Click(object sender, EventArgs e)
         {
             double x1 = Convert.ToDouble(minXTextBox.Text, CultureInfo.InvariantCulture);
             double y1 = Convert.ToDouble(minYTextBox.Text, CultureInfo.InvariantCulture);
             double x2 = Convert.ToDouble(maxXTextBox.Text, CultureInfo.InvariantCulture);
             double y2 = Convert.ToDouble(maxYTextBox.Text, CultureInfo.InvariantCulture);
-            Coordinate cor1 = new Coordinate(x1, y1);
-            Coordinate cor2 = new Coordinate(x2, y2);
 
             int min = Convert.ToInt32(minZoomLevelText.Text, CultureInfo.InvariantCulture);
             int max = Convert.ToInt32(maxZoomLevelText.Text, CultureInfo.InvariantCulture);
 
             GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
 
-            GdGoogleMapsTileMatrixSet matrixSet = new GdGoogleMapsTileMatrixSet();
-            GdTileMatrixCalculator calculator = new GdTileMatrixCalculator(matrixSet);
-            
-            Envelope filerEnvelope = new Envelope(cor1, cor2);
-            filerEnvelope = GdProjection.Project(filerEnvelope, 4326, 3857);
+            const string name = "BingMaps";
+            const string format = "jpg";
+            GlobalSphericalMercator schema = new GlobalSphericalMercator(format, YAxis.OSM, 1, 21, name);
+
+            Extent extent = new Extent(x1, y1, x2, y2);
+            double rasterDensity = CalcDesity();
 
             for (int i = min; i <= max; i++)
             {
-                IEnumerable<GdTileIndex> gdTileIndices = calculator.GetAreaTileList(filerEnvelope, i, 0, false);
-
-                foreach (GdTileIndex index in gdTileIndices)
+                IEnumerable<TileInfo> tileInfos = schema.GetTileInfos(extent, i);
+                foreach (TileInfo index in tileInfos)
                 {
-                    WriteHeight(dataSource, index);
+                    Stopwatch stopWatch = new Stopwatch();
+                    stopWatch.Start();
+
+                    WriteHeight(dataSource, index, rasterDensity);
+                    
+                    stopWatch.Stop();
+                    TimeSpan ts = stopWatch.Elapsed;
+                    string elapsedTime = ts.Milliseconds.ToString();
                 }
             }
 
             MessageBox.Show("Bitti!");
         }
 
-        private void WriteHeight(GdGdalDataSource ds, GdTileIndex index, int sampleSize = 65)
+        private void WriteHeight(GdGdalDataSource ds, TileInfo index, double density)
         {
             string path = _defPath;
 
             //create folder
-            string zPath = Path.Combine(path, index.Z.ToString());
+            string zPath = Path.Combine(path, index.Index.Level.ToString());
             if (!Directory.Exists(zPath))
                 Directory.CreateDirectory(zPath);
 
-            string xPath = Path.Combine(zPath, index.X.ToString());
+            string xPath = Path.Combine(zPath, index.Index.Col.ToString());
             if (!Directory.Exists(xPath))
                 Directory.CreateDirectory(xPath);
 
-            GdGoogleMapsTileMatrixSet matrixSet = new GdGoogleMapsTileMatrixSet();
-            GdTileMatrixCalculator calculator = new GdTileMatrixCalculator(matrixSet);
-            Polygon geometry = calculator.GetGeometry(index);
-            geometry.SRID = 3857;
+            Envelope env = new Envelope(index.Extent.MinX, index.Extent.MaxX, index.Extent.MinY, index.Extent.MaxY);
+            Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(env);
 
-            ////create envelope file
-            //File.WriteAllText(Path.Combine(xPath, index.Y + ".json"), ToJson(geometry));
+            //create envelope file
+            File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
 
-            //create sqlite....
+            ////create sqlite....
             //GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(Path.Combine(xPath, index.Y + ".sqlite"));
             //GdSqlLiteTable liteTable = sqlLiteDataSource.CreateTable("height", GdGeometryType.Point, 3857, null);
             //liteTable.CreateField(new GdField("x", GdDataType.Real));
             //liteTable.CreateField(new GdField("y", GdDataType.Real));
             //liteTable.CreateField(new GdField("height", GdDataType.Real));
 
-            Envelope envelope = geometry.EnvelopeInternal;
-            double stepX = envelope.Width / sampleSize;
-            double stepY = envelope.Height / sampleSize;
+            //Envelope envelope = geometry.EnvelopeInternal;
+            //int sampleCount = (int)Math.Floor(envelope.Width / density);
+            //if (sampleCount < 3)
+            //    sampleCount = 3; 
 
-            List<double> heights = new List<double>();
+            //double stepX = envelope.Width / sampleCount;
+            //double stepY = envelope.Height / sampleCount;
+
+            //List<double> heights = new List<double>(); 
             //sqlLiteDataSource.BeginTransaction();
-            int ii = 0;
-            for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
-            {
-                ii = 0;
-                for (double i = envelope.MinX; i < envelope.MinX + envelope.Width; i += stepX)
-                {
-                    ii++;
-                    if(ii>sampleSize)
-                        break;
+            //int rowCount = 0;
+            //for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
+            //{
+            //    int colCount = 0;
+            //    for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
+            //    {
+            //        Coordinate unProject = ds.UnProject(i, j);//pixel
+            //        double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+            //        double pixelVal = pixelVals[0];
 
-                    Coordinate unProject = ds.UnProject(i, j);//pixel
-                    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                    double pixelVal = pixelVals[0];
+            //        //to txt
+            //        heights.Add(pixelVal);
 
-                    //to txt
-                    heights.Add(pixelVal);
+            //        Point point = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().CreatePoint(new Coordinate(i, j));
+            //        point.SRID = 3857;
+            //        GdRowBuffer buffer = new GdRowBuffer();
+            //        buffer.Put("geometry", point);
+            //        buffer.Put("x", i);
+            //        buffer.Put("y", j);
+            //        buffer.Put("height", pixelVal);
+            //        liteTable.Insert(buffer);
 
-                    //Point point = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().CreatePoint(new Coordinate(i, j));
-                    //point.SRID = 3857;
-                    //GdRowBuffer buffer = new GdRowBuffer();
-                    //buffer.Put("geometry", point);
-                    //buffer.Put("x", i);
-                    //buffer.Put("y", j);
-                    //buffer.Put("height", pixelVal);
-                    //liteTable.Insert(buffer);
-
-                    if (heights.Count >= sampleSize * sampleSize)
-                        break;
-                }
-
-                if (heights.Count >= sampleSize * sampleSize)
-                    break;
-            }
+            //        if (++colCount == sampleCount)
+            //            break;
+            //    }
+            //    if (++rowCount == sampleCount)
+            //        break;
+            //}
             //sqlLiteDataSource.CommitTransaction();
 
-            //create buffer text
-            File.WriteAllText(Path.Combine(xPath, index.Y + ".txt"), string.Join(",", heights));
-
-            ////write alternate type of height
-            //Size requestSize = new Size(65, 65);
-            //Coordinate ul = ds.UnProject(envelope.MinX, envelope.MaxY);
-            //Coordinate lr = ds.UnProject(envelope.MaxX, envelope.MinY);
-            //int dx = (int)Math.Abs(ul.X - lr.X);
-            //int dy = (int)Math.Abs(ul.Y - lr.Y);
-            //Size size = new Size(dx, dy);
-
-            //double[] heights2 = ds.ReadBand(1, (int)ul.X, (int)ul.Y, size, requestSize);
-            //File.WriteAllText(Path.Combine(xPath, index.Y + "_alt.txt"), string.Join(",", heights2));
+            ////create buffer text
+            //File.WriteAllText(Path.Combine(xPath, index.Y + ".txt"), string.Join(",", heights));
         }
 
         public string ToJson(Geometry geometry)
@@ -173,7 +172,7 @@ namespace ozgurtek.framework.test.winforms
         {
             string source = "C:\\aydin3857.tif";
             GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
-            WriteHeight(dataSource, new GdTileIndex(75689, 50642, 17));
+            //WriteHeight(dataSource, new GdTileIndex(75689, 50642, 17));
         }
 
         private void densityCalcButton_Click(object sender, EventArgs e)

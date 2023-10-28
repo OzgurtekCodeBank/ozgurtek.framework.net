@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using JetBrains.dotMemoryUnit;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
 using Newtonsoft.Json;
 using ozgurtek.framework.common;
-using ozgurtek.framework.common.Data;
 using ozgurtek.framework.common.Data.Format.OnlineMap.Google;
 using ozgurtek.framework.common.Geodesy;
 using ozgurtek.framework.common.Util;
 using ozgurtek.framework.core.Data;
 using ozgurtek.framework.driver.gdal;
-using ozgurtek.framework.driver.sqlite;
 using Envelope = NetTopologySuite.Geometries.Envelope;
-using Point = NetTopologySuite.Geometries.Point;
 
 namespace ozgurtek.framework.test.winforms
 {
@@ -32,27 +29,35 @@ namespace ozgurtek.framework.test.winforms
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            //double x1 = Convert.ToDouble(textBox4.Text);
-            //double y1 = Convert.ToDouble(textBox5.Text);
-            //double x2 = Convert.ToDouble(textBox6.Text);
-            //double y2 = Convert.ToDouble(textBox7.Text);
-            //Coordinate cor1 = new Coordinate(x1, y1);
-            //Coordinate cor2 = new Coordinate(x2, y2);
+            Coordinate cor1 = new Coordinate(27.8778076171875, 37.815411006369104);
+            Coordinate cor2 = new Coordinate(27.88330078125, 37.820904170431604);
+            var coordinate = GdProjection.Project(cor1, 4326, 5253);
+            var coordinate2 = GdProjection.Project(cor2, 4326, 5253);
 
-            int min = 20;/*Convert.ToInt32(textBox2.Text);*/
-            int max = 20;/*Convert.ToInt32(textBox3.Text);*/
-            
             string source = "C:\\TURKEY_DTED\\turkey_DTED.tif";
             GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
+            WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            double x1 = Convert.ToDouble(minXTextBox.Text, CultureInfo.InvariantCulture);
+            double y1 = Convert.ToDouble(minYTextBox.Text, CultureInfo.InvariantCulture);
+            double x2 = Convert.ToDouble(maxXTextBox.Text, CultureInfo.InvariantCulture);
+            double y2 = Convert.ToDouble(maxYTextBox.Text, CultureInfo.InvariantCulture);
+            Coordinate cor1 = new Coordinate(x1, y1);
+            Coordinate cor2 = new Coordinate(x2, y2);
+
+            int min = Convert.ToInt32(minZoomLevelText.Text, CultureInfo.InvariantCulture);
+            int max = Convert.ToInt32(maxZoomLevelText.Text, CultureInfo.InvariantCulture);
+
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
 
             GdGoogleMapsTileMatrixSet matrixSet = new GdGoogleMapsTileMatrixSet();
             GdTileMatrixCalculator calculator = new GdTileMatrixCalculator(matrixSet);
-
-            Coordinate cor1 = new Coordinate(34.4646353216893, 38.73258080727801);
-            Coordinate cor2 = new Coordinate(34.62385274471592, 38.812034524942696);
-
+            
             Envelope filerEnvelope = new Envelope(cor1, cor2);
             filerEnvelope = GdProjection.Project(filerEnvelope, 4326, 3857);
 
@@ -69,23 +74,9 @@ namespace ozgurtek.framework.test.winforms
             MessageBox.Show("Bitti!");
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Coordinate cor1 = new Coordinate(27.8778076171875, 37.815411006369104);
-            Coordinate cor2 = new Coordinate(27.88330078125, 37.820904170431604);
-            var coordinate = GdProjection.Project(cor1, 4326, 5253);
-            var coordinate2 = GdProjection.Project(cor2, 4326, 5253);
-
-            string source = "C:\\TURKEY_DTED\\turkey_DTED.tif";
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
-            WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
-        }
-
-        private void WriteHeight(GdGdalDataSource ds, GdTileIndex index, int sampleSize = 32)
+        private void WriteHeight(GdGdalDataSource ds, GdTileIndex index, int sampleSize = 65)
         {
             string path = _defPath;
-            if (!string.IsNullOrEmpty(textBox1.Text))
-                path = textBox1.Text;
 
             //create folder
             string zPath = Path.Combine(path, index.Z.ToString());
@@ -183,6 +174,54 @@ namespace ozgurtek.framework.test.winforms
             string source = "C:\\aydin3857.tif";
             GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
             WriteHeight(dataSource, new GdTileIndex(75689, 50642, 17));
+        }
+
+        private void densityCalcButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double calcDesity = CalcDesity();
+                densityResultLabel.Text = calcDesity.ToString(CultureInfo.InvariantCulture) + " m";
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message);
+            }
+        }
+
+        private void calcTileButton_Click(object sender, EventArgs e)
+        {
+            double x1 = Convert.ToDouble(minXTextBox.Text, CultureInfo.InvariantCulture);
+            double y1 = Convert.ToDouble(minYTextBox.Text, CultureInfo.InvariantCulture);
+            double x2 = Convert.ToDouble(maxXTextBox.Text, CultureInfo.InvariantCulture);
+            double y2 = Convert.ToDouble(maxYTextBox.Text, CultureInfo.InvariantCulture);
+            Coordinate cor1 = new Coordinate(x1, y1);
+            Coordinate cor2 = new Coordinate(x2, y2);
+
+            int min = Convert.ToInt32(minZoomLevelText.Text, CultureInfo.InvariantCulture);
+            int max = Convert.ToInt32(maxZoomLevelText.Text, CultureInfo.InvariantCulture);
+
+            GdGoogleMapsTileMatrixSet matrixSet = new GdGoogleMapsTileMatrixSet();
+            GdTileMatrixCalculator calculator = new GdTileMatrixCalculator(matrixSet);
+
+            Envelope filerEnvelope = new Envelope(cor1, cor2);
+            filerEnvelope = GdProjection.Project(filerEnvelope, 4326, 3857);
+
+            long size = 0;
+            for (int i = min; i <= max; i++)
+            {
+                size += calculator.CalAreaTileCount(filerEnvelope, i, 0);
+            }
+
+            tileSizelabel.Text = size.ToString();
+        }
+
+        private double CalcDesity()
+        {
+            GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
+            double w = dataSource.Envelope.Width / dataSource.RasterWidth;
+            double h = dataSource.Envelope.Height / dataSource.RasterHeight;
+            return w;
         }
     }
 }

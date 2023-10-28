@@ -47,8 +47,6 @@ namespace ozgurtek.framework.test.winforms
             // WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
         }
 
-        //3101644  4551846
-        //3107602  4555601
         private void button2_Click(object sender, EventArgs e)
         {
             double x1 = Convert.ToDouble(minXTextBox.Text, CultureInfo.InvariantCulture);
@@ -64,7 +62,6 @@ namespace ozgurtek.framework.test.winforms
             const string name = "BingMaps";
             const string format = "jpg";
             GlobalSphericalMercator schema = new GlobalSphericalMercator(format, YAxis.OSM, 1, 21, name);
-
             Extent extent = new Extent(x1, y1, x2, y2);
             double rasterDensity = CalcDesity();
 
@@ -100,61 +97,60 @@ namespace ozgurtek.framework.test.winforms
             if (!Directory.Exists(xPath))
                 Directory.CreateDirectory(xPath);
 
-            Envelope env = new Envelope(index.Extent.MinX, index.Extent.MaxX, index.Extent.MinY, index.Extent.MaxY);
-            Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(env);
+            Envelope envelope = new Envelope(index.Extent.MinX, index.Extent.MaxX, index.Extent.MinY, index.Extent.MaxY);
 
             //create envelope file
+            Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
             File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
 
             ////create sqlite....
-            //GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(Path.Combine(xPath, index.Y + ".sqlite"));
-            //GdSqlLiteTable liteTable = sqlLiteDataSource.CreateTable("height", GdGeometryType.Point, 3857, null);
-            //liteTable.CreateField(new GdField("x", GdDataType.Real));
-            //liteTable.CreateField(new GdField("y", GdDataType.Real));
-            //liteTable.CreateField(new GdField("height", GdDataType.Real));
+            GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(Path.Combine(xPath, index.Index.Row + ".sqlite"));
+            GdSqlLiteTable liteTable = sqlLiteDataSource.CreateTable("height", GdGeometryType.Point, 3857, null);
+            liteTable.CreateField(new GdField("x", GdDataType.Real));
+            liteTable.CreateField(new GdField("y", GdDataType.Real));
+            liteTable.CreateField(new GdField("height", GdDataType.Real));
 
-            //Envelope envelope = geometry.EnvelopeInternal;
-            //int sampleCount = (int)Math.Floor(envelope.Width / density);
-            //if (sampleCount < 3)
-            //    sampleCount = 3; 
+            int sampleCount = (int)Math.Floor(envelope.Width / density);
+            if (sampleCount < 3)
+                sampleCount = 3;
 
-            //double stepX = envelope.Width / sampleCount;
-            //double stepY = envelope.Height / sampleCount;
+            double stepX = envelope.Width / sampleCount;
+            double stepY = envelope.Height / sampleCount;
 
-            //List<double> heights = new List<double>(); 
-            //sqlLiteDataSource.BeginTransaction();
-            //int rowCount = 0;
-            //for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
-            //{
-            //    int colCount = 0;
-            //    for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
-            //    {
-            //        Coordinate unProject = ds.UnProject(i, j);//pixel
-            //        double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-            //        double pixelVal = pixelVals[0];
+            List<double> heights = new List<double>();
+            sqlLiteDataSource.BeginTransaction();
+            int rowCount = 0;
+            for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
+            {
+                int colCount = 0;
+                for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
+                {
+                    Coordinate unProject = ds.UnProject(i, j);//pixel
+                    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+                    double pixelVal = pixelVals[0];
 
-            //        //to txt
-            //        heights.Add(pixelVal);
+                    //to txt
+                    heights.Add(pixelVal);
 
-            //        Point point = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().CreatePoint(new Coordinate(i, j));
-            //        point.SRID = 3857;
-            //        GdRowBuffer buffer = new GdRowBuffer();
-            //        buffer.Put("geometry", point);
-            //        buffer.Put("x", i);
-            //        buffer.Put("y", j);
-            //        buffer.Put("height", pixelVal);
-            //        liteTable.Insert(buffer);
+                    Point point = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().CreatePoint(new Coordinate(i, j));
+                    point.SRID = 3857;
+                    GdRowBuffer buffer = new GdRowBuffer();
+                    buffer.Put("geometry", point);
+                    buffer.Put("x", i);
+                    buffer.Put("y", j);
+                    buffer.Put("height", pixelVal);
+                    liteTable.Insert(buffer);
 
-            //        if (++colCount == sampleCount)
-            //            break;
-            //    }
-            //    if (++rowCount == sampleCount)
-            //        break;
-            //}
-            //sqlLiteDataSource.CommitTransaction();
+                    if (++colCount == sampleCount)
+                        break;
+                }
+                if (++rowCount == sampleCount)
+                    break;
+            }
+            sqlLiteDataSource.CommitTransaction();
 
-            ////create buffer text
-            //File.WriteAllText(Path.Combine(xPath, index.Y + ".txt"), string.Join(",", heights));
+            //create buffer text
+            File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".txt"), string.Join(",", heights));
         }
 
         public string ToJson(Geometry geometry)

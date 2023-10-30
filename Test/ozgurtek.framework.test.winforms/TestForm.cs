@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BruTile;
@@ -58,37 +57,41 @@ namespace ozgurtek.framework.test.winforms
             int min = Convert.ToInt32(minZoomLevelText.Text, CultureInfo.InvariantCulture);
             int max = Convert.ToInt32(maxZoomLevelText.Text, CultureInfo.InvariantCulture);
 
+            string routePath = _defPath;
+            if (!string.IsNullOrWhiteSpace(outPutTextBox.Text))
+                routePath = outPutTextBox.Text;
+
             GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
 
             const string name = "BingMaps";
             const string format = "jpg";
             GlobalSphericalMercator schema = new GlobalSphericalMercator(format, YAxis.OSM, 1, 21, name);
             Extent extent = new Extent(x1, y1, x2, y2);
-            double rasterDensity = CalcDesity();
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
 
             for (int i = min; i <= max; i++)
             {
                 IEnumerable<TileInfo> tileInfos = schema.GetTileInfos(extent, i);
                 foreach (TileInfo index in tileInfos)
                 {
-                    Stopwatch stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    WriteHeight(dataSource, index, rasterDensity, 65);
-                    
-                    stopWatch.Stop();
-                    TimeSpan ts = stopWatch.Elapsed;
-                    string elapsedTime = ts.Milliseconds.ToString();
+                    WriteHeight(dataSource, index, routePath);
                 }
             }
+            
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            string elapsedTime = ts.Seconds.ToString();
 
-            MessageBox.Show("Bitti!");
+            MessageBox.Show("Bitti! (seconds):  " + elapsedTime);
         }
 
-        private void WriteHeight(GdGdalDataSource ds, TileInfo index, double density, double arrayLenght)
+        private void WriteHeight(GdGdalDataSource ds, TileInfo index, string path)
         {
-            string path = _defPath;
-
+            double arrayLenght = 65;
+            int densityVal = 5; //0, 5, 13, 65 olabilir....65 katları...
+            
             //create folder
             string zPath = Path.Combine(path, index.Index.Level.ToString());
             if (!Directory.Exists(zPath))
@@ -100,59 +103,63 @@ namespace ozgurtek.framework.test.winforms
 
             Envelope envelope = new Envelope(index.Extent.MinX, index.Extent.MaxX, index.Extent.MinY, index.Extent.MaxY);
 
-            //create envelope file
-            Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
-            File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
+            //create envelope file(debug için kullan)
+            //Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
+            //File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
 
             double stepX = envelope.Width / arrayLenght;
             double stepY = envelope.Height / arrayLenght;
 
-            int densityVal = 5;
-            List<RowList> heights = new List<RowList>();
+            Heights heights = new Heights();
             
             int rowCount = 0;
             for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
             {
                 ////bir üst satırı kopyala
-                //if (rowCount % densityVal != 0)
-                //{
-                //    RowList list = heights[rowCount - 1];
-                //    heights.Add(list);
-                //    rowCount++;
-                //    continue;
-                //}
+                if (rowCount % densityVal != 0)
+                {
+                    Row copy = heights[rowCount - 1].Copy(j);
+                    heights.Add(copy);
+                    rowCount++;
+                    continue;
+                }
 
                 //read
                 int colCount = 0;
                 double height = -1000;
-                RowList rowList = new RowList();
+                Row row = new Row();
                 for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
                 {
-                    Coordinate unProject = ds.UnProject(i, j); //pixel
-                    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                    height = pixelVals[0];
-                    RowPoint rowPoint = new RowPoint(new Coordinate(i, j), height);
-                    rowList.Add(rowPoint);
-
-                    if (colCount % densityVal == 0) //gerçekten oku
+                    if (colCount % densityVal == 0) //0, 5, 13, 65 olabilir....65 katları...
                     {
-                        
+                        Coordinate unProject = ds.UnProject(i, j); //pixel
+                        double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+                        height = pixelVals[0];
                     }
+                    RowPoint rowPoint = new RowPoint(new Coordinate(i, j), height);
+                    row.Add(rowPoint);
+
                     colCount++;
+                    
+                    if (colCount == arrayLenght)//double artık değerlerden dolayı
+                        break;
                 }
 
-                heights.Add(rowList);
+                if (rowCount == arrayLenght)//double artık değerlerden dolayı
+                    break;
+                
                 rowCount++;
+                heights.Add(row);
             }
 
-            //sqllite
-            WriteSQlite(heights, Path.Combine(xPath, index.Index.Row + ".sqlite"));
+            //sqllite(debug için kullan)
+            //WriteSQlite(heights, Path.Combine(xPath, index.Index.Row + ".sqlite"));
 
             //create buffer text
-            //File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".txt"), string.Join(",", result));
+            File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".txt"), heights.ToString());
         }
 
-        private void WriteSQlite(List<RowList> heights, string fileName)
+        private void WriteSQlite(List<Row> heights, string fileName)
         {
             //////create sqlite....
             GdSqlLiteDataSource sqlLiteDataSource = GdSqlLiteDataSource.OpenOrCreate(fileName);
@@ -163,7 +170,7 @@ namespace ozgurtek.framework.test.winforms
 
             sqlLiteDataSource.BeginTransaction();
 
-            foreach (RowList rowList in heights)
+            foreach (Row rowList in heights)
             { 
                 foreach (RowPoint rowPoint in rowList)
                 {
@@ -181,8 +188,34 @@ namespace ozgurtek.framework.test.winforms
             sqlLiteDataSource.CommitTransaction();
         }
 
-        private class RowList : List<RowPoint>
+        private class Heights : List<Row>
         {
+            public override string ToString()
+            {
+                string join = string.Join(",", this);
+                return join;
+            }
+        }
+
+        private class Row : List<RowPoint>
+        {
+            public Row Copy(double y)
+            {
+                Row result = new Row();
+                foreach (RowPoint point in this)
+                {
+                    Coordinate coordinate = new Coordinate(point.Coordinate.X, y);
+                    RowPoint pnt = new RowPoint(coordinate, point.Height);
+                    result.Add(pnt);
+                }
+                return result;
+            }
+
+            public override string ToString()
+            {
+                string join = string.Join(",", this);
+                return join;
+            }
         }
 
         private class RowPoint
@@ -221,13 +254,6 @@ namespace ozgurtek.framework.test.winforms
             jsonSerializer.Serialize(writer, geometry);
             writer.Flush();
             return writer.ToString();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            string source = "C:\\aydin3857.tif";
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
-            //WriteHeight(dataSource, new GdTileIndex(75689, 50642, 17));
         }
 
         private void densityCalcButton_Click(object sender, EventArgs e)

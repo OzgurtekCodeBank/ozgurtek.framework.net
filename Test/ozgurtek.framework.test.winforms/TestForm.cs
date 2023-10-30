@@ -104,56 +104,50 @@ namespace ozgurtek.framework.test.winforms
             Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
             File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
 
-            //int sampleCount = (int)Math.Floor(envelope.Width / density);
-            //if (sampleCount < 3)
-            //    sampleCount = 3;
-
             double stepX = envelope.Width / arrayLenght;
             double stepY = envelope.Height / arrayLenght;
 
+            int densityVal = 5;
             List<RowList> heights = new List<RowList>();
             
             int rowCount = 0;
             for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
             {
+                ////bir üst satırı kopyala
+                //if (rowCount % densityVal != 0)
+                //{
+                //    RowList list = heights[rowCount - 1];
+                //    heights.Add(list);
+                //    rowCount++;
+                //    continue;
+                //}
+
+                //read
                 int colCount = 0;
-                double height = -100;
+                double height = -1000;
                 RowList rowList = new RowList();
                 for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
                 {
-                    if (colCount % 13 == 0)
-                    {
-                        Coordinate unProject = ds.UnProject(i, j); //pixel
-                        double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                        height = pixelVals[0];
-                    }
+                    Coordinate unProject = ds.UnProject(i, j); //pixel
+                    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+                    height = pixelVals[0];
                     RowPoint rowPoint = new RowPoint(new Coordinate(i, j), height);
                     rowList.Add(rowPoint);
+
+                    if (colCount % densityVal == 0) //gerçekten oku
+                    {
+                        
+                    }
                     colCount++;
-                    //if (colCount == arrayLenght)
-                    //    break;
                 }
 
-                if (rowCount % 13 == 0)
-                    heights.Add(rowList);
-
+                heights.Add(rowList);
                 rowCount++;
-                //if (rowCount == arrayLenght)
-                //    break;
             }
 
             //sqllite
             WriteSQlite(heights, Path.Combine(xPath, index.Index.Row + ".sqlite"));
 
-            List<RowList> result = new List<RowList>();
-            for (int i = 0; i < 5; i++)
-            {
-                for (int j = 0; j < 13; j++)
-                {
-                    result.Add(heights[i]);
-                }
-            }
-            
             //create buffer text
             //File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".txt"), string.Join(",", result));
         }
@@ -170,7 +164,7 @@ namespace ozgurtek.framework.test.winforms
             sqlLiteDataSource.BeginTransaction();
 
             foreach (RowList rowList in heights)
-            {
+            { 
                 foreach (RowPoint rowPoint in rowList)
                 {
                     Point point = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().CreatePoint(rowPoint.Coordinate);
@@ -198,8 +192,8 @@ namespace ozgurtek.framework.test.winforms
 
             public RowPoint(Coordinate coordinate, double height)
             {
-                this._coordinate = coordinate;
-                this._height = height;
+                _coordinate = coordinate;
+                _height = height;
             }
 
             public double Height

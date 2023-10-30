@@ -106,8 +106,8 @@ namespace ozgurtek.framework.driver.gdal
             Gdal.InvGeoTransform(mgt, igt);
 
             Coordinate result = new Coordinate();
-            result.X = (int)Math.Round(igt[0] + x * igt[1] + y * igt[2]);
-            result.Y = (int)Math.Round(igt[3] + x * igt[4] + y * igt[5]);
+            result.X = (int)(igt[0] + x * igt[1] + y * igt[2]);
+            result.Y = (int)(igt[3] + x * igt[4] + y * igt[5]);
             return result;
         }
 

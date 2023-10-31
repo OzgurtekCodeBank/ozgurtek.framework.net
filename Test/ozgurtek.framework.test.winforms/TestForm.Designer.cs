@@ -143,7 +143,7 @@
             this.minXTextBox.Name = "minXTextBox";
             this.minXTextBox.Size = new System.Drawing.Size(100, 20);
             this.minXTextBox.TabIndex = 8;
-            this.minXTextBox.Text = "3101644";
+            this.minXTextBox.Text = "3814540";
             // 
             // minYTextBox
             // 
@@ -151,7 +151,7 @@
             this.minYTextBox.Name = "minYTextBox";
             this.minYTextBox.Size = new System.Drawing.Size(100, 20);
             this.minYTextBox.TabIndex = 7;
-            this.minYTextBox.Text = "4551846";
+            this.minYTextBox.Text = "4668498";
             // 
             // label6
             // 
@@ -177,7 +177,7 @@
             this.maxXTextBox.Name = "maxXTextBox";
             this.maxXTextBox.Size = new System.Drawing.Size(100, 20);
             this.maxXTextBox.TabIndex = 12;
-            this.maxXTextBox.Text = "3107602";
+            this.maxXTextBox.Text = "3874607";
             // 
             // maxYTextBox
             // 
@@ -185,7 +185,7 @@
             this.maxYTextBox.Name = "maxYTextBox";
             this.maxYTextBox.Size = new System.Drawing.Size(100, 20);
             this.maxYTextBox.TabIndex = 11;
-            this.maxYTextBox.Text = "4555601";
+            this.maxYTextBox.Text = "4710475";
             // 
             // label8
             // 

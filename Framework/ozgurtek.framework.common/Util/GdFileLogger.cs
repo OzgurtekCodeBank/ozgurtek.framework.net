@@ -47,7 +47,7 @@ namespace ozgurtek.framework.common.Util
             set => _logFolder = value;
         }
 
-        private void InitializeLogger()
+        public void InitializeLogger()
         {
             string path = Path.GetDirectoryName(LogFolder);
             if ((path != null) && !path.EndsWith("\\"))

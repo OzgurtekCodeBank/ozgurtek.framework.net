@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BruTile;
@@ -61,6 +62,10 @@ namespace ozgurtek.framework.test.winforms
             if (!string.IsNullOrWhiteSpace(outPutTextBox.Text))
                 routePath = outPutTextBox.Text;
 
+            GdFileLogger fileLogger = GdFileLogger.Current;
+            fileLogger.LogFolder = routePath;
+            fileLogger.InitializeLogger();
+            
             GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
 
             const string name = "BingMaps";
@@ -68,29 +73,42 @@ namespace ozgurtek.framework.test.winforms
             GlobalSphericalMercator schema = new GlobalSphericalMercator(format, YAxis.OSM, 1, 21, name);
             Extent extent = new Extent(x1, y1, x2, y2);
 
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
-
             for (int i = min; i <= max; i++)
             {
+                //log
                 IEnumerable<TileInfo> tileInfos = schema.GetTileInfos(extent, i);
+                int len = tileInfos.Count();
+
+                string message = $"level {i} {len} tile started";
+                fileLogger.Log(message, LogType.Info);
+
+                Stopwatch stopWatch = new Stopwatch();
+                stopWatch.Start();
+
+                long count = 0;
+               
+
                 foreach (TileInfo index in tileInfos)
                 {
                     WriteHeight(dataSource, index, routePath);
+                    count++;
                 }
-            }
-            
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = ts.Seconds.ToString();
 
-            MessageBox.Show("Bitti! (seconds):  " + elapsedTime);
+                TimeSpan ts = stopWatch.Elapsed;
+                stopWatch.Stop();
+
+                //log
+                message = $"level {i}  {count} file {ts.Days} day {ts.Hours} hour {ts.Minutes} minutes {ts.Seconds} second";
+                fileLogger.Log(message, LogType.Info);
+            }
+
+            MessageBox.Show("Bitti!:  ");
         }
 
         private void WriteHeight(GdGdalDataSource ds, TileInfo index, string path)
         {
             double arrayLenght = 65;
-            int densityVal = 5; //0, 5, 13, 65 olabilir....65 katları...
+            int densityVal = 13; //0, 5, 13, 65 olabilir....65 katları...
             
             //create folder
             string zPath = Path.Combine(path, index.Index.Level.ToString());

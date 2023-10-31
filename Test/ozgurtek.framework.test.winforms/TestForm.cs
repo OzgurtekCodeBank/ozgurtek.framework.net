@@ -36,18 +36,6 @@ namespace ozgurtek.framework.test.winforms
             InitializeComponent();
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
-            Coordinate cor1 = new Coordinate(27.8778076171875, 37.815411006369104);
-            Coordinate cor2 = new Coordinate(27.88330078125, 37.820904170431604);
-            var coordinate = GdProjection.Project(cor1, 4326, 5253);
-            var coordinate2 = GdProjection.Project(cor2, 4326, 5253);
-
-            string source = "C:\\TURKEY_DTED\\turkey_DTED.tif";
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(source);
-            // WriteHeight(dataSource, new GdTileIndex(39049, 25104, 16));
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             double x1 = Convert.ToDouble(minXTextBox.Text, CultureInfo.InvariantCulture);
@@ -86,8 +74,6 @@ namespace ozgurtek.framework.test.winforms
                 stopWatch.Start();
 
                 long count = 0;
-               
-
                 foreach (TileInfo index in tileInfos)
                 {
                     WriteHeight(dataSource, index, routePath);

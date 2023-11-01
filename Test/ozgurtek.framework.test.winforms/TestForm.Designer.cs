@@ -49,6 +49,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.outPutTextBox = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.densityComboBox = new System.Windows.Forms.ComboBox();
             this.tileSizelabel = new System.Windows.Forms.Label();
             this.calcTileButton = new System.Windows.Forms.Button();
             this.densityResultLabel = new System.Windows.Forms.Label();
@@ -91,7 +92,7 @@
             this.minZoomLevelText.Name = "minZoomLevelText";
             this.minZoomLevelText.Size = new System.Drawing.Size(100, 20);
             this.minZoomLevelText.TabIndex = 3;
-            this.minZoomLevelText.Text = "20";
+            this.minZoomLevelText.Text = "18";
             // 
             // maxZoomLevelText
             // 
@@ -99,7 +100,7 @@
             this.maxZoomLevelText.Name = "maxZoomLevelText";
             this.maxZoomLevelText.Size = new System.Drawing.Size(100, 20);
             this.maxZoomLevelText.TabIndex = 4;
-            this.maxZoomLevelText.Text = "20";
+            this.maxZoomLevelText.Text = "18";
             // 
             // label2
             // 
@@ -143,7 +144,7 @@
             this.minXTextBox.Name = "minXTextBox";
             this.minXTextBox.Size = new System.Drawing.Size(100, 20);
             this.minXTextBox.TabIndex = 8;
-            this.minXTextBox.Text = "3814540";
+            this.minXTextBox.Text = "3842726";
             // 
             // minYTextBox
             // 
@@ -151,7 +152,7 @@
             this.minYTextBox.Name = "minYTextBox";
             this.minYTextBox.Size = new System.Drawing.Size(100, 20);
             this.minYTextBox.TabIndex = 7;
-            this.minYTextBox.Text = "4668498";
+            this.minYTextBox.Text = "4687996.4";
             // 
             // label6
             // 
@@ -177,15 +178,15 @@
             this.maxXTextBox.Name = "maxXTextBox";
             this.maxXTextBox.Size = new System.Drawing.Size(100, 20);
             this.maxXTextBox.TabIndex = 12;
-            this.maxXTextBox.Text = "3874607";
+            this.maxXTextBox.Text = "3843160";
             // 
             // maxYTextBox
             // 
-            this.maxYTextBox.Location = new System.Drawing.Point(178, 284);
+            this.maxYTextBox.Location = new System.Drawing.Point(146, 303);
             this.maxYTextBox.Name = "maxYTextBox";
             this.maxYTextBox.Size = new System.Drawing.Size(100, 20);
             this.maxYTextBox.TabIndex = 11;
-            this.maxYTextBox.Text = "4710475";
+            this.maxYTextBox.Text = "4688301.4";
             // 
             // label8
             // 
@@ -247,6 +248,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.densityComboBox);
             this.panel2.Controls.Add(this.tileSizelabel);
             this.panel2.Controls.Add(this.calcTileButton);
             this.panel2.Controls.Add(this.densityResultLabel);
@@ -256,6 +258,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(127, 338);
             this.panel2.TabIndex = 24;
+            // 
+            // densityComboBox
+            // 
+            this.densityComboBox.FormattingEnabled = true;
+            this.densityComboBox.Items.AddRange(new object[] {
+            "5",
+            "13"});
+            this.densityComboBox.Location = new System.Drawing.Point(6, 217);
+            this.densityComboBox.Name = "densityComboBox";
+            this.densityComboBox.Size = new System.Drawing.Size(106, 21);
+            this.densityComboBox.TabIndex = 27;
             // 
             // tileSizelabel
             // 
@@ -344,6 +357,7 @@
         private System.Windows.Forms.Button densityCalcButton;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox outPutTextBox;
+        private System.Windows.Forms.ComboBox densityComboBox;
     }
 }
 

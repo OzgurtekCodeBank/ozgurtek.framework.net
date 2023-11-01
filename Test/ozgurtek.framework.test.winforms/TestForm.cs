@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using BruTile;
 using BruTile.Predefined;
@@ -34,6 +35,7 @@ namespace ozgurtek.framework.test.winforms
         public TestForm()
         {
             InitializeComponent();
+            densityComboBox.SelectedIndex = 0;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -50,10 +52,11 @@ namespace ozgurtek.framework.test.winforms
             if (!string.IsNullOrWhiteSpace(outPutTextBox.Text))
                 routePath = outPutTextBox.Text;
 
-            GdFileLogger.Current.InitializeLogger(Path.Combine(routePath, "tilelog"));
-            
-            GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
+            GdGdalDataSource ds = GdGdalDataSource.Open(fileTextBox.Text);
 
+            GdFileLogger.Current.InitializeLogger(Path.Combine(routePath, "tilelog"));
+
+            short density = Convert.ToInt16(densityComboBox.Text);
             const string name = "BingMaps";
             const string format = "jpg";
             GlobalSphericalMercator schema = new GlobalSphericalMercator(format, YAxis.OSM, 1, 21, name);
@@ -74,7 +77,9 @@ namespace ozgurtek.framework.test.winforms
                 long count = 0;
                 foreach (TileInfo index in tileInfos)
                 {
-                    WriteHeight(dataSource, index, routePath);
+                    ThreadBag threadBag = new ThreadBag(ds, fileTextBox.Text, index, routePath, density);
+                    //ThreadPool.QueueUserWorkItem(WriteHeight, threadBag);
+                    WriteHeight(threadBag);
                     count++;
                 }
 
@@ -89,11 +94,19 @@ namespace ozgurtek.framework.test.winforms
             MessageBox.Show("Bitti!:  ");
         }
 
-        private void WriteHeight(GdGdalDataSource ds, TileInfo index, string path)
+        private void WriteHeight(object input)
         {
             double arrayLenght = 65;
-            int densityVal = 13; //0, 5, 13, 65 olabilir....65 katları...
-            
+
+            ThreadBag bag = (ThreadBag)input;
+            int densityVal = bag.Density; //0, 5, 13, 65 olabilir....65 katları...
+            string path = bag.Path;
+            TileInfo index = bag.Index;
+
+            GdGdalDataSource ds = bag.Ds;
+            if (ds == null)
+                ds = GdGdalDataSource.Open(bag.DsFile);
+
             //create folder
             string zPath = Path.Combine(path, index.Index.Level.ToString());
             if (!Directory.Exists(zPath))
@@ -106,8 +119,8 @@ namespace ozgurtek.framework.test.winforms
             Envelope envelope = new Envelope(index.Extent.MinX, index.Extent.MaxX, index.Extent.MinY, index.Extent.MaxY);
 
             //create envelope file(debug için kullan)
-            //Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
-            //File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
+            Geometry geometry = GdFactoryFinder.Instance.GeometryServices.CreateGeometryFactory().ToGeometry(envelope);
+            File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".json"), ToJson(geometry));
 
             double stepX = envelope.Width / arrayLenght;
             double stepY = envelope.Height / arrayLenght;
@@ -118,13 +131,13 @@ namespace ozgurtek.framework.test.winforms
             for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
             {
                 ////bir üst satırı kopyala
-                if (rowCount % densityVal != 0)
-                {
-                    Row copy = heights[rowCount - 1].Copy(j);
-                    heights.Add(copy);
-                    rowCount++;
-                    continue;
-                }
+                //if (rowCount % densityVal != 0)
+                //{
+                //    Row copy = heights[rowCount - 1].Copy(j);
+                //    heights.Add(copy);
+                //    rowCount++;
+                //    continue;
+                //}
 
                 //read
                 int colCount = 0;
@@ -132,12 +145,16 @@ namespace ozgurtek.framework.test.winforms
                 Row row = new Row();
                 for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
                 {
-                    if (colCount % densityVal == 0) //0, 5, 13, 65 olabilir....65 katları...
-                    {
-                        Coordinate unProject = ds.UnProject(i, j); //pixel
-                        double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                        height = pixelVals[0];
-                    }
+                    //if (colCount % densityVal == 0) //0, 5, 13, 65 olabilir....65 katları...
+                    //{
+                    //    Coordinate unProject = ds.UnProject(i, j); //pixel
+                    //    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+                    //    height = pixelVals[0];
+                    //}
+                    Coordinate unProject = ds.UnProject(i, j); //pixel
+                    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
+                    height = pixelVals[0];
+
                     RowPoint rowPoint = new RowPoint(new Coordinate(i, j), height);
                     row.Add(rowPoint);
 
@@ -155,7 +172,7 @@ namespace ozgurtek.framework.test.winforms
             }
 
             //sqllite(debug için kullan)
-            //WriteSQlite(heights, Path.Combine(xPath, index.Index.Row + ".sqlite"));
+            WriteSQlite(heights, Path.Combine(xPath, index.Index.Row + ".sqlite"));
 
             //create buffer text
             File.WriteAllText(Path.Combine(xPath, index.Index.Row + ".txt"), heights.ToString());
@@ -196,6 +213,49 @@ namespace ozgurtek.framework.test.winforms
             {
                 string join = string.Join(",", this);
                 return join;
+            }
+        }
+
+        private class ThreadBag
+        {
+            private readonly GdGdalDataSource _ds;
+            private readonly TileInfo _index;
+            private readonly string _path;
+            private readonly string _dsFile;
+            private int _density;
+
+            public ThreadBag(GdGdalDataSource ds, string dsFile, TileInfo index, string path, int density)
+            {
+                this._ds = ds;
+                this._index = index;
+                this._path = path;
+                _dsFile = dsFile;
+                _density = density;
+            }
+
+            public GdGdalDataSource Ds
+            {
+                get { return _ds; }
+            }
+
+            public TileInfo Index
+            {
+                get { return _index; }
+            }
+
+            public string Path
+            {
+                get { return _path; }
+            }
+
+            public string DsFile
+            {
+                get { return _dsFile; }
+            }
+
+            public int Density
+            {
+                get { return _density; }
             }
         }
 

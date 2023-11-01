@@ -50,9 +50,7 @@ namespace ozgurtek.framework.test.winforms
             if (!string.IsNullOrWhiteSpace(outPutTextBox.Text))
                 routePath = outPutTextBox.Text;
 
-            GdFileLogger fileLogger = GdFileLogger.Current;
-            fileLogger.LogFolder = routePath;
-            fileLogger.InitializeLogger();
+            GdFileLogger.Current.InitializeLogger(Path.Combine(routePath, "tilelog"));
             
             GdGdalDataSource dataSource = GdGdalDataSource.Open(fileTextBox.Text);
 
@@ -67,8 +65,8 @@ namespace ozgurtek.framework.test.winforms
                 IEnumerable<TileInfo> tileInfos = schema.GetTileInfos(extent, i);
                 int len = tileInfos.Count();
 
-                string message = $"level {i} {len} tile started";
-                fileLogger.Log(message, LogType.Info);
+                string message = $"level {i} ---- {len} tile started";
+                GdFileLogger.Current.Log(message, LogType.Info);
 
                 Stopwatch stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -84,8 +82,8 @@ namespace ozgurtek.framework.test.winforms
                 stopWatch.Stop();
 
                 //log
-                message = $"level {i}  {count} file {ts.Days} day {ts.Hours} hour {ts.Minutes} minutes {ts.Seconds} second";
-                fileLogger.Log(message, LogType.Info);
+                message = $"level {i} --- {count} file --- {ts.Days} day {ts.Hours} hour {ts.Minutes} minutes {ts.Seconds} second";
+                GdFileLogger.Current.Log(message, LogType.Info);
             }
 
             MessageBox.Show("Bitti!:  ");

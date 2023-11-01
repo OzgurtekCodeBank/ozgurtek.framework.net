@@ -11,7 +11,7 @@ namespace ozgurtek.framework.common.Util
     {
         public event LogChangedEventHandler LogChanged;
 
-        private static readonly object SyncRoot = new Object();
+        private static readonly object SyncRoot = new object();
         private static volatile GdFileLogger _instance;
 
         private StreamWriter _logWriter;
@@ -22,7 +22,6 @@ namespace ozgurtek.framework.common.Util
 
         private GdFileLogger()
         {
-            InitializeLogger();
         }
 
         private static bool CreateDirectory(string path)
@@ -30,30 +29,18 @@ namespace ozgurtek.framework.common.Util
             if (Directory.Exists(path))
                 return true;
 
-            try
-            {
-                Directory.CreateDirectory(path);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Directory.CreateDirectory(path);
+            return true;
         }
 
         public string LogFolder
         {
             get => _logFolder;
-            set => _logFolder = value;
         }
 
-        public void InitializeLogger()
+        public void InitializeLogger(string path)
         {
-            string path = Path.GetDirectoryName(LogFolder);
-            if ((path != null) && !path.EndsWith("\\"))
-                path += "\\";
-            path += "log";
-
+            _logFolder = path;
             if (!CreateDirectory(path) || !CreateFile(path))
                 _systemCancelled = true;
         }
@@ -62,15 +49,8 @@ namespace ozgurtek.framework.common.Util
         {
             string fileName = $"{DateTime.Today.Day:00}{DateTime.Today.Month:00}{DateTime.Today.Year:0000}.log";
             string fullPath = Path.Combine(path, fileName);
-            try
-            {
-                _logWriter = !File.Exists(fullPath) ? new StreamWriter(fullPath) : File.AppendText(fullPath);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            _logWriter = !File.Exists(fullPath) ? new StreamWriter(fullPath) : File.AppendText(fullPath);
+            return true;
         }
 
         public static GdFileLogger Current
@@ -104,6 +84,9 @@ namespace ozgurtek.framework.common.Util
 
         public void Log(string line, LogType type)
         {
+            if (string.IsNullOrWhiteSpace(_logFolder))
+                throw new Exception("Use InitializeLogger");
+
             if (!Recording)
                 return;
 

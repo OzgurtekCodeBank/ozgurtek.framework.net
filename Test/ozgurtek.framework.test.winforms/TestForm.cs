@@ -130,30 +130,14 @@ namespace ozgurtek.framework.test.winforms
             int rowCount = 0;
             for (double j = envelope.MaxY; j >= envelope.MaxY - envelope.Height; j -= stepY)
             {
-                ////bir üst satırı kopyala
-                //if (rowCount % densityVal != 0)
-                //{
-                //    Row copy = heights[rowCount - 1].Copy(j);
-                //    heights.Add(copy);
-                //    rowCount++;
-                //    continue;
-                //}
-
                 //read
                 int colCount = 0;
-                double height = -1000;
                 Row row = new Row();
                 for (double i = envelope.MinX; i <= envelope.MinX + envelope.Width; i += stepX)
                 {
-                    //if (colCount % densityVal == 0) //0, 5, 13, 65 olabilir....65 katları...
-                    //{
-                    //    Coordinate unProject = ds.UnProject(i, j); //pixel
-                    //    double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                    //    height = pixelVals[0];
-                    //}
                     Coordinate unProject = ds.UnProject(i, j); //pixel
                     double[] pixelVals = ds.ReadBand(1, (int)unProject.X, (int)unProject.Y, new Size(1, 1));
-                    height = pixelVals[0];
+                    double height = pixelVals[0];
 
                     RowPoint rowPoint = new RowPoint(new Coordinate(i, j), height);
                     row.Add(rowPoint);

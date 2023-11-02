@@ -182,7 +182,7 @@
             // 
             // maxYTextBox
             // 
-            this.maxYTextBox.Location = new System.Drawing.Point(146, 303);
+            this.maxYTextBox.Location = new System.Drawing.Point(178, 284);
             this.maxYTextBox.Name = "maxYTextBox";
             this.maxYTextBox.Size = new System.Drawing.Size(100, 20);
             this.maxYTextBox.TabIndex = 11;

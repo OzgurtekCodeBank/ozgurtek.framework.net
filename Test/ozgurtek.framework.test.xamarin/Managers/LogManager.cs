@@ -17,7 +17,7 @@ namespace ozgurtek.framework.test.xamarin.Managers
             //Crashes.TrackError(exception, exInfoDict);
 
             //file log
-            GdFileLogger.Current.LogFolder = GdApp.Instance.Settings.LogFolder;
+            GdFileLogger.Current.InitializeLogger(GdApp.Instance.Settings.LogFolder);
             GdFileLogger.Current.LogException(exception);
 
             //user message

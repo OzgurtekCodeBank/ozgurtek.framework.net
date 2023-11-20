@@ -9,16 +9,14 @@ namespace ozgurtek.framework.test.winforms.UnitTest.Geodesy
         public void KmToMTest()
         {
             GdDistance distance = new GdDistance(3000);
-            //distance.Unit = GdDistanceUnit.Km;
-            //Assert.AreEqual(distance.Value, 3);
+            Assert.AreEqual(distance.Value, 3);
         }
 
         [Test]
         public void MToFeet()
         {
             GdDistance distance = new GdDistance(1000, GdDistanceUnit.Ft);
-            //distance.Unit = GdDistanceUnit.M;
-            //Assert.AreEqual(distance.Value, 304.8);
+            Assert.AreEqual(distance.Value, 304.8);
         }
     }
 }
